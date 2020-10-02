@@ -89,7 +89,6 @@ public class Programa {
 		rs.close();
 		st.close();
 		con.close();
-
 	}
 
 	private void convertirSociosEnLista(ResultSet rs) throws SQLException {

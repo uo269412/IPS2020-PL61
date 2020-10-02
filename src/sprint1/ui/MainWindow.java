@@ -70,7 +70,7 @@ public class MainWindow extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				String id_socio;
 				do {
-					id_socio = JOptionPane.showInputDialog(this, "Por favor, introduce un id de socio válido ");
+					id_socio = JOptionPane.showInputDialog("Por favor, introduce un id de socio válido ");
 				} while (programa.encontrarSocio(id_socio) == null);
 				openSocioWindow(programa.encontrarSocio(id_socio));
 			}
@@ -80,7 +80,7 @@ public class MainWindow extends JFrame {
 	}
 	
 	public Programa getProgama() {
-		return this.programa;
+		return MainWindow.programa;
 	}
 
 	private void openAdminWindow() {

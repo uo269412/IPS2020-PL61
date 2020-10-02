@@ -54,8 +54,7 @@ public class SocioWindow extends JDialog {
 				public void actionPerformed(ActionEvent arg0) {
 					String id_actividad;
 					do {
-						id_actividad = JOptionPane.showInputDialog(this,
-								"Introduce el id de la actividad que quieres cancelar ");
+						id_actividad = JOptionPane.showInputDialog("Introduce el id de la actividad que quieres cancelar");
 					} while (parent.getProgama().encontrarActividad(id_actividad) == null);
 					socio.anularReserva(parent.getProgama().encontrarActividad(id_actividad),
 							parent.getProgama().getReservas());
