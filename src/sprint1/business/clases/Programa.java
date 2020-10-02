@@ -29,11 +29,19 @@ public class Programa {
 		try {
 			cargarActividades();
 			cargarSocios();
-			cargarReservas();
-			cargarMonitores();
+//			cargarReservas();
+//			cargarMonitores();
+			printAllLists();
 		} catch (SQLException e) {
 			System.out.println("Ha surgido un error cargando la base de datos");
 		}
+	}
+
+	private void printAllLists() {
+		printActividades();
+		printSocios();
+		printReservas();
+
 	}
 
 //ACTIVIDADES	
@@ -69,7 +77,7 @@ public class Programa {
 	public List<Actividad> getActividades() {
 		return actividades;
 	}
-	
+
 	public Actividad encontrarActividad(String codigo) {
 		for (Actividad actividad : actividades) {
 			if (actividad.getCodigo().equals(codigo)) {
@@ -79,12 +87,19 @@ public class Programa {
 		return null;
 	}
 
+	public void printActividades() {
+		System.out.println("Lista de actividades");
+		for (Actividad actividad : actividades) {
+			System.out.println(actividad.toString());
+		}
+	}
+
 //SOCIOS	
 
 	private void cargarSocios() throws SQLException {
 		Connection con = DriverManager.getConnection(URL);
 		Statement st = con.createStatement();
-		ResultSet rs = st.executeQuery("SELECT * FROM SOCIO");
+		ResultSet rs = st.executeQuery("SELECT * FROM CLIENTE");
 		convertirSociosEnLista(rs);
 		rs.close();
 		st.close();
@@ -112,11 +127,19 @@ public class Programa {
 
 	public Socio encontrarSocio(String id_cliente) {
 		for (Socio socio : socios) {
+			System.out.println(socio.toString());
 			if (socio.getId_cliente().equals(id_cliente)) {
 				return socio;
 			}
 		}
 		return null;
+	}
+
+	public void printSocios() {
+		System.out.println("Lista de socios");
+		for (Socio socio : socios) {
+			System.out.println(socio.toString());
+		}
 	}
 
 //RESERVAS	
@@ -149,6 +172,13 @@ public class Programa {
 
 	public List<Reserva> getReservas() {
 		return reservas;
+	}
+
+	private void printReservas() {
+		System.out.println("Lista de reservas");
+		for (Reserva reserva : reservas) {
+			System.out.println(reserva.toString());
+		}
 	}
 
 //MONITORES

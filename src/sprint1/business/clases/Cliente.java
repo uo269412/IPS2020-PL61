@@ -36,4 +36,11 @@ public abstract class Cliente {
 		this.apellido = apellido;
 	}
 
+	@Override
+	public String toString() {
+		return "Cliente [id_cliente=" + id_cliente + ", nombre=" + nombre + ", apellido=" + apellido + "]";
+	}
+	
+	
+
 }

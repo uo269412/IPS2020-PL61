@@ -52,6 +52,7 @@ public class SocioWindow extends JDialog {
 			btnAnularReserva = new JButton("Anular reserva");
 			btnAnularReserva.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
+					System.out.println();
 					String id_actividad;
 					do {
 						id_actividad = JOptionPane.showInputDialog("Introduce el id de la actividad que quieres cancelar");

@@ -38,4 +38,12 @@ public class Reserva {
 		this.fecha_reserva = fecha_reserva;
 	}
 
+	@Override
+	public String toString() {
+		return "Reserva [id_cliente=" + id_cliente + ", codigo_actividad=" + codigo_actividad + ", fecha_reserva="
+				+ fecha_reserva + "]";
+	}
+	
+	
+
 }

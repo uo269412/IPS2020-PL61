@@ -71,6 +71,7 @@ public class MainWindow extends JFrame {
 				String id_socio;
 				do {
 					id_socio = JOptionPane.showInputDialog("Por favor, introduce un id de socio válido ");
+					System.out.println(id_socio);
 				} while (programa.encontrarSocio(id_socio) == null);
 				openSocioWindow(programa.encontrarSocio(id_socio));
 			}

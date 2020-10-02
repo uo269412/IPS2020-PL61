@@ -55,4 +55,12 @@ public class Actividad {
 		this.limitePlazas = limitePlazas;
 	}
 
+	@Override
+	public String toString() {
+		return "Actividad [codigo=" + codigo + ", nombre=" + nombre + ", horaInicio=" + horaInicio + ", horaFin="
+				+ horaFin + ", limitePlazas=" + limitePlazas + "]";
+	}
+	
+	
+
 }
