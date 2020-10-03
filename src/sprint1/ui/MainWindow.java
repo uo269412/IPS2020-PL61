@@ -80,7 +80,7 @@ public class MainWindow extends JFrame {
 		contentPane.add(btnSocio);
 	}
 	
-	public Programa getProgama() {
+	public Programa getPrograma() {
 		return MainWindow.programa;
 	}
 
@@ -97,7 +97,6 @@ public class MainWindow extends JFrame {
 		socioWindow.setModal(true);
 		socioWindow.setLocationRelativeTo(this);
 		socioWindow.setVisible(true);
-
 	}
 
 }
