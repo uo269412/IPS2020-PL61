@@ -233,15 +233,6 @@ public class Programa {
 		}
 		return null;
 	}
-	
-//	public Monitor encontrarMonitorDisponible(String codigo, Actividad actividad) {
-//		for (Reserva reserva : reservas) {
-//			if (reserva.getCodigo_monitor().equals(codigo) && !reserva.getCodigo_monitor().isEmpty()) {
-//				return null;
-//			}
-//		}
-//		return encontrarMonitor(codigo);
-//	}
 
 	public boolean monitorAsignado(Monitor monitor) {
 		if (actividadQueRealizaMonitor(monitor) == null) {
@@ -264,34 +255,5 @@ public class Programa {
 	}
 
 //ADMINISTRACIÓN
-
-	public boolean asignarMonitorActividad(String codigoMonitor, String codigoActividad) {
-//		for (Reserva reserva : reservas) {
-//			if (reserva.getCodigo_actividad().equals(codigoActividad)) {
-//				if (reserva.getCodigo_monitor().isEmpty()) {
-//					for (Reserva reserva2 : reservas) {
-//						if (reserva2.getCodigo_monitor().equals(codigoMonitor)) {
-//							
-//						}
-//					}
-//					try {
-//						Connection con = DriverManager.getConnection("URL");
-//						Statement st = con.createStatement();
-//						ResultSet rs = st.executeQuery("UPDATE RESERVA SET codigoMonitor = " + codigoMonitor + " WHERE codigo_actividad = " + codigoActividad);
-//						rs.close();
-//						st.close();
-//						con.close();
-//					} catch (SQLException e) {
-//						System.out.println("Error asignando la reserva");
-//					}
-//					return null;
-//				}
-//				return "La actividad ya tiene asignada un monitor";
-//	
-//			}
-//			return "
-//		}
-		return true;
-	}
 
 }

@@ -44,24 +44,6 @@ public class AdminWindow extends JDialog {
 	private JButton getBtnAsignarMonitor() {
 		if (btnAsignarMonitor == null) {
 			btnAsignarMonitor = new JButton("Asignar monitor a actividad");
-			btnAsignarMonitor.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
-					String codigoActividad;
-					do {
-						codigoActividad = JOptionPane
-								.showInputDialog("Por favor, introduce una id de actividad válida ");
-						System.out.println(codigoActividad);
-					} while (parent.getPrograma().encontrarActividadSinMonitor(codigoActividad) == null);
-					String codigoMonitor;
-					do {
-						codigoMonitor = JOptionPane.showInputDialog("Por favor, introduce un id de monitor válido ");
-						System.out.println(codigoMonitor);
-					} while (parent.getPrograma().encontrarMonitor(codigoMonitor) == null);
-
-					if (!parent.getPrograma().asignarMonitorActividad(codigoMonitor, codigoActividad)) {
-					}
-				}
-			});
 		}
 		return btnAsignarMonitor;
 	}
