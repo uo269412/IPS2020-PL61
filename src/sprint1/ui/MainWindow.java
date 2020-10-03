@@ -11,6 +11,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 public class MainWindow extends JFrame {
+	
+	//buenas javi
 
 	/**
 	 * 
