@@ -1,18 +1,38 @@
 package sprint1.business.clases;
 
-public class Actividad {
-	String codigo;
-	String nombre;
-	int horaInicio;
-	int horaFin;
-	int limitePlazas;
+import java.util.LinkedList;
+import java.util.List;
 
-	public Actividad(String codigo, String nombre, int horaInicio, int horaFin, int limitePlazas) {
-		this.codigo = codigo;
-		this.nombre = nombre;
-		this.horaInicio = horaInicio;
-		this.horaFin = horaFin;
-		this.limitePlazas = limitePlazas;
+public class Actividad {
+	
+	public static final int INTENSIDAD_BAJA = 0;
+	public static final int INTENSIDAD_MODERADA = 1;
+	public static final int INTENSIDAD_ALTA = 2;
+	//en un futuro se cambiarán por un enum
+	
+	private String codigo;
+	private String nombre;
+	private int horaInicio;
+	private int horaFin;
+	private int limitePlazas;
+	private int intensidad;
+	private List<Recurso> recursosRequeridos;
+
+	public Actividad(String codigo, String nombre, int horaInicio, int horaFin, int limitePlazas, int intensidad) {
+		setCodigo(codigo);
+		setNombre(nombre);
+		setHoraInicio(horaInicio);
+		setHoraFin(horaFin);
+		setLimitePlazas(limitePlazas);
+		setIntensidad(intensidad);
+		recursosRequeridos = new LinkedList<>();
+	}
+	
+	private void setIntensidad(int intensidad) {
+		if(intensidad != INTENSIDAD_BAJA && intensidad != INTENSIDAD_MODERADA && intensidad != INTENSIDAD_ALTA)
+			throw new IllegalArgumentException("El nivel de intensidad no es válido");
+		else
+			this.intensidad = intensidad;
 	}
 
 	public String getCodigo() {
@@ -56,9 +76,35 @@ public class Actividad {
 	}
 
 	@Override
-	public String toString() {
+	public String toString() { //conviene imprimir también los recursos necesarios
 		return "Actividad [codigo=" + codigo + ", nombre=" + nombre + ", horaInicio=" + horaInicio + ", horaFin="
-				+ horaFin + ", limitePlazas=" + limitePlazas + "]";
+				+ horaFin + ", limitePlazas=" + limitePlazas + ", intensidad=" + intensidad + "]";
+	}
+	
+	 @Override
+	    public boolean equals(Object obj) {
+	        if (obj == null) {
+	            return false;
+	        }
+
+	        if (obj.getClass() != this.getClass()) {
+	            return false;
+	        }
+
+	        final Actividad other = (Actividad) obj;
+	        if ((this.codigo == null) ? (other.codigo != null) : !this.codigo.equals(other.codigo)) {
+	            return false;
+	        }
+
+	        return true;
+	    }
+	
+	public void añadirRecurso(Recurso recurso) {
+		recursosRequeridos.add(recurso);
+	}
+	
+	public int getIntensidad() {
+		return this.intensidad;
 	}
 	
 	
