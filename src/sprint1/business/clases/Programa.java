@@ -17,13 +17,13 @@ public class Programa {
 	private List<Reserva> reservas;
 	private List<Monitor> monitores;
 
-	//Conexión Javi
-	//public static String URL = "jdbc:sqlite:C:\\Users\\javie\\Desktop\\master\\sprint1\\resources\\bdProject.db";
-	
-	//Conexión Dani
-	public static String URL = "jdbc:sqlite:C:\\Users\\Dani\\git\\IPS2020-PL61\\resources\\bdProject.db";
-	
-	
+	// Conexión Javi
+	public static String URL = "jdbc:sqlite:C:\\Users\\javie\\Desktop\\master\\sprint1\\resources\\bdProject.db";
+
+	// Conexión Dani
+	// public static String URL =
+	// "jdbc:sqlite:C:\\Users\\Dani\\git\\IPS2020-PL61\\resources\\bdProject.db";
+
 	public Programa() throws SQLException {
 		cargarBaseDatos();
 	}
@@ -60,18 +60,17 @@ public class Programa {
 		con.close();
 
 	}
-	
+
 	public void insertarActividad(Actividad a) throws SQLException {
 		Connection con = DriverManager.getConnection(URL);
-		PreparedStatement pst = con.prepareStatement("INSERT INTO ACTIVIDAD "
-				+ "VALUES (?,?,?,?,?,?)");
+		PreparedStatement pst = con.prepareStatement("INSERT INTO ACTIVIDAD " + "VALUES (?,?,?,?,?,?)");
 		pst.setString(1, a.getCodigo());
 		pst.setString(2, a.getNombre());
 		pst.setInt(3, a.getHoraInicio());
 		pst.setInt(4, a.getHoraFin());
 		pst.setInt(5, a.getLimitePlazas());
 		pst.setInt(6, a.getIntensidad());
-		
+
 		pst.execute();
 		pst.close();
 		con.close();
@@ -106,15 +105,6 @@ public class Programa {
 			}
 		}
 		return null;
-	}
-
-	public Actividad encontrarActividadSinMonitor(String codigo) {
-		for (Reserva reserva : reservas) {
-			if (reserva.getCodigo_actividad().equals(codigo) && !reserva.getCodigo_monitor().isEmpty()) {
-				return null;
-			}
-		}
-		return encontrarActividad(codigo);
 	}
 
 	public void printActividades() {
@@ -256,64 +246,45 @@ public class Programa {
 		}
 		return null;
 	}
-	
-//	public Monitor encontrarMonitorDisponible(String codigo, Actividad actividad) {
-//		for (Reserva reserva : reservas) {
-//			if (reserva.getCodigo_monitor().equals(codigo) && !reserva.getCodigo_monitor().isEmpty()) {
-//				return null;
-//			}
-//		}
-//		return encontrarMonitor(codigo);
-//	}
-
-	public boolean monitorAsignado(Monitor monitor) {
-		if (actividadQueRealizaMonitor(monitor) == null) {
-			return false;
-		}
-		return true;
-	}
-
-	public Actividad actividadQueRealizaMonitor(Monitor monitor) {
-		for (Reserva reserva : reservas) {
-			if (monitor.getCodigoMonitor().equals(reserva.getCodigo_monitor())) {
-				for (Actividad actividad : actividades) {
-					if (actividad.getCodigo().equals(reserva.getCodigo_actividad())) {
-						return actividad;
-					}
-				}
-			}
-		}
-		return null;
-	}
 
 //ADMINISTRACIÓN
 
-	public boolean asignarMonitorActividad(String codigoMonitor, String codigoActividad) {
-//		for (Reserva reserva : reservas) {
-//			if (reserva.getCodigo_actividad().equals(codigoActividad)) {
-//				if (reserva.getCodigo_monitor().isEmpty()) {
-//					for (Reserva reserva2 : reservas) {
-//						if (reserva2.getCodigo_monitor().equals(codigoMonitor)) {
-//							
-//						}
-//					}
-//					try {
-//						Connection con = DriverManager.getConnection("URL");
-//						Statement st = con.createStatement();
-//						ResultSet rs = st.executeQuery("UPDATE RESERVA SET codigoMonitor = " + codigoMonitor + " WHERE codigo_actividad = " + codigoActividad);
-//						rs.close();
-//						st.close();
-//						con.close();
-//					} catch (SQLException e) {
-//						System.out.println("Error asignando la reserva");
-//					}
-//					return null;
-//				}
-//				return "La actividad ya tiene asignada un monitor";
-//	
-//			}
-//			return "
-//		}
+	public void asignarMonitorActividad(String codigoMonitor, String codigoActividad) {
+		if (checkMonitorNoTieneActividad(codigoMonitor) && checkActividadNoTieneMonitor(codigoActividad)) {
+			try {
+				Connection con = DriverManager.getConnection(URL);
+				Statement st = con.createStatement();
+				ResultSet rs = st.executeQuery(
+						"UPDATE ACTIVIDAD SET codigoMonitor = " + codigoMonitor + " WHERE codigo = " + codigoActividad);
+				rs.close();
+				st.close();
+				con.close();
+			} catch (SQLException e) {
+				System.out.println("Error asignando monitor");
+			}
+		}
+
+	}
+
+	private boolean checkActividadNoTieneMonitor(String codigoActividad) {
+		for (Actividad actividad : actividades) {
+			if (actividad.getCodigo().equals(codigoActividad) && !actividad.getCodigoMonitor().isEmpty()) {
+				return false;
+			}
+		}
+		return true;
+
+	}
+
+	private boolean checkMonitorNoTieneActividad(String codigoMonitor) {
+		for (Monitor monitor : monitores) {
+			for (Actividad actividad : actividades) {
+				if (actividad.getCodigoMonitor().equals(monitor.getCodigoMonitor())) {
+					return false;
+				}
+			}
+
+		}
 		return true;
 	}
 
