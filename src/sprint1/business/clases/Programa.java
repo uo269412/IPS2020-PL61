@@ -74,6 +74,7 @@ public class Programa {
 		pst.execute();
 		pst.close();
 		con.close();
+		actividades.add(a);
 	}
 
 	private void convertirActividadesEnLista(ResultSet rs) throws SQLException {
@@ -262,8 +263,8 @@ public class Programa {
 			} catch (SQLException e) {
 				System.out.println("Error asignando monitor");
 			}
+			encontrarActividad(codigoActividad).setCodigoMonitor(codigoMonitor);
 		}
-
 	}
 
 	private boolean checkActividadNoTieneMonitor(String codigoActividad) {
