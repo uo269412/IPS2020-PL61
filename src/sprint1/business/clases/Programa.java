@@ -296,42 +296,42 @@ public class Programa {
 
 //ADMINISTRACIÓN
 
-//	public void asignarMonitorActividad(String codigoMonitor, String codigoActividad) {
-//		if (checkMonitorNoTieneActividad(codigoMonitor) && checkActividadNoTieneMonitor(codigoActividad)) {
-//			try {
-//				Connection con = DriverManager.getConnection(URL);
-//				Statement st = con.createStatement();
-//				ResultSet rs = st.executeQuery(
-//						"UPDATE ACTIVIDAD SET codigoMonitor = " + codigoMonitor + " WHERE codigo = " + codigoActividad);
-//				rs.close();
-//				st.close();
-//				con.close();
-//			} catch (SQLException e) {
-//				System.out.println("Error asignando monitor");
-//			}
-//			encontrarActividad(codigoActividad).setCodigoMonitor(codigoMonitor);
-//		}
-//	}
-//
-//	private boolean checkActividadNoTieneMonitor(String codigoActividad) {
-//		for (Actividad actividad : actividades) {
-//			if (actividad.getCodigo().equals(codigoActividad) && !actividad.getCodigoMonitor().isEmpty()) {
-//				return false;
-//			}
-//		}
-//		return true;
-//
-//	}
-//
-//	private boolean checkMonitorNoTieneActividad(String codigoMonitor) {
-//		for (Monitor monitor : monitores) {
-//			for (Actividad actividad : actividades) {
-//				if (actividad.getCodigoMonitor().equals(monitor.getCodigoMonitor())) {
-//					return false;
-//				}
-//			}
-//		}
-//		return true;
-//	}
+	public void asignarMonitorActividad(String codigoMonitor, String codigoActividadPlanificada) {
+		if (checkMonitorNoTieneActividad(codigoMonitor) && checkActividadNoTieneMonitor(codigoActividadPlanificada)) {
+			try {
+				Connection con = DriverManager.getConnection(URL);
+				Statement st = con.createStatement();
+				ResultSet rs = st.executeQuery(
+						"UPDATE ACTIVIDAD_PLANIFICADAS SET codigoMonitor = " + codigoMonitor + " WHERE codigoPlanificada = " + codigoActividadPlanificada);
+				rs.close();
+				st.close();
+				con.close();
+			} catch (SQLException e) {
+				System.out.println("Error asignando monitor");
+			}
+			encontrarActividadPlanificada(codigoActividadPlanificada).setCodigoMonitor(codigoMonitor);
+		}
+	}
+
+	private boolean checkActividadNoTieneMonitor(String codigoActividadPlanificada) {
+		for (ActividadPlanificada actividad : actividadesPlanificadas) {
+			if (actividad.getCodigoPlanificada().equals(codigoActividadPlanificada) && !actividad.getCodigoMonitor().isEmpty()) {
+				return false;
+			}
+		}
+		return true;
+
+	}
+
+	private boolean checkMonitorNoTieneActividad(String codigoMonitor) {
+		for (Monitor monitor : monitores) {
+			for (ActividadPlanificada actividad : actividadesPlanificadas) {
+				if (actividad.getCodigoMonitor().equals(monitor.getCodigoMonitor())) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
 
 }

@@ -133,9 +133,9 @@ public class AdminWindow extends JDialog {
 		String codigoActividad;
 		String codigoMonitor;
 		do {
-			codigoActividad = JOptionPane.showInputDialog("Por favor, introduce una id de actividad válida ");
+			codigoActividad = JOptionPane.showInputDialog("Por favor, introduce una id de actividad ya planificada válida ");
 			System.out.println(codigoActividad);
-		} while (parent.getPrograma().encontrarActividad(codigoActividad) == null);
+		} while (parent.getPrograma().encontrarActividadPlanificada(codigoActividad) == null);
 		do {
 			codigoMonitor = JOptionPane.showInputDialog("Por favor, introduce un id de monitor válido ");
 			System.out.println(codigoMonitor);
