@@ -126,8 +126,8 @@ public class SocioWindow extends JDialog {
 		if (btnAnularReserva == null) {
 			btnAnularReserva = new JButton("Anular reserva");
 			btnAnularReserva.setMnemonic('A');
-			btnAnularReserva.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
+//			btnAnularReserva.addActionListener(new ActionListener() {
+//				public void actionPerformed(ActionEvent arg0) {
 //					String id_actividad;
 //					do {
 //						id_actividad = JOptionPane
@@ -136,7 +136,7 @@ public class SocioWindow extends JDialog {
 //					socio.anularReserva(parent.getPrograma().encontrarActividad(id_actividad),
 //							parent.getPrograma().getReservas());
 //				}
-			});
+//			});
 		}
 		return btnAnularReserva;
 	}
