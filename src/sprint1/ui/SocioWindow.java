@@ -128,14 +128,14 @@ public class SocioWindow extends JDialog {
 			btnAnularReserva.setMnemonic('A');
 			btnAnularReserva.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					String id_actividad;
-					do {
-						id_actividad = JOptionPane
-								.showInputDialog("Introduce el id de la actividad que quieres cancelar");
-					} while (parent.getPrograma().encontrarActividad(id_actividad) == null);
-					socio.anularReserva(parent.getPrograma().encontrarActividad(id_actividad),
-							parent.getPrograma().getReservas());
-				}
+//					String id_actividad;
+//					do {
+//						id_actividad = JOptionPane
+//								.showInputDialog("Introduce el id de la actividad que quieres cancelar");
+//					} while (parent.getPrograma().encontrarActividad(id_actividad) == null);
+//					socio.anularReserva(parent.getPrograma().encontrarActividad(id_actividad),
+//							parent.getPrograma().getReservas());
+//				}
 			});
 		}
 		return btnAnularReserva;

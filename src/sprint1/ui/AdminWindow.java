@@ -140,7 +140,7 @@ public class AdminWindow extends JDialog {
 			codigoMonitor = JOptionPane.showInputDialog("Por favor, introduce un id de monitor válido ");
 			System.out.println(codigoMonitor);
 		} while (parent.getPrograma().encontrarMonitor(codigoMonitor) == null);
-		getParent().getPrograma().asignarMonitorActividad(codigoMonitor, codigoActividad);
+//		getParent().getPrograma().asignarMonitorActividad(codigoMonitor, codigoActividad);
 	}
 
 	private JButton getBtnNewButton() {

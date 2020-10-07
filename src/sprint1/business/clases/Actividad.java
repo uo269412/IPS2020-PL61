@@ -12,18 +12,19 @@ public class Actividad {
 	
 	private String codigo;
 	private String nombre;
-	private int horaInicio;
-	private int horaFin;
-	private int limitePlazas;
 	private int intensidad;
 	private List<Recurso> recursosRequeridos;
-
-	public Actividad(String codigo, String nombre, int horaInicio, int horaFin, int limitePlazas, int intensidad) {
+	
+	public Actividad(String codigo, String nombre, int intensidad) {
 		setCodigo(codigo);
 		setNombre(nombre);
-		setHoraInicio(horaInicio);
-		setHoraFin(horaFin);
-		setLimitePlazas(limitePlazas);
+		setIntensidad(intensidad);
+		recursosRequeridos = new LinkedList<>();
+	}
+
+	public Actividad(String nombre, int intensidad) {
+		setCodigo(nombre + intensidad);
+		setNombre(nombre);
 		setIntensidad(intensidad);
 		recursosRequeridos = new LinkedList<>();
 	}
@@ -51,34 +52,9 @@ public class Actividad {
 		this.nombre = nombre;
 	}
 
-	public int getHoraInicio() {
-		return horaInicio;
-	}
-
-	public void setHoraInicio(int horaInicio) {
-		this.horaInicio = horaInicio;
-	}
-
-	public int getHoraFin() {
-		return horaFin;
-	}
-
-	public void setHoraFin(int horaFin) {
-		this.horaFin = horaFin;
-	}
-
-	public int getLimitePlazas() {
-		return limitePlazas;
-	}
-
-	public void setLimitePlazas(int limitePlazas) {
-		this.limitePlazas = limitePlazas;
-	}
-
 	@Override
 	public String toString() { //conviene imprimir también los recursos necesarios
-		return "Actividad [codigo=" + codigo + ", nombre=" + nombre + ", horaInicio=" + horaInicio + ", horaFin="
-				+ horaFin + ", limitePlazas=" + limitePlazas + ", intensidad=" + intensidad + "]";
+		return "Actividad [codigo=" + codigo + ", nombre=" + nombre + ", horaInicio="  + ", intensidad=" + intensidad + "]";
 	}
 	
 	 @Override
