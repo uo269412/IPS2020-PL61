@@ -41,8 +41,7 @@ public class AdminWindow extends JDialog {
 		getContentPane().add(getPnTextos(), BorderLayout.NORTH);
 		getContentPane().add(getPnFuncionalidad(), BorderLayout.CENTER);
 	}
-	
-	
+
 	private JPanel getPnTextos() {
 		if (pnTextos == null) {
 			pnTextos = new JPanel();
@@ -53,12 +52,14 @@ public class AdminWindow extends JDialog {
 		}
 		return pnTextos;
 	}
+
 	private JLabel getLblBienvenida() {
 		if (lblBienvenida == null) {
 			lblBienvenida = new JLabel("Bienvenido, administrador");
 		}
 		return lblBienvenida;
 	}
+
 	private JLabel getLblAcciones() {
 		if (lblAcciones == null) {
 			lblAcciones = new JLabel("Acciones disponibles como administrador:");
@@ -68,6 +69,7 @@ public class AdminWindow extends JDialog {
 		}
 		return lblAcciones;
 	}
+
 	private JPanel getPnFuncionalidad() {
 		if (pnFuncionalidad == null) {
 			pnFuncionalidad = new JPanel();
@@ -77,6 +79,7 @@ public class AdminWindow extends JDialog {
 		}
 		return pnFuncionalidad;
 	}
+
 	private JPanel getPnLogOut() {
 		if (pnLogOut == null) {
 			pnLogOut = new JPanel();
@@ -86,6 +89,7 @@ public class AdminWindow extends JDialog {
 		}
 		return pnLogOut;
 	}
+
 	private JPanel getPnAcciones() {
 		if (pnAcciones == null) {
 			pnAcciones = new JPanel();
@@ -95,6 +99,7 @@ public class AdminWindow extends JDialog {
 		}
 		return pnAcciones;
 	}
+
 	private JButton getBtnLogOut() {
 		if (btnLogOut == null) {
 			btnLogOut = new JButton("Log Out");
@@ -110,31 +115,34 @@ public class AdminWindow extends JDialog {
 		}
 		return btnLogOut;
 	}
+
 	private JButton getBtnAsignarMonitor_1() {
 		if (btnAsignarMonitor == null) {
 			btnAsignarMonitor = new JButton("Asignar monitor a actividad");
 			btnAsignarMonitor.setMnemonic('A');
 			btnAsignarMonitor.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					String codigoActividad;
-					do {
-						codigoActividad = JOptionPane
-								.showInputDialog("Por favor, introduce una id de actividad válida ");
-						System.out.println(codigoActividad);
-					} while (parent.getPrograma().encontrarActividadSinMonitor(codigoActividad) == null);
-					String codigoMonitor;
-					do {
-						codigoMonitor = JOptionPane.showInputDialog("Por favor, introduce un id de monitor válido ");
-						System.out.println(codigoMonitor);
-					} while (parent.getPrograma().encontrarMonitor(codigoMonitor) == null);
-
-					if (!parent.getPrograma().asignarMonitorActividad(codigoMonitor, codigoActividad)) {
-					}
+					asignandoMonitorAdministracion();
 				}
 			});
 		}
 		return btnAsignarMonitor;
 	}
+
+	private void asignandoMonitorAdministracion() {
+		String codigoActividad;
+		String codigoMonitor;
+		do {
+			codigoActividad = JOptionPane.showInputDialog("Por favor, introduce una id de actividad válida ");
+			System.out.println(codigoActividad);
+		} while (parent.getPrograma().encontrarActividad(codigoActividad) == null);
+		do {
+			codigoMonitor = JOptionPane.showInputDialog("Por favor, introduce un id de monitor válido ");
+			System.out.println(codigoMonitor);
+		} while (parent.getPrograma().encontrarMonitor(codigoMonitor) == null);
+		getParent().getPrograma().asignarMonitorActividad(codigoMonitor, codigoActividad);
+	}
+
 	private JButton getBtnNewButton() {
 		if (btnNewButton == null) {
 			btnNewButton = new JButton("Crear actividad");
@@ -148,5 +156,9 @@ public class AdminWindow extends JDialog {
 			btnNewButton.setMnemonic('C');
 		}
 		return btnNewButton;
+	}
+
+	public MainWindow getParent() {
+		return this.parent;
 	}
 }

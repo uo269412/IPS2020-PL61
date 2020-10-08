@@ -17,6 +17,7 @@ import java.awt.event.ActionEvent;
 import java.awt.Color;
 import java.awt.BorderLayout;
 import javax.swing.JLabel;
+import javax.swing.ImageIcon;
 
 public class MainWindow extends JFrame {
 	
@@ -56,7 +57,7 @@ public class MainWindow extends JFrame {
 	public MainWindow() {
 		setTitle("Centro de Deportes");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 551, 541);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -67,6 +68,7 @@ public class MainWindow extends JFrame {
 		contentPane.add(pnTitulo);
 		
 		JLabel lblIcono = new JLabel("");
+		lblIcono.setIcon(new ImageIcon(MainWindow.class.getResource("/sprint1/ui/resources/icono.jpg")));
 		pnTitulo.add(lblIcono);
 		
 		JPanel pnBotones = new JPanel();
