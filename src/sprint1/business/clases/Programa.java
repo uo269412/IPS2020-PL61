@@ -2,6 +2,7 @@ package sprint1.business.clases;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -16,8 +17,15 @@ public class Programa {
 	private List<Reserva> reservas;
 	private List<Monitor> monitores;
 
-	public static String URL = "jdbc:sqlite:C:\\Users\\javie\\Desktop\\master\\sprint1\\resources\\bdProject.db";
-
+	//Conexión Javi
+	//public static String URL = "jdbc:sqlite:C:\\Users\\javie\\Desktop\\master\\sprint1\\resources\\bdProject.db";
+	
+	//Conexión Dani
+	//public static String URL = "jdbc:sqlite:C:\\Users\\Dani\\git\\IPS2020-PL61\\resources\\bdProject.db";
+	
+	//Conexión Juan.elo
+	public static String URL = "jdbc:sqlite:C:\\Users\\Usuario\\git\\IPS2020-PL61\\resources\\bdProject.db";
+	
 	public Programa() throws SQLException {
 		cargarBaseDatos();
 	}
@@ -54,6 +62,22 @@ public class Programa {
 		con.close();
 
 	}
+	
+	public void insertarActividad(Actividad a) throws SQLException {
+		Connection con = DriverManager.getConnection(URL);
+		PreparedStatement pst = con.prepareStatement("INSERT INTO ACTIVIDAD "
+				+ "VALUES (?,?,?,?,?,?)");
+		pst.setString(1, a.getCodigo());
+		pst.setString(2, a.getNombre());
+		pst.setInt(3, a.getHoraInicio());
+		pst.setInt(4, a.getHoraFin());
+		pst.setInt(5, a.getLimitePlazas());
+		pst.setInt(6, a.getIntensidad());
+		
+		pst.execute();
+		pst.close();
+		con.close();
+	}
 
 	private void convertirActividadesEnLista(ResultSet rs) throws SQLException {
 		this.actividades = new ArrayList<>();
@@ -68,7 +92,8 @@ public class Programa {
 		int horaInicio = rs.getInt(3);
 		int horaFin = rs.getInt(4);
 		int limitePlazas = rs.getInt(5);
-		return new Actividad(codigo, nombre, horaInicio, horaFin, limitePlazas);
+		int intensidad = rs.getInt(6);
+		return new Actividad(codigo, nombre, horaInicio, horaFin, limitePlazas, intensidad);
 
 	}
 
