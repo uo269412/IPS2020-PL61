@@ -1,7 +1,5 @@
 package sprint1.business.clases;
 
-import java.util.Date;
-
 public class Reserva {
 	String id_cliente;
 	String codigo_actividad;

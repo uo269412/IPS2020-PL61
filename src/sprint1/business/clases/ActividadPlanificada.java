@@ -1,20 +1,24 @@
 package sprint1.business.clases;
 
-import java.util.Date;
+import java.sql.Date;
 
 public class ActividadPlanificada {
 	private String codigoActividad;
-	private Date fecha;
+	private int dia;
+	private int mes;
+	private int año;
 	private int limitePlazas;
 	private int horaInicio;
 	private int horaFin;
 	private String codigoMonitor;
 	private String codigoPlanificada;
 
-	public ActividadPlanificada(Date fecha, int limitePlazas, int horaInicio, int horaFin,
+	public ActividadPlanificada(int dia, int mes, int año, int limitePlazas, int horaInicio, int horaFin,
 			String codigoMonitor, String codigoActividad) {
-		this.codigoPlanificada = codigoActividad + "_" + codigoMonitor;
-		this.fecha = fecha;
+		this.codigoPlanificada = "P-" + codigoActividad + "/" + codigoMonitor;
+		this.dia = dia;
+		this.mes = mes;
+		this.año = año;
 		this.limitePlazas = limitePlazas;
 		this.horaInicio = horaInicio;
 		this.horaFin = horaFin;
@@ -22,10 +26,12 @@ public class ActividadPlanificada {
 		this.codigoActividad = codigoActividad;
 	}
 
-	public ActividadPlanificada(String codigoActividad, Date fecha, int limitePlazas, int horaInicio, int horaFin,
+	public ActividadPlanificada(String codigoActividad, int dia, int mes, int año, int limitePlazas, int horaInicio, int horaFin,
 			String codigoMonitor, String codigoPlanificada) {
 		this.codigoPlanificada = codigoPlanificada;
-		this.fecha = fecha;
+		this.dia = dia;
+		this.mes = mes;
+		this.año = año;
 		this.limitePlazas = limitePlazas;
 		this.horaInicio = horaInicio;
 		this.horaFin = horaFin;
@@ -39,14 +45,6 @@ public class ActividadPlanificada {
 
 	public void setCodigoPlanificada(String codigoPlanificada) {
 		this.codigoPlanificada = codigoPlanificada;
-	}
-
-	public Date getFecha() {
-		return fecha;
-	}
-
-	public void setFecha(Date fecha) {
-		this.fecha = fecha;
 	}
 
 	public int getLimitePlazas() {
@@ -88,12 +86,38 @@ public class ActividadPlanificada {
 	public void setCodigoActividad(String codigoActividad) {
 		this.codigoActividad = codigoActividad;
 	}
+		
+
+	public int getDia() {
+		return dia;
+	}
+
+	public void setDia(int dia) {
+		this.dia = dia;
+	}
+
+	public int getMes() {
+		return mes;
+	}
+
+	public void setMes(int mes) {
+		this.mes = mes;
+	}
+
+	public int getAño() {
+		return año;
+	}
+
+	public void setAño(int año) {
+		this.año = año;
+	}
 
 	@Override
 	public String toString() {
-		return "ActividadPlanificada [codigoPlanificada=" + codigoPlanificada + ", fecha=" + fecha + ", limitePlazas="
-				+ limitePlazas + ", horaInicio=" + horaInicio + ", horaFin=" + horaFin + ", codigoMonitor="
-				+ codigoMonitor + ", codigoActividad=" + codigoActividad + "]";
+		return "ActividadPlanificada [codigoActividad=" + codigoActividad + ", dia=" + dia + ", mes=" + mes + ", año="
+				+ año + ", limitePlazas=" + limitePlazas + ", horaInicio=" + horaInicio + ", horaFin=" + horaFin
+				+ ", codigoMonitor=" + codigoMonitor + ", codigoPlanificada=" + codigoPlanificada + "]";
 	}
+
 
 }

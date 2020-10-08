@@ -23,7 +23,7 @@ public class Actividad {
 	}
 
 	public Actividad(String nombre, int intensidad) {
-		setCodigo(nombre + intensidad);
+		setCodigo(nombre.substring(0, 3).toUpperCase() + "_" + intensidad);
 		setNombre(nombre);
 		setIntensidad(intensidad);
 		recursosRequeridos = new LinkedList<>();
@@ -54,7 +54,7 @@ public class Actividad {
 
 	@Override
 	public String toString() { //conviene imprimir también los recursos necesarios
-		return "Actividad [codigo=" + codigo + ", nombre=" + nombre + ", horaInicio="  + ", intensidad=" + intensidad + "]";
+		return "Actividad [codigo=" + codigo + ", nombre=" + nombre + ", intensidad=" + intensidad + "]";
 	}
 	
 	 @Override

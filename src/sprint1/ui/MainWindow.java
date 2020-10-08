@@ -23,9 +23,6 @@ public class MainWindow extends JFrame {
 	
 	//buenas javi
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 

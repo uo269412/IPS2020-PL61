@@ -11,6 +11,11 @@ public abstract class Cliente {
 		this.nombre = nombre;
 		this.apellido = apellido;
 	}
+	
+	public Cliente(String nombre, String apellido) {
+		this.nombre = nombre;
+		this.apellido = apellido;
+	}
 
 	public String getId_cliente() {
 		return id_cliente;

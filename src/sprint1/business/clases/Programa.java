@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -19,12 +20,13 @@ public class Programa {
 	private List<Monitor> monitores;
 
 	// Conexión Javi
-	// public static String URL =
-	// "jdbc:sqlite:C:\\Users\\javie\\Desktop\\master\\sprint1\\resources\\bdProject.db";
+	public static String URL = "jdbc:sqlite:C:\\Users\\javie\\Desktop\\master\\sprint1\\resources\\bdProject.db";
 
 	// Conexión Dani
-	public static String URL = "jdbc:sqlite:C:\\Users\\Dani\\git\\IPS2020-PL61\\resources\\bdProject.db";
+	// public static String URL =
+	// "jdbc:sqlite:C:\\Users\\Dani\\git\\IPS2020-PL61\\resources\\bdProject.db";
 
+//
 	public Programa() throws SQLException {
 		cargarBaseDatos();
 	}
@@ -35,7 +37,7 @@ public class Programa {
 			cargarSocios();
 			cargarReservas();
 			cargarMonitores();
-//			cargarActividadesPlanificadas();
+			cargarActividadesPlanificadas();
 			printAllLists();
 		} catch (SQLException e) {
 			System.out.println("Ha surgido un error cargando la base de datos");
@@ -44,7 +46,7 @@ public class Programa {
 
 	private void printAllLists() {
 		printActividades();
-//		printActividadesPlanificadas();
+		printActividadesPlanificadas();
 		printSocios();
 		printReservas();
 		printMonitores();
@@ -116,7 +118,7 @@ public class Programa {
 		Connection con = DriverManager.getConnection(URL);
 		Statement st = con.createStatement();
 		ResultSet rs = st.executeQuery("SELECT * FROM ACTIVIDAD_PLANIFICADA");
-		convertirActividadesEnLista(rs);
+		convertirActividadesPlanificadasEnLista(rs);
 		rs.close();
 		st.close();
 		con.close();
@@ -132,16 +134,19 @@ public class Programa {
 
 	private ActividadPlanificada convertirActividadPlanificada(ResultSet rs) throws SQLException {
 		String codigoActividad = rs.getString(1);
-		Date fecha = rs.getDate(2);
+		int dia = rs.getInt(2);
+		int mes = rs.getInt(3);
+		int año = rs.getInt(4);
 		int limitePlazas = rs.getInt(3);
 		int horaInicio = rs.getInt(4);
 		int horaFin = rs.getInt(5);
 		String codigoMonitor = rs.getString(6);
 		String codigoPlanificada = rs.getString(7);
-		return new ActividadPlanificada(codigoActividad, fecha, limitePlazas, horaInicio, horaFin, codigoMonitor,
-				codigoPlanificada);
+		return new ActividadPlanificada(codigoActividad, dia, mes, año, limitePlazas, horaInicio, horaFin,
+				codigoMonitor, codigoPlanificada);
 
 	}
+
 
 	public List<ActividadPlanificada> getActividadesPlanificadas() {
 		return actividadesPlanificadas;
@@ -215,7 +220,7 @@ public class Programa {
 	private void cargarReservas() throws SQLException {
 		Connection con = DriverManager.getConnection(URL);
 		Statement st = con.createStatement();
-		ResultSet rs = st.executeQuery("SELECT * FROM RESERVAS");
+		ResultSet rs = st.executeQuery("SELECT * FROM RESERVA");
 		convertirReservasEnLista(rs);
 		rs.close();
 		st.close();
@@ -301,8 +306,8 @@ public class Programa {
 			try {
 				Connection con = DriverManager.getConnection(URL);
 				Statement st = con.createStatement();
-				ResultSet rs = st.executeQuery(
-						"UPDATE ACTIVIDAD_PLANIFICADAS SET codigoMonitor = " + codigoMonitor + " WHERE codigoPlanificada = " + codigoActividadPlanificada);
+				ResultSet rs = st.executeQuery("UPDATE ACTIVIDAD_PLANIFICADAS SET codigoMonitor = " + codigoMonitor
+						+ " WHERE codigoPlanificada = " + codigoActividadPlanificada);
 				rs.close();
 				st.close();
 				con.close();
@@ -315,7 +320,8 @@ public class Programa {
 
 	private boolean checkActividadNoTieneMonitor(String codigoActividadPlanificada) {
 		for (ActividadPlanificada actividad : actividadesPlanificadas) {
-			if (actividad.getCodigoPlanificada().equals(codigoActividadPlanificada) && !actividad.getCodigoMonitor().isEmpty()) {
+			if (actividad.getCodigoPlanificada().equals(codigoActividadPlanificada)
+					&& !actividad.getCodigoMonitor().isEmpty()) {
 				return false;
 			}
 		}
