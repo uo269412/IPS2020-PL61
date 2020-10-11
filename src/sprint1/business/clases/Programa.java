@@ -297,6 +297,31 @@ public class Programa {
 		}
 		return null;
 	}
+	
+	public List<ActividadPlanificada> getActividadesPlanificadasDia(int dia, int mes, int año) throws SQLException {
+		List<ActividadPlanificada> actividadesDia = new ArrayList<>();
+		
+		Connection con = DriverManager.getConnection(URL);
+		PreparedStatement pst = con.prepareStatement("SELECT codigoPlanificada FROM actividad_planificada WHERE dia = ? AND mes = ? AND año = ?");
+		pst.setInt(1, dia);
+		pst.setInt(2, mes);
+		pst.setInt(3, año);
+		ResultSet rs = pst.executeQuery();
+		
+		while(rs.next()) {
+			actividadesDia.add(encontrarActividadPlanificada(rs.getString(1)));
+		}
+		
+		return actividadesDia;
+	}
+	
+	public void eliminarActividadPlanificada(ActividadPlanificada a) throws SQLException {
+		Connection con = DriverManager.getConnection(URL);
+		PreparedStatement pst = con.prepareStatement("DELETE FROM actividad_planificada WHERE codigoPlanificada = ?");
+		
+		pst.setString(1, a.getCodigoPlanificada());
+		pst.execute();
+	}
 
 //ADMINISTRACIÓN
 

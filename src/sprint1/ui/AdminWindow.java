@@ -29,6 +29,7 @@ public class AdminWindow extends JDialog {
 	private JButton btnLogOut;
 	private JButton btnAsignarMonitor;
 	private JButton btnNewButton;
+	private JButton btnNewButton_1;
 
 	/**
 	 * Create the dialog.
@@ -96,6 +97,7 @@ public class AdminWindow extends JDialog {
 			pnAcciones.setBackground(new Color(255, 255, 255));
 			pnAcciones.add(getBtnAsignarMonitor_1());
 			pnAcciones.add(getBtnNewButton());
+			pnAcciones.add(getBtnNewButton_1());
 		}
 		return pnAcciones;
 	}
@@ -119,7 +121,7 @@ public class AdminWindow extends JDialog {
 	private JButton getBtnAsignarMonitor_1() {
 		if (btnAsignarMonitor == null) {
 			btnAsignarMonitor = new JButton("Asignar monitor a actividad");
-			btnAsignarMonitor.setMnemonic('A');
+			btnAsignarMonitor.setMnemonic('M');
 			btnAsignarMonitor.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					asignandoMonitorAdministracion();
@@ -160,5 +162,17 @@ public class AdminWindow extends JDialog {
 
 	public MainWindow getParent() {
 		return this.parent;
+	}
+	private JButton getBtnNewButton_1() {
+		if (btnNewButton_1 == null) {
+			btnNewButton_1 = new JButton("Asignar actividad");
+			btnNewButton_1.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					
+				}
+			});
+			btnNewButton_1.setMnemonic('A');
+		}
+		return btnNewButton_1;
 	}
 }

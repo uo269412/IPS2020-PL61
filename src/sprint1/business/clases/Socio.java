@@ -61,5 +61,4 @@ public class Socio extends Cliente {
 			System.out.println("Error borrando la reserva");
 		}
 	}
-
 }
