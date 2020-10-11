@@ -26,7 +26,6 @@ public class Programa {
 	// public static String URL =
 	// "jdbc:sqlite:C:\\Users\\Dani\\git\\IPS2020-PL61\\resources\\bdProject.db";
 
-//
 	public Programa() throws SQLException {
 		cargarBaseDatos();
 	}
@@ -134,7 +133,6 @@ public class Programa {
 
 	private ActividadPlanificada convertirActividadPlanificada(ResultSet rs) throws SQLException {
 		String codigoActividad = rs.getString(1);
-		System.out.println(rs.getInt(4));
 		int dia = rs.getInt(2);
 		int mes = rs.getInt(3);
 		int año = rs.getInt(4);
@@ -216,7 +214,7 @@ public class Programa {
 
 //RESERVAS	
 
-	private void cargarReservas() throws SQLException {
+	public void cargarReservas() throws SQLException {
 		Connection con = DriverManager.getConnection(URL);
 		Statement st = con.createStatement();
 		ResultSet rs = st.executeQuery("SELECT * FROM RESERVA");
@@ -249,6 +247,14 @@ public class Programa {
 		System.out.println("Lista de reservas");
 		for (Reserva reserva : reservas) {
 			System.out.println(reserva.toString());
+		}
+	}
+
+	public void eliminarReserva(String codigoActividad) {
+		for (Reserva reserva : reservas) {
+			if (reserva.getCodigo_actividad().equals(codigoActividad)) {
+				reservas.remove(reserva);
+			}
 		}
 	}
 
@@ -333,7 +339,8 @@ public class Programa {
 		System.out.println(codigoActividadPlanificada);
 		try {
 			Connection con = DriverManager.getConnection(URL);
-			PreparedStatement pst = con.prepareStatement("UPDATE ACTIVIDAD_PLANIFICADA SET codigoMonitor = ? WHERE codigoPlanificada = ?");
+			PreparedStatement pst = con
+					.prepareStatement("UPDATE ACTIVIDAD_PLANIFICADA SET codigoMonitor = ? WHERE codigoPlanificada = ?");
 			pst.setString(1, codigoMonitor);
 			pst.setString(2, codigoActividadPlanificada);
 			pst.execute();

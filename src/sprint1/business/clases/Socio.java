@@ -2,6 +2,7 @@ package sprint1.business.clases;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -14,7 +15,7 @@ public class Socio extends Cliente {
 	public Socio(String id_cliente, String nombre, String apellido) {
 		super(id_cliente, nombre, apellido);
 	}
-	
+
 	public Socio(String nombre, String apellido) {
 		super(nombre, apellido);
 		this.id_cliente = "S-" + nombre + "_" + apellido;
@@ -27,8 +28,9 @@ public class Socio extends Cliente {
 		int mes = calendar.get(Calendar.MONTH);
 		int año = calendar.get(Calendar.YEAR);
 		for (Reserva reserva : reservas) {
-			if (reserva.id_cliente.equals(reserva.id_cliente) && validarHora(actividad, hora, dia, mes, año)) {
-				reservas.remove(reserva);
+			if (reserva.getCodigo_actividad().equals(actividad.getCodigoPlanificada())
+					&& validarHora(actividad, hora, dia, mes, año)) {
+				System.out.println("Estamos aquí");
 				cancelarPlazaReserva(actividad.getCodigoPlanificada());
 				actualizarPlazaReserva(actividad, +1);
 			}
@@ -36,18 +38,19 @@ public class Socio extends Cliente {
 	}
 
 	private boolean validarHora(ActividadPlanificada actividad, int hora, int dia, int mes, int año) {
-		return hora < actividad.getHoraInicio();
+//		return hora < actividad.getHoraInicio();
+		return true;
 	}
 
 	private void cancelarPlazaReserva(String id_actividad) {
 		try {
-			Connection con = DriverManager
-					.getConnection("jdbc:sqlite:C:\\Users\\javie\\Desktop\\master\\sprint1\\resources\\bdProject.db");
-			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("DELETE FROM RESERVA WHERE id_cliente = " + getId_cliente()
-					+ " AND codigo_actividad =" + id_actividad);
-			rs.close();
-			st.close();
+			Connection con = DriverManager.getConnection(Programa.URL);
+			PreparedStatement pst = con
+					.prepareStatement("DELETE FROM RESERVA WHERE id_cliente = ? AND codigo_actividad = ?");
+			pst.setString(1, getId_cliente());
+			pst.setString(2, id_actividad);
+			pst.execute();
+			pst.close();
 			con.close();
 		} catch (SQLException e) {
 			System.out.println("Error borrando la reserva");
@@ -56,13 +59,14 @@ public class Socio extends Cliente {
 
 	private void actualizarPlazaReserva(ActividadPlanificada actividad, int incremento) {
 		try {
-			Connection con = DriverManager
-					.getConnection("jdbc:sqlite:C:\\Users\\javie\\Desktop\\master\\sprint1\\resources\\bdProject.db");
+			Connection con = DriverManager.getConnection(Programa.URL);
 			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("UPDATE ACTIVIDAD_PLANIFICADA SET limitePlaza = " + actividad.getLimitePlazas()
-					+ incremento + " WHERE codigoPlanificada = " + actividad.getCodigoPlanificada());
-			rs.close();
-			st.close();
+			PreparedStatement pst = con
+					.prepareStatement("UPDATE ACTIVIDAD_PLANIFICADA SET limitePlazas = ? WHERE codigoPlanificada = ?");
+			pst.setInt(1, actividad.getLimitePlazas());
+			pst.setString(2, actividad.getCodigoPlanificada());
+			pst.execute();
+			pst.close();
 			con.close();
 		} catch (SQLException e) {
 			System.out.println("Error borrando la reserva");

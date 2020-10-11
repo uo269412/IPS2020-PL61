@@ -140,8 +140,14 @@ public class ActividadPlanificada {
 
 	@Override
 	public String toString() {
+		String monitor;
+		if (!tieneMonitor()) {
+			monitor = ", todavía sin ningún monitor";
+		} else {
+			monitor = " impartida por el monitor " + getCodigoMonitor();
+		}
 		return "Actividad " + codigoActividad + " empieza a las " + horaInicio + " horas y acaba a las " + horaFin
-				+ " del " + dia + "/" + mes + "/" + año;
+				+ " del " + dia + "/" + mes + "/" + año + monitor;
 	}
 
 }

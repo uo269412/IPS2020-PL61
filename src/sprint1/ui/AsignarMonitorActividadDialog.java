@@ -208,6 +208,7 @@ public class AsignarMonitorActividadDialog extends JDialog {
 		if (modeloMonitores.isEmpty()) {
 			JOptionPane.showMessageDialog(this,
 					"Todos los monitores ya están trabajando en el horario de dicha actividad");
+			dispose();
 		}
 	}
 

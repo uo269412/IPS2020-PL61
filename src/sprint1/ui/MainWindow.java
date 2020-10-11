@@ -39,6 +39,7 @@ public class MainWindow extends JFrame {
 			public void run() {
 				try {
 					MainWindow frame = new MainWindow();
+					frame.setLocationRelativeTo(null);
 					frame.setVisible(true);
 					programa = new Programa();
 				} catch (Exception e) {

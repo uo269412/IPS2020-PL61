@@ -7,6 +7,7 @@ import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.JDialog;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 
@@ -19,7 +20,10 @@ import javax.swing.JButton;
 import java.awt.FlowLayout;
 import java.awt.Color;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.awt.event.ActionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.ListSelectionEvent;
 
 public class ListaDeActividadesWindow extends JDialog {
 
@@ -74,10 +78,17 @@ public class ListaDeActividadesWindow extends JDialog {
 				codigosActividades.add(reserva.getCodigo_actividad());
 			}
 		}
-		for (String codigo : codigosActividades) {
-			for (ActividadPlanificada actividad : parent.getParent().getPrograma().getActividadesPlanificadas()) {
-				if (codigo.equals(actividad.getCodigoPlanificada())) {
-					modeloActividades.addElement(actividad);
+		if (codigosActividades.isEmpty()) {
+			JOptionPane.showMessageDialog(this, "Todavía no tienes ninguna reserva hecha para los próximos días");
+		} else {
+			for (String codigo : codigosActividades) {
+				for (ActividadPlanificada actividad : parent.getParent().getPrograma().getActividadesPlanificadas()) {
+					System.out.println(codigo);
+					System.out.println(actividad.getCodigoPlanificada());
+					if (codigo.equals(actividad.getCodigoPlanificada())) {
+						System.out.println("hey");
+						modeloActividades.addElement(actividad);
+					}
 				}
 			}
 		}
@@ -113,7 +124,15 @@ public class ListaDeActividadesWindow extends JDialog {
 			btnCancelarReserva = new JButton("Cancelar reserva");
 			btnCancelarReserva.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					socio.anularReserva(listActividades.getSelectedValue(), getParent().getParent().getPrograma().getReservas());
+					int yesNo = JOptionPane.showConfirmDialog(null,
+							"¿Seguro de que quiere cancelar su reserva en la actividad "
+									+ listActividades.getSelectedValue().getCodigoActividad() + " ?");
+					if (yesNo == JOptionPane.YES_OPTION) {
+						socio.anularReserva(listActividades.getSelectedValue(),
+								getParent().getParent().getPrograma().getReservas());
+						listActividades.remove(listActividades.getSelectedIndex());
+						cargarActividades();
+					}
 				}
 			});
 			btnCancelarReserva.setBackground(new Color(255, 0, 0));
