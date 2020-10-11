@@ -144,7 +144,6 @@ public class Programa {
 		String codigoPlanificada = rs.getString(7);
 		return new ActividadPlanificada(codigoActividad, dia, mes, año, limitePlazas, horaInicio, horaFin,
 				codigoMonitor, codigoPlanificada);
-
 	}
 
 
