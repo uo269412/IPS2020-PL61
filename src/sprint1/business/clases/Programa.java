@@ -35,7 +35,7 @@ public class Programa {
 			cargarSocios();
 			cargarReservas();
 			cargarMonitores();
-//			cargarActividadesPlanificadas();
+			cargarActividadesPlanificadas();
 			printAllLists();
 		} catch (SQLException e) {
 			System.out.println("Ha surgido un error cargando la base de datos");
@@ -44,7 +44,7 @@ public class Programa {
 
 	private void printAllLists() {
 		printActividades();
-//		printActividadesPlanificadas();
+		printActividadesPlanificadas();
 		printSocios();
 		printReservas();
 		printMonitores();
@@ -116,7 +116,7 @@ public class Programa {
 		Connection con = DriverManager.getConnection(URL);
 		Statement st = con.createStatement();
 		ResultSet rs = st.executeQuery("SELECT * FROM ACTIVIDAD_PLANIFICADA");
-		convertirActividadesEnLista(rs);
+		convertirActividadesPlanificadasEnLista(rs);
 		rs.close();
 		st.close();
 		con.close();
@@ -132,15 +132,16 @@ public class Programa {
 
 	private ActividadPlanificada convertirActividadPlanificada(ResultSet rs) throws SQLException {
 		String codigoActividad = rs.getString(1);
-		Date fecha = rs.getDate(2);
+		int dia = rs.getInt(2);
+		int mes = rs.getInt(3);
+		int año = rs.getInt(4);
 		int limitePlazas = rs.getInt(3);
 		int horaInicio = rs.getInt(4);
 		int horaFin = rs.getInt(5);
 		String codigoMonitor = rs.getString(6);
 		String codigoPlanificada = rs.getString(7);
-		return new ActividadPlanificada(codigoActividad, fecha, limitePlazas, horaInicio, horaFin, codigoMonitor,
-				codigoPlanificada);
-
+		return new ActividadPlanificada(codigoActividad, dia, mes, año, limitePlazas, horaInicio, horaFin,
+				codigoMonitor, codigoPlanificada);
 	}
 
 	public List<ActividadPlanificada> getActividadesPlanificadas() {
@@ -215,7 +216,7 @@ public class Programa {
 	private void cargarReservas() throws SQLException {
 		Connection con = DriverManager.getConnection(URL);
 		Statement st = con.createStatement();
-		ResultSet rs = st.executeQuery("SELECT * FROM RESERVAS");
+		ResultSet rs = st.executeQuery("SELECT * FROM RESERVA");
 		convertirReservasEnLista(rs);
 		rs.close();
 		st.close();
@@ -292,6 +293,31 @@ public class Programa {
 			}
 		}
 		return null;
+	}
+	
+	public List<ActividadPlanificada> getActividadesPlanificadasDia(int dia, int mes, int año) throws SQLException {
+		List<ActividadPlanificada> actividadesDia = new ArrayList<>();
+		
+		Connection con = DriverManager.getConnection(URL);
+		PreparedStatement pst = con.prepareStatement("SELECT codigoPlanificada FROM actividad_planificada WHERE dia = ? AND mes = ? AND año = ?");
+		pst.setInt(1, dia);
+		pst.setInt(2, mes);
+		pst.setInt(3, año);
+		ResultSet rs = pst.executeQuery();
+		
+		while(rs.next()) {
+			actividadesDia.add(encontrarActividadPlanificada(rs.getString(1)));
+		}
+		
+		return actividadesDia;
+	}
+	
+	public void eliminarActividadPlanificada(ActividadPlanificada a) throws SQLException {
+		Connection con = DriverManager.getConnection(URL);
+		PreparedStatement pst = con.prepareStatement("DELETE FROM actividad_planificada WHERE codigoPlanificada = ?");
+		
+		pst.setString(1, a.getCodigoPlanificada());
+		pst.execute();
 	}
 
 //ADMINISTRACIÓN
