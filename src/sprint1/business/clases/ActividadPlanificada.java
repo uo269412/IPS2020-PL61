@@ -22,6 +22,32 @@ public class ActividadPlanificada {
 	public ActividadPlanificada(String codigoActividad, int dia, int mes, int año, int horaInicio, int horaFin, int limitePlazas, String codigoMonitor) {
 		this(codigoActividad + "_" + codigoMonitor, codigoActividad, dia, mes, año, horaInicio, horaFin, limitePlazas, codigoMonitor);
 	}
+	
+	public ActividadPlanificada(int dia, int mes, int año, int limitePlazas, int horaInicio, int horaFin,
+			String codigoMonitor, String codigoActividad) {
+		this.codigoPlanificada = "P-" + codigoActividad + "/" + codigoMonitor;
+		this.dia = dia;
+		this.mes = mes;
+		this.año = año;
+		this.limitePlazas = limitePlazas;
+		this.horaInicio = horaInicio;
+		this.horaFin = horaFin;
+		this.codigoMonitor = codigoMonitor;
+		this.codigoActividad = codigoActividad;
+	}
+	
+	public ActividadPlanificada(String codigoActividad, int dia, int mes, int año, int limitePlazas, int horaInicio, int horaFin,
+			String codigoMonitor, String codigoPlanificada) {
+		this.codigoPlanificada = codigoPlanificada;
+		this.dia = dia;
+		this.mes = mes;
+		this.año = año;
+		this.limitePlazas = limitePlazas;
+		this.horaInicio = horaInicio;
+		this.horaFin = horaFin;
+		this.codigoMonitor = codigoMonitor;
+		this.codigoActividad = codigoActividad;
+	}
 
 	public ActividadPlanificada(String codigoPlanificada, String codigoActividad, int dia, int mes, int año, int horaInicio, int horaFin, int limitePlazas,
 			String codigoMonitor) {
