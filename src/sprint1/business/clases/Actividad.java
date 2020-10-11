@@ -76,7 +76,7 @@ public class Actividad {
 		return true;
 	}
 
-	public void aÃ±adirRecurso(Recurso recurso) {
+	public void añadirRecurso(Recurso recurso) {
 		recursosRequeridos.add(recurso);
 	}
 
