@@ -22,14 +22,21 @@ public class Socio extends Cliente {
 
 	public void anularReserva(ActividadPlanificada actividad, List<Reserva> reservas) {
 		Calendar calendar = Calendar.getInstance();
-		calendar.get(Calendar.HOUR_OF_DAY);
+		int hora = calendar.get(Calendar.HOUR_OF_DAY);
+		int dia = calendar.get(Calendar.DAY_OF_MONTH);
+		int mes = calendar.get(Calendar.MONTH);
+		int año = calendar.get(Calendar.YEAR);
 		for (Reserva reserva : reservas) {
-			if (reserva.id_cliente.equals(reserva.id_cliente) && (calendar.get(Calendar.HOUR_OF_DAY) < actividad.getHoraInicio())) {
+			if (reserva.id_cliente.equals(reserva.id_cliente) && validarHora(actividad, hora, dia, mes, año)) {
 				reservas.remove(reserva);
 				cancelarPlazaReserva(actividad.getCodigoPlanificada());
 				actualizarPlazaReserva(actividad, +1);
 			}
 		}
+	}
+
+	private boolean validarHora(ActividadPlanificada actividad, int hora, int dia, int mes, int año) {
+		return hora < actividad.getHoraInicio();
 	}
 
 	private void cancelarPlazaReserva(String id_actividad) {
@@ -53,7 +60,7 @@ public class Socio extends Cliente {
 					.getConnection("jdbc:sqlite:C:\\Users\\javie\\Desktop\\master\\sprint1\\resources\\bdProject.db");
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery("UPDATE ACTIVIDAD_PLANIFICADA SET limitePlaza = " + actividad.getLimitePlazas()
-					+ incremento + " WHERE codigo = " + actividad.getCodigoPlanificada());
+					+ incremento + " WHERE codigoPlanificada = " + actividad.getCodigoPlanificada());
 			rs.close();
 			st.close();
 			con.close();

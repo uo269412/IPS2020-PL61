@@ -134,18 +134,18 @@ public class Programa {
 
 	private ActividadPlanificada convertirActividadPlanificada(ResultSet rs) throws SQLException {
 		String codigoActividad = rs.getString(1);
+		System.out.println(rs.getInt(4));
 		int dia = rs.getInt(2);
 		int mes = rs.getInt(3);
 		int año = rs.getInt(4);
-		int limitePlazas = rs.getInt(3);
-		int horaInicio = rs.getInt(4);
-		int horaFin = rs.getInt(5);
-		String codigoMonitor = rs.getString(6);
-		String codigoPlanificada = rs.getString(7);
+		int limitePlazas = rs.getInt(5);
+		int horaInicio = rs.getInt(6);
+		int horaFin = rs.getInt(7);
+		String codigoMonitor = rs.getString(8);
+		String codigoPlanificada = rs.getString(9);
 		return new ActividadPlanificada(codigoActividad, dia, mes, año, limitePlazas, horaInicio, horaFin,
 				codigoMonitor, codigoPlanificada);
 	}
-
 
 	public List<ActividadPlanificada> getActividadesPlanificadas() {
 		return actividadesPlanificadas;
@@ -297,47 +297,50 @@ public class Programa {
 		}
 		return null;
 	}
-	
+
 	public List<ActividadPlanificada> getActividadesPlanificadasDia(int dia, int mes, int año) throws SQLException {
 		List<ActividadPlanificada> actividadesDia = new ArrayList<>();
-		
+
 		Connection con = DriverManager.getConnection(URL);
-		PreparedStatement pst = con.prepareStatement("SELECT codigoPlanificada FROM actividad_planificada WHERE dia = ? AND mes = ? AND año = ?");
+		PreparedStatement pst = con.prepareStatement(
+				"SELECT codigoPlanificada FROM actividad_planificada WHERE dia = ? AND mes = ? AND año = ?");
 		pst.setInt(1, dia);
 		pst.setInt(2, mes);
 		pst.setInt(3, año);
 		ResultSet rs = pst.executeQuery();
-		
-		while(rs.next()) {
+
+		while (rs.next()) {
 			actividadesDia.add(encontrarActividadPlanificada(rs.getString(1)));
 		}
-		
+
 		return actividadesDia;
 	}
-	
+
 	public void eliminarActividadPlanificada(ActividadPlanificada a) throws SQLException {
 		Connection con = DriverManager.getConnection(URL);
 		PreparedStatement pst = con.prepareStatement("DELETE FROM actividad_planificada WHERE codigoPlanificada = ?");
-		
+
 		pst.setString(1, a.getCodigoPlanificada());
 		pst.execute();
 	}
 
 //ADMINISTRACIÓN
 
-	public void asignarMonitorActividad(String codigoMonitor, String codigoActividadPlanificada) {
-		if (checkMonitorNoTieneActividad(codigoMonitor) && checkActividadNoTieneMonitor(codigoActividadPlanificada)) {
-			try {
-				Connection con = DriverManager.getConnection(URL);
-				Statement st = con.createStatement();
-				ResultSet rs = st.executeQuery("UPDATE ACTIVIDAD_PLANIFICADAS SET codigoMonitor = " + codigoMonitor
-						+ " WHERE codigoPlanificada = " + codigoActividadPlanificada);
-				rs.close();
-				st.close();
-				con.close();
-			} catch (SQLException e) {
-				System.out.println("Error asignando monitor");
-			}
+	public void asignarMonitorActividad(Monitor monitor, ActividadPlanificada actividadPlanificada) {
+		String codigoMonitor = monitor.getCodigoMonitor();
+		String codigoActividadPlanificada = actividadPlanificada.getCodigoPlanificada();
+		System.out.println(codigoMonitor);
+		System.out.println(codigoActividadPlanificada);
+		try {
+			Connection con = DriverManager.getConnection(URL);
+			PreparedStatement pst = con.prepareStatement("UPDATE ACTIVIDAD_PLANIFICADA SET codigoMonitor = ? WHERE codigoPlanificada = ?");
+			pst.setString(1, codigoMonitor);
+			pst.setString(2, codigoActividadPlanificada);
+			pst.execute();
+			pst.close();
+			con.close();
+		} catch (SQLException e) {
+			System.out.println("Error asignando monitor");
 			encontrarActividadPlanificada(codigoActividadPlanificada).setCodigoMonitor(codigoMonitor);
 		}
 	}

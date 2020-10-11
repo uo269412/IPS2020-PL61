@@ -28,8 +28,11 @@ public class AdminWindow extends JDialog {
 	private JPanel pnAcciones;
 	private JButton btnLogOut;
 	private JButton btnAsignarMonitor;
-	private JButton btnNewButton;
-	private JButton btnNewButton_1;
+	private JButton btnCrearActividad;
+	private JButton btnAsignarActividad;
+	
+	private CalendarioAdmin calendarAdmin;
+	private AsignarMonitorActividadDialog asignarMonitor;
 
 	/**
 	 * Create the dialog.
@@ -96,8 +99,8 @@ public class AdminWindow extends JDialog {
 			pnAcciones = new JPanel();
 			pnAcciones.setBackground(new Color(255, 255, 255));
 			pnAcciones.add(getBtnAsignarMonitor_1());
-			pnAcciones.add(getBtnNewButton());
-			pnAcciones.add(getBtnNewButton_1());
+			pnAcciones.add(getBtnCrearActividad());
+			pnAcciones.add(getBtnAsignarActividad());
 		}
 		return pnAcciones;
 	}
@@ -124,55 +127,62 @@ public class AdminWindow extends JDialog {
 			btnAsignarMonitor.setMnemonic('M');
 			btnAsignarMonitor.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					asignandoMonitorAdministracion();
+					openAsignarMonitorActividadWindow();
 				}
 			});
 		}
 		return btnAsignarMonitor;
 	}
-
-	private void asignandoMonitorAdministracion() {
-		String codigoActividad;
-		String codigoMonitor;
-		do {
-			codigoActividad = JOptionPane.showInputDialog("Por favor, introduce una id de actividad ya planificada válida ");
-			System.out.println(codigoActividad);
-		} while (parent.getPrograma().encontrarActividadPlanificada(codigoActividad) == null);
-		do {
-			codigoMonitor = JOptionPane.showInputDialog("Por favor, introduce un id de monitor válido ");
-			System.out.println(codigoMonitor);
-		} while (parent.getPrograma().encontrarMonitor(codigoMonitor) == null);
-		getParent().getPrograma().asignarMonitorActividad(codigoMonitor, codigoActividad);
+	
+	public void openAsignarMonitorActividadWindow() {
+		asignarMonitor = new AsignarMonitorActividadDialog(this, this.getParent().getPrograma());
+		asignarMonitor.setModal(true);
+		asignarMonitor.setLocationRelativeTo(this);
+		asignarMonitor.setVisible(true);
 	}
 
-	private JButton getBtnNewButton() {
-		if (btnNewButton == null) {
-			btnNewButton = new JButton("Crear actividad");
-			btnNewButton.addActionListener(new ActionListener() {
+	private void asignandoMonitorAdministracion() {
+//		String codigoActividad;
+//		String codigoMonitor;
+//		do {
+//			codigoActividad = JOptionPane.showInputDialog("Por favor, introduce una id de actividad ya planificada válida ");
+//			System.out.println(codigoActividad);
+//		} while (parent.getPrograma().encontrarActividadPlanificada(codigoActividad) == null);
+//		do {
+//			codigoMonitor = JOptionPane.showInputDialog("Por favor, introduce un id de monitor válido ");
+//			System.out.println(codigoMonitor);
+//		} while (parent.getPrograma().encontrarMonitor(codigoMonitor) == null);
+//		getParent().getPrograma().asignarMonitorActividad(codigoMonitor, codigoActividad);
+	}
+
+	private JButton getBtnCrearActividad() {
+		if (btnCrearActividad == null) {
+			btnCrearActividad = new JButton("Crear actividad");
+			btnCrearActividad.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					CrearActividadDialog dialog = new CrearActividadDialog(parent.getPrograma());
 					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 					dialog.setVisible(true);
 				}
 			});
-			btnNewButton.setMnemonic('C');
+			btnCrearActividad.setMnemonic('C');
 		}
-		return btnNewButton;
+		return btnCrearActividad;
 	}
 
 	public MainWindow getParent() {
 		return this.parent;
 	}
-	private JButton getBtnNewButton_1() {
-		if (btnNewButton_1 == null) {
-			btnNewButton_1 = new JButton("Asignar actividad");
-			btnNewButton_1.addActionListener(new ActionListener() {
+	private JButton getBtnAsignarActividad() {
+		if (btnAsignarActividad == null) {
+			btnAsignarActividad = new JButton("Asignar actividad");
+			btnAsignarActividad.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					
 				}
 			});
-			btnNewButton_1.setMnemonic('A');
+			btnAsignarActividad.setMnemonic('A');
 		}
-		return btnNewButton_1;
+		return btnAsignarActividad;
 	}
 }

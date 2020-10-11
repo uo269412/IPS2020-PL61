@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 public class ActividadPlanificada {
-	
+
 	private String codigoPlanificada;
 	private String codigoActividad;
 	private String codigoMonitor;
@@ -16,28 +16,26 @@ public class ActividadPlanificada {
 	private int horaFin;
 	private int limitePlazas;
 	private List<Recurso> recursosActividad;
-	
 
+//	public ActividadPlanificada(String codigoActividad, int dia, int mes, int año, int horaInicio, int horaFin, int limitePlazas, String codigoMonitor) {
+//		this(codigoActividad + "_" + codigoMonitor, codigoActividad, dia, mes, año, horaInicio, horaFin, limitePlazas, codigoMonitor);
+//	}
 
-	public ActividadPlanificada(String codigoActividad, int dia, int mes, int año, int horaInicio, int horaFin, int limitePlazas, String codigoMonitor) {
-		this(codigoActividad + "_" + codigoMonitor, codigoActividad, dia, mes, año, horaInicio, horaFin, limitePlazas, codigoMonitor);
-	}
-	
-	public ActividadPlanificada(int dia, int mes, int año, int limitePlazas, int horaInicio, int horaFin,
-			String codigoMonitor, String codigoActividad) {
-		this.codigoPlanificada = "P-" + codigoActividad + "/" + codigoMonitor;
-		this.dia = dia;
-		this.mes = mes;
-		this.año = año;
-		this.limitePlazas = limitePlazas;
-		this.horaInicio = horaInicio;
-		this.horaFin = horaFin;
-		this.codigoMonitor = codigoMonitor;
-		this.codigoActividad = codigoActividad;
-	}
-	
-	public ActividadPlanificada(String codigoActividad, int dia, int mes, int año, int limitePlazas, int horaInicio, int horaFin,
-			String codigoMonitor, String codigoPlanificada) {
+//	public ActividadPlanificada(int dia, int mes, int año, int limitePlazas, int horaInicio, int horaFin,
+//			String codigoMonitor, String codigoActividad) {
+//		this.codigoPlanificada = "P-" + codigoActividad + "/" + codigoMonitor;
+//		this.dia = dia;
+//		this.mes = mes;
+//		this.año = año;
+//		this.limitePlazas = limitePlazas;
+//		this.horaInicio = horaInicio;
+//		this.horaFin = horaFin;
+//		this.codigoMonitor = codigoMonitor;
+//		this.codigoActividad = codigoActividad;
+//	}
+
+	public ActividadPlanificada(String codigoActividad, int dia, int mes, int año, int limitePlazas, int horaInicio,
+			int horaFin, String codigoMonitor, String codigoPlanificada) {
 		this.codigoPlanificada = codigoPlanificada;
 		this.dia = dia;
 		this.mes = mes;
@@ -49,9 +47,9 @@ public class ActividadPlanificada {
 		this.codigoActividad = codigoActividad;
 	}
 
-	public ActividadPlanificada(String codigoPlanificada, String codigoActividad, int dia, int mes, int año, int horaInicio, int horaFin, int limitePlazas,
-			String codigoMonitor) {
-		
+	public ActividadPlanificada(String codigoPlanificada, String codigoActividad, int dia, int mes, int año,
+			int horaInicio, int horaFin, int limitePlazas, String codigoMonitor) {
+
 		setCodigoPlanificada(codigoPlanificada);
 		setFecha(dia, mes, año);
 		setLimitePlazas(limitePlazas);
@@ -59,7 +57,7 @@ public class ActividadPlanificada {
 		setHoraFin(horaFin);
 		setCodigoMonitor(codigoMonitor);
 		setCodigoActividad(codigoActividad);
-		
+
 		recursosActividad = new ArrayList<>();
 	}
 
@@ -72,13 +70,21 @@ public class ActividadPlanificada {
 	}
 
 	public String getFecha() {
-		return dia+"-"+mes+"-"+año;
+		return dia + "-" + mes + "-" + año;
 	}
 
 	public void setFecha(int dia, int mes, int año) {
 		this.dia = dia;
 		this.mes = mes;
 		this.año = año;
+	}
+
+	public int getDia() {
+		return dia;
+	}
+
+	public int getMes() {
+		return mes;
 	}
 
 	public int getLimitePlazas() {
@@ -124,11 +130,18 @@ public class ActividadPlanificada {
 	public void añadirRecurso(Recurso r) {
 		recursosActividad.add(r);
 	}
+
+	public boolean tieneMonitor() {
+		if (getCodigoMonitor() == null || getCodigoMonitor().isEmpty()) {
+			return false;
+		}
+		return true;
+	}
+
 	@Override
 	public String toString() {
-		return "ActividadPlanificada [codigoPlanificada=" + codigoPlanificada + ", fecha=" + getFecha() + ", limitePlazas="
-				+ limitePlazas + ", horaInicio=" + horaInicio + ", horaFin=" + horaFin + ", codigoMonitor="
-				+ codigoMonitor + ", codigoActividad=" + codigoActividad + "]";
+		return "Actividad " + codigoActividad + " empieza a las " + horaInicio + " horas y acaba a las " + horaFin
+				+ " del " + dia + "/" + mes + "/" + año;
 	}
 
 }
