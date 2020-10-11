@@ -4,21 +4,27 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.sql.SQLException;
 
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.border.EmptyBorder;
 
 import sprint1.business.clases.Actividad;
+import sprint1.business.clases.ActividadPlanificada;
 import sprint1.business.clases.Programa;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class AsignarActividadDialog extends JDialog {
 
@@ -28,6 +34,8 @@ public class AsignarActividadDialog extends JDialog {
 	private JTextField txtHoraInicio;
 	private JTextField txtHoraFin;
 	private JTextField textField;
+	private DefaultListModel<ActividadPlanificada> modeloLista;
+	JList<ActividadPlanificada> listActividadesPlanificadas;
 	
 	private int dia;
 	private int mes;
@@ -41,6 +49,7 @@ public class AsignarActividadDialog extends JDialog {
 		this.dia = dia;
 		this.mes = mes;
 		this.año = año;
+		this.modeloLista = new DefaultListModel<ActividadPlanificada>();
 		setLocationRelativeTo(parent);
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
@@ -105,6 +114,11 @@ public class AsignarActividadDialog extends JDialog {
 			}
 			{
 				JButton btnAñadir = new JButton("A\u00F1adir");
+				btnAñadir.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {
+						
+					}
+				});
 				btnAñadir.setForeground(Color.WHITE);
 				btnAñadir.setBackground(new Color(60, 179, 113));
 				pnProgramarActividad.add(btnAñadir);
@@ -116,11 +130,24 @@ public class AsignarActividadDialog extends JDialog {
 			contentPanel.add(pnActividadesPlanificadas);
 			pnActividadesPlanificadas.setLayout(new BorderLayout(0, 0));
 			{
-				JList<? extends E> listActividadesPlanificadas = new JList();
-				pnActividadesPlanificadas.add(list, BorderLayout.CENTER);
+				mostrarActividadesPlanificadasDia();
+				listActividadesPlanificadas = new JList<ActividadPlanificada>();
+				pnActividadesPlanificadas.add(listActividadesPlanificadas, BorderLayout.CENTER);
+				listActividadesPlanificadas.setModel(modeloLista);
 			}
 			{
 				JButton btnEliminar = new JButton("Eliminar seleccionada");
+				btnEliminar.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {
+						try {
+							programa.eliminarActividadPlanificada(listActividadesPlanificadas.getSelectedValue());
+						} catch (SQLException e) {
+							JOptionPane.showMessageDialog(getMe(), "Ha ocurrido un error eliminando la actividad. Póngase en contacto con el desarrollador");
+						}
+						
+						mostrarActividadesPlanificadasDia();
+					}
+				});
 				btnEliminar.setForeground(Color.WHITE);
 				btnEliminar.setBackground(new Color(255, 99, 71));
 				pnActividadesPlanificadas.add(btnEliminar, BorderLayout.SOUTH);
@@ -145,6 +172,20 @@ public class AsignarActividadDialog extends JDialog {
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
 			}
+		}
+	}
+	
+	private JDialog getMe() {
+		return this;
+	}
+	
+	private void mostrarActividadesPlanificadasDia() {
+		try {
+			for(ActividadPlanificada a: programa.getActividadesPlanificadasDia(dia, mes, año)) {
+				modeloLista.addElement(a);
+			}
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(this, "Ha ocurrido un error cargando las actividades para este día, por favor contacte con el desarrollador");
 		}
 	}
 

@@ -310,6 +310,14 @@ public class Programa {
 		
 		return actividadesDia;
 	}
+	
+	public void eliminarActividadPlanificada(ActividadPlanificada a) throws SQLException {
+		Connection con = DriverManager.getConnection(URL);
+		PreparedStatement pst = con.prepareStatement("DELETE FROM actividad_planificada WHERE codigoPlanificada = ?");
+		
+		pst.setString(1, a.getCodigoPlanificada());
+		pst.execute();
+	}
 
 //ADMINISTRACIÓN
 
