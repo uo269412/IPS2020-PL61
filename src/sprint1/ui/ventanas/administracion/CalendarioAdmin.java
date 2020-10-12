@@ -1,4 +1,4 @@
-package sprint1.ui;
+package sprint1.ui.ventanas.administracion;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -9,6 +9,7 @@ import javax.swing.JButton;
 
 import sprint1.business.clases.ActividadPlanificada;
 import sprint1.business.clases.Programa;
+import sprint1.ui.ventanas.socio.Calendario;
 
 public class CalendarioAdmin extends Calendario {
 

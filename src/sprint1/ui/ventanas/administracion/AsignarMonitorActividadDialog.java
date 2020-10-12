@@ -1,4 +1,4 @@
-package sprint1.ui;
+package sprint1.ui.ventanas.administracion;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -54,11 +54,10 @@ public class AsignarMonitorActividadDialog extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public AsignarMonitorActividadDialog(AdminWindow parent, Programa programa) {
-		this.programa = programa;
+	public AsignarMonitorActividadDialog(AdminWindow parent) {
 		setTitle("Administraci\u00F3n: Asignando monitor");
 		this.parent = parent;
-		setBounds(100, 100, 450, 311);
+		setBounds(100, 100, 658, 522);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
@@ -188,15 +187,14 @@ public class AsignarMonitorActividadDialog extends JDialog {
 	}
 
 	private void cargarMonitoresEnModelo(ActividadPlanificada actividadSeleccionada) {
-		List<ActividadPlanificada> listaPlanificada = getParent().getParent().getPrograma()
-				.getActividadesPlanificadas();
-		List<Monitor> listaMonitores = getParent().getParent().getPrograma().getMonitores();
+		List<ActividadPlanificada> listaPlanificada = getPrograma().getActividadesPlanificadas();
+		List<Monitor> listaMonitores = getPrograma().getMonitores();
 		modeloMonitores.clear();
 		for (Monitor monitor : listaMonitores) {
 			for (ActividadPlanificada actividad : listaPlanificada) {
 				if (actividad.tieneMonitor() && actividad.getCodigoMonitor().equals(monitor.getCodigoMonitor())
 						&& (actividadSeleccionada.getFecha().equals(actividad.getFecha()))
-						&& ((comprobarTiempoActividadesColisiona(actividadSeleccionada, actividad)))) {
+						&& ((getPrograma().comprobarTiempoActividadesColisiona(actividadSeleccionada, actividad)))) {
 					continue;
 				} else {
 					if (!modeloMonitores.contains(monitor)) {
@@ -210,24 +208,6 @@ public class AsignarMonitorActividadDialog extends JDialog {
 					"Todos los monitores ya están trabajando en el horario de dicha actividad");
 			dispose();
 		}
-	}
-
-	private boolean comprobarTiempoActividadesColisiona(ActividadPlanificada actividadSeleccionada,
-			ActividadPlanificada actividad) {
-//		return ((actividadSeleccionada.getHoraInicio() == actividad.getHoraInicio())
-//				&& (actividadSeleccionada.getHoraFin() == actividad.getHoraFin()));
-		return ((actividadSeleccionada.getHoraInicio() == actividad.getHoraInicio())
-				|| (actividadSeleccionada.getHoraFin() == actividad.getHoraFin())
-				|| ((actividadSeleccionada.getHoraInicio() < actividad.getHoraInicio())
-						&& (actividadSeleccionada.getHoraFin() < actividad.getHoraFin())
-						&& (actividadSeleccionada.getHoraFin() > actividad.getHoraInicio()))
-				|| ((actividadSeleccionada.getHoraInicio() > actividad.getHoraInicio())
-						&& (actividadSeleccionada.getHoraFin() > actividad.getHoraFin())
-						&& (actividadSeleccionada.getHoraFin() < actividad.getHoraInicio()))
-				|| ((actividadSeleccionada.getHoraInicio() < actividad.getHoraInicio())
-						&& (actividadSeleccionada.getHoraFin() > actividad.getHoraFin()))
-				|| ((actividadSeleccionada.getHoraInicio() > actividad.getHoraInicio())
-						&& (actividadSeleccionada.getHoraFin() < actividad.getHoraFin())));
 	}
 
 	private JList<Monitor> getListMonitores() {
@@ -249,11 +229,11 @@ public class AsignarMonitorActividadDialog extends JDialog {
 									+ " imparta clase en la actividad "
 									+ listActividades.getSelectedValue().getCodigoActividad());
 					if (yesNo == JOptionPane.YES_OPTION) {
-						getParent().getParent().getPrograma().asignarMonitorActividad(
-								getListMonitores().getSelectedValue(), getListActividades().getSelectedValue());
-						programa.encontrarActividadPlanificada(
-								listActividades.getSelectedValue().getCodigoPlanificada())
-								.setCodigoMonitor(listMonitores.getSelectedValue().getCodigoMonitor());
+						ActividadPlanificada actividadSeleccionada = getListActividades().getSelectedValue();
+						Monitor monitorSeleccionado = getListMonitores().getSelectedValue();
+						getPrograma().asignarMonitorActividad(monitorSeleccionado, actividadSeleccionada);
+						programa.encontrarActividadPlanificada(actividadSeleccionada.getCodigoPlanificada())
+								.setCodigoMonitor(monitorSeleccionado.getCodigoMonitor());
 						JOptionPane.showMessageDialog(null, "El monitor ha sido añadido correctamente");
 						dispose();
 					}
@@ -263,6 +243,10 @@ public class AsignarMonitorActividadDialog extends JDialog {
 			btnAsignar.setBackground(new Color(34, 139, 34));
 		}
 		return btnAsignar;
+	}
+
+	public Programa getPrograma() {
+		return getParent().getParent().getPrograma();
 	}
 
 }

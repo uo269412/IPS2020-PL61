@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -165,6 +166,54 @@ public class Programa {
 		}
 	}
 
+	public List<ActividadPlanificada> getActividadesPlanificadas(int dia, int mes, int año) {
+		List<ActividadPlanificada> listaSort = new ArrayList<ActividadPlanificada>();
+		for (ActividadPlanificada ap : getActividadesPlanificadas()) {
+			if (ap.getDia() == dia && ap.getMes() == mes && ap.getAño() == año) {
+				listaSort.add(ap);
+			}
+		}
+		return listaSort;
+	}
+
+	public boolean comprobarTiempoActividadesColisiona(ActividadPlanificada actividadSeleccionada,
+			ActividadPlanificada actividad) {
+//		return ((actividadSeleccionada.getHoraInicio() == actividad.getHoraInicio())
+//				&& (actividadSeleccionada.getHoraFin() == actividad.getHoraFin()));
+		return ((actividadSeleccionada.getHoraInicio() == actividad.getHoraInicio())
+				|| (actividadSeleccionada.getHoraFin() == actividad.getHoraFin())
+				|| ((actividadSeleccionada.getHoraInicio() < actividad.getHoraInicio())
+						&& (actividadSeleccionada.getHoraFin() < actividad.getHoraFin())
+						&& (actividadSeleccionada.getHoraFin() > actividad.getHoraInicio()))
+				|| ((actividadSeleccionada.getHoraInicio() > actividad.getHoraInicio())
+						&& (actividadSeleccionada.getHoraFin() > actividad.getHoraFin())
+						&& (actividadSeleccionada.getHoraFin() < actividad.getHoraInicio()))
+				|| ((actividadSeleccionada.getHoraInicio() < actividad.getHoraInicio())
+						&& (actividadSeleccionada.getHoraFin() > actividad.getHoraFin()))
+				|| ((actividadSeleccionada.getHoraInicio() > actividad.getHoraInicio())
+						&& (actividadSeleccionada.getHoraFin() < actividad.getHoraFin())));
+	}
+
+	public void actualizarPlazasActividadPlanificada(ActividadPlanificada actividad, int incremento) {
+		try {
+			Connection con = DriverManager.getConnection(Programa.URL);
+			PreparedStatement pst = con
+					.prepareStatement("UPDATE ACTIVIDAD_PLANIFICADA SET limitePlazas = ? WHERE codigoPlanificada = ?");
+			pst.setInt(1, incremento);
+			pst.setString(2, actividad.getCodigoPlanificada());
+			pst.execute();
+			pst.close();
+			con.close();
+		} catch (SQLException e) {
+			System.out.println("Error borrando la reserva");
+		}
+	}
+
+	private boolean validarHora(ActividadPlanificada actividad, int hora, int dia, int mes, int año) {
+//		return hora < actividad.getHoraInicio();
+		return true;
+	}
+
 //SOCIOS	
 
 	private void cargarSocios() throws SQLException {
@@ -212,6 +261,36 @@ public class Programa {
 		}
 	}
 
+	public List<ActividadPlanificada> getActividadesPlanificadasQueHaReservadoSocio(Socio socio) {
+		List<ActividadPlanificada> actividadesQueYaTieneReservadasElSocio = new ArrayList<ActividadPlanificada>();
+		for (Reserva reserva : getReservas()) {
+			if (reserva.getId_cliente().equals(socio.getId_cliente())) {
+				for (ActividadPlanificada ap : getActividadesPlanificadas()) {
+					if (reserva.getCodigo_actividad().equals(ap.getCodigoPlanificada())) {
+						actividadesQueYaTieneReservadasElSocio.add(ap);
+					}
+				}
+			}
+		}
+		return actividadesQueYaTieneReservadasElSocio;
+	}
+
+	public List<ActividadPlanificada> getActividadesPlanificadasQueHaReservadoSocioEnUnDiaEspecifico(Socio socio,
+			int dia, int mes, int año) {
+		List<ActividadPlanificada> actividadesQueYaTieneReservadasElSocio = new ArrayList<ActividadPlanificada>();
+		for (Reserva reserva : getReservas()) {
+			if (reserva.getId_cliente().equals(socio.getId_cliente())) {
+				for (ActividadPlanificada ap : getActividadesPlanificadas()) {
+					if (ap.getDia() == dia && ap.getMes() == mes && ap.getAño() == año
+							&& reserva.getCodigo_actividad().equals(ap.getCodigoPlanificada())) {
+						actividadesQueYaTieneReservadasElSocio.add(ap);
+					}
+				}
+			}
+		}
+		return actividadesQueYaTieneReservadasElSocio;
+	}
+
 //RESERVAS	
 
 	public void cargarReservas() throws SQLException {
@@ -255,6 +334,55 @@ public class Programa {
 			if (reserva.getCodigo_actividad().equals(codigoActividad)) {
 				reservas.remove(reserva);
 			}
+		}
+	}
+
+	public void addReserva(String id_cliente, String codigoPlanificada) {
+		reservas.add(new Reserva(id_cliente, codigoPlanificada));
+	}
+
+	public void anularReserva(Socio socio, ActividadPlanificada actividad, List<Reserva> reservas) {
+		Calendar calendar = Calendar.getInstance();
+		int hora = calendar.get(Calendar.HOUR_OF_DAY);
+		int dia = calendar.get(Calendar.DAY_OF_MONTH);
+		int mes = calendar.get(Calendar.MONTH)+1;
+		int año = calendar.get(Calendar.YEAR);
+		for (Reserva reserva : reservas) {
+			if (reserva.getCodigo_actividad().equals(actividad.getCodigoPlanificada())
+					&& validarHora(actividad, hora, dia, mes, año)) {
+				cancelarPlazaReserva(socio.getId_cliente(), actividad.getCodigoPlanificada());
+				actualizarPlazasActividadPlanificada(actividad, +1);
+			}
+		}
+	}
+
+	public void añadirReserva(String id_cliente, String codigoPlanificada) {
+		try {
+			Connection con = DriverManager.getConnection(Programa.URL);
+			PreparedStatement pst = con
+					.prepareStatement("INSERT INTO RESERVA (id_cliente, codigo_actividad) VALUES(?,?)");
+			pst.setString(1, id_cliente);
+			pst.setString(2, codigoPlanificada);
+			pst.execute();
+			pst.close();
+			con.close();
+		} catch (SQLException e) {
+			System.out.println("Error añadiendo la reserva");
+		}
+	}
+
+	private void cancelarPlazaReserva(String id_cliente, String id_actividad) {
+		try {
+			Connection con = DriverManager.getConnection(Programa.URL);
+			PreparedStatement pst = con
+					.prepareStatement("DELETE FROM RESERVA WHERE id_cliente = ? AND codigo_actividad = ?");
+			pst.setString(1, id_cliente);
+			pst.setString(2, id_actividad);
+			pst.execute();
+			pst.close();
+			con.close();
+		} catch (SQLException e) {
+			System.out.println("Error borrando la reserva");
 		}
 	}
 
@@ -372,6 +500,18 @@ public class Programa {
 			}
 		}
 		return true;
+	}
+
+	// UTIL
+
+	public int[] obtenerHoraDiaMesAño() {
+		Calendar calendar = Calendar.getInstance();
+		int hora = calendar.get(Calendar.HOUR_OF_DAY);
+		int dia = calendar.get(Calendar.DAY_OF_MONTH);
+		int mes = calendar.get(Calendar.MONTH)+1;
+		int año = calendar.get(Calendar.YEAR);
+		int[] fecha = { hora, dia, mes, año };
+		return fecha;
 	}
 
 }

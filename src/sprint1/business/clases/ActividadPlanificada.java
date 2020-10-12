@@ -87,6 +87,10 @@ public class ActividadPlanificada {
 		return mes;
 	}
 
+	public int getAño() {
+		return año;
+	}
+
 	public int getLimitePlazas() {
 		return limitePlazas;
 	}

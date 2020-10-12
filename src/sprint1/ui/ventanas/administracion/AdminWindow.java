@@ -1,18 +1,21 @@
-package sprint1.ui;
+package sprint1.ui.ventanas.administracion;
 
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
-import java.awt.GridLayout;
-import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import javax.swing.JPanel;
 import java.awt.BorderLayout;
-import javax.swing.JLabel;
 import java.awt.Color;
-import javax.swing.SwingConstants;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+
+import sprint1.business.clases.Socio;
+import sprint1.ui.ventanas.MainWindow;
 
 public class AdminWindow extends JDialog {
 	/**
@@ -30,9 +33,11 @@ public class AdminWindow extends JDialog {
 	private JButton btnAsignarMonitor;
 	private JButton btnCrearActividad;
 	private JButton btnAsignarActividad;
-	
+
 	private CalendarioAdmin calendarAdmin;
 	private AsignarMonitorActividadDialog asignarMonitor;
+	private AdminReservaSocioWindow adminReservaSocio;
+	private JButton btnReservaSocio;
 
 	/**
 	 * Create the dialog.
@@ -98,9 +103,11 @@ public class AdminWindow extends JDialog {
 		if (pnAcciones == null) {
 			pnAcciones = new JPanel();
 			pnAcciones.setBackground(new Color(255, 255, 255));
+			pnAcciones.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 			pnAcciones.add(getBtnAsignarMonitor_1());
 			pnAcciones.add(getBtnCrearActividad());
 			pnAcciones.add(getBtnAsignarActividad());
+			pnAcciones.add(getBtnReservaSocio());
 		}
 		return pnAcciones;
 	}
@@ -133,26 +140,12 @@ public class AdminWindow extends JDialog {
 		}
 		return btnAsignarMonitor;
 	}
-	
+
 	public void openAsignarMonitorActividadWindow() {
-		asignarMonitor = new AsignarMonitorActividadDialog(this, this.getParent().getPrograma());
+		asignarMonitor = new AsignarMonitorActividadDialog(this);
 		asignarMonitor.setModal(true);
 		asignarMonitor.setLocationRelativeTo(this);
 		asignarMonitor.setVisible(true);
-	}
-
-	private void asignandoMonitorAdministracion() {
-//		String codigoActividad;
-//		String codigoMonitor;
-//		do {
-//			codigoActividad = JOptionPane.showInputDialog("Por favor, introduce una id de actividad ya planificada válida ");
-//			System.out.println(codigoActividad);
-//		} while (parent.getPrograma().encontrarActividadPlanificada(codigoActividad) == null);
-//		do {
-//			codigoMonitor = JOptionPane.showInputDialog("Por favor, introduce un id de monitor válido ");
-//			System.out.println(codigoMonitor);
-//		} while (parent.getPrograma().encontrarMonitor(codigoMonitor) == null);
-//		getParent().getPrograma().asignarMonitorActividad(codigoMonitor, codigoActividad);
 	}
 
 	private JButton getBtnCrearActividad() {
@@ -173,16 +166,40 @@ public class AdminWindow extends JDialog {
 	public MainWindow getParent() {
 		return this.parent;
 	}
+
 	private JButton getBtnAsignarActividad() {
 		if (btnAsignarActividad == null) {
 			btnAsignarActividad = new JButton("Asignar actividad");
 			btnAsignarActividad.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					
+
 				}
 			});
 			btnAsignarActividad.setMnemonic('A');
 		}
 		return btnAsignarActividad;
+	}
+
+	public void openAdminReservaSocioWindow(Socio socio) {
+		adminReservaSocio = new AdminReservaSocioWindow(this, socio);
+		adminReservaSocio.setModal(true);
+		adminReservaSocio.setLocationRelativeTo(this);
+		adminReservaSocio.setVisible(true);
+	}
+
+	private JButton getBtnReservaSocio() {
+		if (btnReservaSocio == null) {
+			btnReservaSocio = new JButton("Hacer una reserva para un socio en una actividad que se realiza hoy");
+			btnReservaSocio.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					String id_socio;
+					do {
+						id_socio = JOptionPane.showInputDialog("Por favor, introduce un id de socio válido ");
+					} while (getParent().getPrograma().encontrarSocio(id_socio) == null);
+					openAdminReservaSocioWindow(getParent().getPrograma().encontrarSocio(id_socio));
+				}
+			});
+		}
+		return btnReservaSocio;
 	}
 }

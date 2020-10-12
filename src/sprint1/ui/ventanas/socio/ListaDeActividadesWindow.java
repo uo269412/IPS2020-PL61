@@ -1,29 +1,26 @@
-package sprint1.ui;
+package sprint1.ui.ventanas.socio;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.DefaultListModel;
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 
-import sprint1.business.clases.Actividad;
 import sprint1.business.clases.ActividadPlanificada;
+import sprint1.business.clases.Programa;
 import sprint1.business.clases.Reserva;
 import sprint1.business.clases.Socio;
-import javax.swing.JPanel;
-import javax.swing.JButton;
-import java.awt.FlowLayout;
-import java.awt.Color;
-import java.awt.event.ActionListener;
-import java.sql.SQLException;
-import java.awt.event.ActionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.event.ListSelectionEvent;
 
 public class ListaDeActividadesWindow extends JDialog {
 
@@ -42,10 +39,10 @@ public class ListaDeActividadesWindow extends JDialog {
 	private JButton btnCancelarReserva;
 
 	public ListaDeActividadesWindow(SocioWindow parent, Socio socio) {
-		setTitle("Lista de actividades");
+		setTitle("Socio: Viendo y cancelando reservas");
 		this.parent = parent;
 		this.socio = socio;
-		setBounds(100, 100, 450, 425);
+		setBounds(100, 100, 681, 588);
 		getContentPane().setLayout(new BorderLayout());
 		getContentPane().add(getScpActividades(), BorderLayout.CENTER);
 		getContentPane().add(getPnBotones(), BorderLayout.SOUTH);
@@ -73,7 +70,7 @@ public class ListaDeActividadesWindow extends JDialog {
 	private void cargarActividades() {
 		modeloActividades.clear();
 		List<String> codigosActividades = new ArrayList<String>();
-		for (Reserva reserva : parent.getParent().getPrograma().getReservas()) {
+		for (Reserva reserva : getPrograma().getReservas()) {
 			if (reserva.getId_cliente().equals(socio.getId_cliente())) {
 				codigosActividades.add(reserva.getCodigo_actividad());
 			}
@@ -82,11 +79,8 @@ public class ListaDeActividadesWindow extends JDialog {
 			JOptionPane.showMessageDialog(this, "Todavía no tienes ninguna reserva hecha para los próximos días");
 		} else {
 			for (String codigo : codigosActividades) {
-				for (ActividadPlanificada actividad : parent.getParent().getPrograma().getActividadesPlanificadas()) {
-					System.out.println(codigo);
-					System.out.println(actividad.getCodigoPlanificada());
+				for (ActividadPlanificada actividad : getPrograma().getActividadesPlanificadas()) {
 					if (codigo.equals(actividad.getCodigoPlanificada())) {
-						System.out.println("hey");
 						modeloActividades.addElement(actividad);
 					}
 				}
@@ -128,10 +122,11 @@ public class ListaDeActividadesWindow extends JDialog {
 							"¿Seguro de que quiere cancelar su reserva en la actividad "
 									+ listActividades.getSelectedValue().getCodigoActividad() + " ?");
 					if (yesNo == JOptionPane.YES_OPTION) {
-						socio.anularReserva(listActividades.getSelectedValue(),
+						getPrograma().anularReserva(socio, listActividades.getSelectedValue(),
 								getParent().getParent().getPrograma().getReservas());
-						listActividades.remove(listActividades.getSelectedIndex());
+						eliminarReservaLista();
 						cargarActividades();
+						JOptionPane.showMessageDialog(null, "Se ha borrado la reserva correctamente");
 					}
 				}
 			});
@@ -141,7 +136,15 @@ public class ListaDeActividadesWindow extends JDialog {
 		return btnCancelarReserva;
 	}
 
+	public void eliminarReservaLista() {
+		getPrograma().eliminarReserva(listActividades.getSelectedValue().getCodigoPlanificada());
+	}
+
 	public SocioWindow getParent() {
 		return this.parent;
+	}
+
+	public Programa getPrograma() {
+		return getParent().getParent().getPrograma();
 	}
 }
