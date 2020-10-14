@@ -1,4 +1,4 @@
-package sprint1.ui;
+package sprint1.ui.ventanas.socio;
 
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -8,6 +8,7 @@ import javax.swing.SwingConstants;
 
 import sprint1.business.clases.Actividad;
 import sprint1.business.clases.Socio;
+import sprint1.ui.ventanas.MainWindow;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -31,7 +32,6 @@ public class SocioWindow extends JDialog {
 	private JPanel pnLogOut;
 	private JPanel pnAcciones;
 	private JButton btnLogOut;
-	private JButton btnAnularReserva;
 	private JButton btnVerActividades;
 	private ListaDeActividadesWindow listaDeActividadesWindow = null;
 	
@@ -97,7 +97,6 @@ public class SocioWindow extends JDialog {
 		if (pnAcciones == null) {
 			pnAcciones = new JPanel();
 			pnAcciones.setBackground(new Color(255, 255, 255));
-			pnAcciones.add(getBtnAnularReserva());
 			pnAcciones.add(getBtnVerActividades());
 		}
 		return pnAcciones;
@@ -122,24 +121,6 @@ public class SocioWindow extends JDialog {
 	public MainWindow getParent() {
 		return parent;
 	}
-	private JButton getBtnAnularReserva() {
-		if (btnAnularReserva == null) {
-			btnAnularReserva = new JButton("Anular reserva");
-			btnAnularReserva.setMnemonic('A');
-//			btnAnularReserva.addActionListener(new ActionListener() {
-//				public void actionPerformed(ActionEvent arg0) {
-//					String id_actividad;
-//					do {
-//						id_actividad = JOptionPane
-//								.showInputDialog("Introduce el id de la actividad que quieres cancelar");
-//					} while (parent.getPrograma().encontrarActividad(id_actividad) == null);
-//					socio.anularReserva(parent.getPrograma().encontrarActividad(id_actividad),
-//							parent.getPrograma().getReservas());
-//				}
-//			});
-		}
-		return btnAnularReserva;
-	}
 	
 	private void openListaDeActividadesWindow() {
 		listaDeActividadesWindow = new ListaDeActividadesWindow(this, socio);
@@ -150,8 +131,8 @@ public class SocioWindow extends JDialog {
 	
 	private JButton getBtnVerActividades() {
 		if (btnVerActividades == null) {
-			btnVerActividades = new JButton("Ver actividades");
-			btnVerActividades.setMnemonic('V');
+			btnVerActividades = new JButton("Listado de reservas para ver o cancelar");
+			btnVerActividades.setMnemonic('L');
 			btnVerActividades.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					openListaDeActividadesWindow();

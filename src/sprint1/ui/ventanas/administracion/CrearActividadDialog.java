@@ -1,4 +1,4 @@
-package sprint1.ui;
+package sprint1.ui.ventanas.administracion;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -33,11 +33,7 @@ public class CrearActividadDialog extends JDialog {
 	private final JPanel pnRegistrarActividad = new JPanel();
 	private JTextField txtCodigo;
 	private JTextField txtNombre;
-	private JTextField txtInicio;
-	private JTextField txtFinal;
-	private JTextField txtLimite;
 	private JTextField txtIntensidad;
-	private JTextField txtRecursos;
 
 	/**
 	 * Create the dialog.
@@ -46,7 +42,7 @@ public class CrearActividadDialog extends JDialog {
 		this.p = p;
 		setTitle("Administrador: Crear actividad");
 		setModal(true);
-		setBounds(100, 100, 302, 391);
+		setBounds(100, 100, 302, 226);
 		getContentPane().setLayout(new BorderLayout());
 		pnRegistrarActividad.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(pnRegistrarActividad, BorderLayout.CENTER);
@@ -70,33 +66,6 @@ public class CrearActividadDialog extends JDialog {
 			txtNombre.setColumns(10);
 		}
 		{
-			JLabel lblHoraInicio = new JLabel("Hora de inicio de la actividad (formato: HH):");
-			pnRegistrarActividad.add(lblHoraInicio);
-		}
-		{
-			txtInicio = new JTextField();
-			pnRegistrarActividad.add(txtInicio);
-			txtInicio.setColumns(10);
-		}
-		{
-			JLabel lblHoraFinal = new JLabel("Hora del final de la actividad (formato: HH):");
-			pnRegistrarActividad.add(lblHoraFinal);
-		}
-		{
-			txtFinal = new JTextField();
-			pnRegistrarActividad.add(txtFinal);
-			txtFinal.setColumns(10);
-		}
-		{
-			JLabel lblLimitePlazas = new JLabel("L\u00EDmite de plazas de la actividad:");
-			pnRegistrarActividad.add(lblLimitePlazas);
-		}
-		{
-			txtLimite = new JTextField();
-			pnRegistrarActividad.add(txtLimite);
-			txtLimite.setColumns(10);
-		}
-		{
 			JLabel lblNewLabel = new JLabel("Intensidad de la actividad (0, 1 o 2):");
 			pnRegistrarActividad.add(lblNewLabel);
 		}
@@ -104,15 +73,6 @@ public class CrearActividadDialog extends JDialog {
 			txtIntensidad = new JTextField();
 			pnRegistrarActividad.add(txtIntensidad);
 			txtIntensidad.setColumns(10);
-		}
-		{
-			JLabel lblRecursos = new JLabel("Recursos (separados por coma-espacio):");
-			pnRegistrarActividad.add(lblRecursos);
-		}
-		{
-			txtRecursos = new JTextField();
-			pnRegistrarActividad.add(txtRecursos);
-			txtRecursos.setColumns(10);
 		}
 		{
 			JPanel buttonPane = new JPanel();
@@ -129,25 +89,21 @@ public class CrearActividadDialog extends JDialog {
 						} else {
 							String codigoActividad = txtCodigo.getText();
 							String nombreActividad = txtNombre.getText();
-							int horaInicio = Integer.parseInt(txtInicio.getText());
-							int horaFin = Integer.parseInt(txtFinal.getText());
-							int limitePlazas = Integer.parseInt(txtLimite.getText());
 							int intensidad = Integer.parseInt(txtIntensidad.getText());
 
 							boolean creacionActividadSatisfactoria = true;
-							Actividad a = new Actividad(codigoActividad, nombreActividad, horaInicio, horaFin,
-									limitePlazas, intensidad);
+							Actividad a = new Actividad(codigoActividad, nombreActividad, intensidad);
 							if (p.encontrarActividad(a.getCodigo()) != null) {
 								JOptionPane.showMessageDialog(getCrearActividadDialog(),
 										"Error: una actividad con este codigo ya se encuentra en la base de datos");
 								creacionActividadSatisfactoria = false;
 							}
 							if (creacionActividadSatisfactoria) {
-								String[] recursos = txtRecursos.getText().split(", ");
-								for (String r : recursos) {
-									Recurso rec = new Recurso(r, codigoActividad);
-									a.añadirRecurso(rec);
-								}
+//								String[] recursos = txtRecursos.getText().split(", ");
+//								for (String r : recursos) {
+//									Recurso rec = new Recurso(r, codigoActividad);
+//									a.añadirRecurso(rec);
+//								}
 
 								try {
 
@@ -207,8 +163,8 @@ public class CrearActividadDialog extends JDialog {
 	}
 
 	private boolean checkEverything() {
-		return checkCodigo() && checkNombre() && checkHoraInicio() && checkHoraFin() && checkLimitePlazas()
-				&& checkIntensidad() && checkRecursos();
+		return checkCodigo() && checkNombre() //&& checkHoraInicio() && checkHoraFin() && checkLimitePlazas()
+				&& checkIntensidad();// && checkRecursos();
 	}
 
 	private boolean checkCodigo() { // restricciones del codigo de la actividad
@@ -231,6 +187,7 @@ public class CrearActividadDialog extends JDialog {
 		return true;
 	}
 
+/*
 	private boolean checkHoraInicio() {
 		if (txtInicio.getText().length() > 2) {
 			txtInicio.setBackground(Color.RED);
@@ -274,7 +231,25 @@ public class CrearActividadDialog extends JDialog {
 
 		return true;
 	}
+	
+	
+	private boolean checkRecursos() { // IMPORTANTE hay que definir un parámetro de la longitud de la id para hacer
+										// una comprobación más.
+		try {
+			String rawRecursos = txtRecursos.getText();
+			String[] idRecursos = rawRecursos.split(", ");
+		} catch (Exception e) {
+			txtRecursos.setBackground(Color.RED);
+			txtRecursos.setForeground(Color.WHITE);
+			return false;
+		}
 
+		return true;
+	}
+
+	*/
+	
+	
 	private boolean checkIntensidad() {
 
 		if (txtIntensidad.getText().length() > 1) {
@@ -296,20 +271,6 @@ public class CrearActividadDialog extends JDialog {
 				&& intensidad != Actividad.INTENSIDAD_ALTA) {
 			txtIntensidad.setBackground(Color.RED);
 			txtIntensidad.setForeground(Color.WHITE);
-			return false;
-		}
-
-		return true;
-	}
-
-	private boolean checkRecursos() { // IMPORTANTE hay que definir un parámetro de la longitud de la id para hacer
-										// una comprobación más.
-		try {
-			String rawRecursos = txtRecursos.getText();
-			String[] idRecursos = rawRecursos.split(", ");
-		} catch (Exception e) {
-			txtRecursos.setBackground(Color.RED);
-			txtRecursos.setForeground(Color.WHITE);
 			return false;
 		}
 

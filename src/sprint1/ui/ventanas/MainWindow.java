@@ -1,4 +1,4 @@
-package sprint1.ui;
+package sprint1.ui.ventanas;
 
 import java.awt.EventQueue;
 
@@ -7,11 +7,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import sprint1.ui.Calendario;
 import sprint1.business.clases.Programa;
 import sprint1.business.clases.Socio;
+import sprint1.ui.ventanas.administracion.AdminWindow;
+import sprint1.ui.ventanas.socio.SocioWindow;
 
-import java.awt.GridLayout;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -22,11 +22,7 @@ import javax.swing.ImageIcon;
 
 public class MainWindow extends JFrame {
 	
-	//buenas javi
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 
@@ -42,9 +38,10 @@ public class MainWindow extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					programa = new Programa();
 					MainWindow frame = new MainWindow();
+					frame.setLocationRelativeTo(null);
 					frame.setVisible(true);
+					programa = new Programa();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -59,7 +56,6 @@ public class MainWindow extends JFrame {
 		setTitle("Centro de Deportes");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 551, 541);
-		this.setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -91,7 +87,6 @@ public class MainWindow extends JFrame {
 				String id_socio;
 				do {
 					id_socio = JOptionPane.showInputDialog("Por favor, introduce un id de socio válido ");
-					System.out.println(id_socio);
 				} while (programa.encontrarSocio(id_socio) == null);
 				openSocioWindow(programa.encontrarSocio(id_socio));
 			}

@@ -1,7 +1,5 @@
 package sprint1.business.clases;
 
-import java.util.Date;
-
 public class Reserva {
 	String id_cliente;
 	String codigo_actividad;
@@ -26,8 +24,9 @@ public class Reserva {
 	public void setCodigo_actividad(String codigo_actividad) {
 		this.codigo_actividad = codigo_actividad;
 	}
+
 	@Override
 	public String toString() {
-		return "Reserva [id_cliente=" + id_cliente + ", codigo_actividad=" + codigo_actividad + ", fecha_reserva=" +"]";
+		return "Reserva [id_cliente=" + id_cliente + ", codigo_actividad=" + codigo_actividad + "]";
 	}
 }

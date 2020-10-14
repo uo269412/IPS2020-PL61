@@ -4,17 +4,17 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Actividad {
-	
+
 	public static final int INTENSIDAD_BAJA = 0;
 	public static final int INTENSIDAD_MODERADA = 1;
 	public static final int INTENSIDAD_ALTA = 2;
-	//en un futuro se cambiarán por un enum
-	
+	// en un futuro se cambiarán por un enum
+
 	private String codigo;
 	private String nombre;
 	private int intensidad;
 	private List<Recurso> recursosRequeridos;
-	
+
 	public Actividad(String codigo, String nombre, int intensidad) {
 		setCodigo(codigo);
 		setNombre(nombre);
@@ -23,14 +23,14 @@ public class Actividad {
 	}
 
 	public Actividad(String nombre, int intensidad) {
-		setCodigo(nombre + intensidad);
+		setCodigo(nombre.substring(0, 3).toUpperCase() + "_" + intensidad);
 		setNombre(nombre);
 		setIntensidad(intensidad);
 		recursosRequeridos = new LinkedList<>();
 	}
-	
+
 	private void setIntensidad(int intensidad) {
-		if(intensidad != INTENSIDAD_BAJA && intensidad != INTENSIDAD_MODERADA && intensidad != INTENSIDAD_ALTA)
+		if (intensidad != INTENSIDAD_BAJA && intensidad != INTENSIDAD_MODERADA && intensidad != INTENSIDAD_ALTA)
 			throw new IllegalArgumentException("El nivel de intensidad no es válido");
 		else
 			this.intensidad = intensidad;
@@ -53,36 +53,40 @@ public class Actividad {
 	}
 
 	@Override
+<<<<<<< HEAD
 	public String toString() { //conviene imprimir también los recursos necesarios
 		return "Actividad [codigo=" + codigo + ", nombre=" + nombre + ", intensidad=" + intensidad + "]";
+=======
+	public String toString() { // conviene imprimir también los recursos necesarios
+		return "Actividad [codigo=" + codigo + ", nombre=" + nombre + ", horaInicio=" + ", intensidad=" + intensidad
+				+ "]";
+>>>>>>> branch 'master' of https://github.com/uo269412/IPS2020-PL61
 	}
-	
-	 @Override
-	    public boolean equals(Object obj) {
-	        if (obj == null) {
-	            return false;
-	        }
 
-	        if (obj.getClass() != this.getClass()) {
-	            return false;
-	        }
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
 
-	        final Actividad other = (Actividad) obj;
-	        if ((this.codigo == null) ? (other.codigo != null) : !this.codigo.equals(other.codigo)) {
-	            return false;
-	        }
+		if (obj.getClass() != this.getClass()) {
+			return false;
+		}
 
-	        return true;
-	    }
-	
+		final Actividad other = (Actividad) obj;
+		if ((this.codigo == null) ? (other.codigo != null) : !this.codigo.equals(other.codigo)) {
+			return false;
+		}
+
+		return true;
+	}
+
 	public void añadirRecurso(Recurso recurso) {
 		recursosRequeridos.add(recurso);
 	}
-	
+
 	public int getIntensidad() {
 		return this.intensidad;
 	}
-	
-	
 
 }
