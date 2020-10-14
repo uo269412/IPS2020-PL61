@@ -54,7 +54,7 @@ public class Actividad {
 
 	@Override
 	public String toString() { //conviene imprimir también los recursos necesarios
-		return "Actividad [codigo=" + codigo + ", nombre=" + nombre + ", horaInicio="  + ", intensidad=" + intensidad + "]";
+		return "Actividad [codigo=" + codigo + ", nombre=" + nombre + ", intensidad=" + intensidad + "]";
 	}
 	
 	 @Override

@@ -42,9 +42,9 @@ public class MainWindow extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					programa = new Programa();
 					MainWindow frame = new MainWindow();
 					frame.setVisible(true);
-					programa = new Programa();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -59,6 +59,7 @@ public class MainWindow extends JFrame {
 		setTitle("Centro de Deportes");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 551, 541);
+		this.setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);

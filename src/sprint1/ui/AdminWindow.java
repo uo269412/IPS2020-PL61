@@ -29,6 +29,7 @@ public class AdminWindow extends JDialog {
 	private JButton btnLogOut;
 	private JButton btnAsignarMonitor;
 	private JButton btnNewButton;
+	private JButton btnVerOcupacion;
 
 	/**
 	 * Create the dialog.
@@ -96,6 +97,7 @@ public class AdminWindow extends JDialog {
 			pnAcciones.setBackground(new Color(255, 255, 255));
 			pnAcciones.add(getBtnAsignarMonitor_1());
 			pnAcciones.add(getBtnNewButton());
+			pnAcciones.add(getBtnVerOcupacion());
 		}
 		return pnAcciones;
 	}
@@ -140,7 +142,7 @@ public class AdminWindow extends JDialog {
 			codigoMonitor = JOptionPane.showInputDialog("Por favor, introduce un id de monitor válido ");
 			System.out.println(codigoMonitor);
 		} while (parent.getPrograma().encontrarMonitor(codigoMonitor) == null);
-		getParent().getPrograma().asignarMonitorActividad(codigoMonitor, codigoActividad);
+		//getParent().getPrograma().asignarMonitorActividad(codigoMonitor, codigoActividad);
 	}
 
 	private JButton getBtnNewButton() {
@@ -160,5 +162,21 @@ public class AdminWindow extends JDialog {
 
 	public MainWindow getParent() {
 		return this.parent;
+	}
+	private JButton getBtnVerOcupacion() {
+		if (btnVerOcupacion == null) {
+			btnVerOcupacion = new JButton("Ver ocupaci\u00F3n");
+			btnVerOcupacion.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					VerOcupacionWindow vow = new VerOcupacionWindow(parent.getPrograma());
+					vow.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+					vow.setLocationRelativeTo(AdminWindow.this);
+					vow.setModal(true);
+					vow.setVisible(true);
+				}
+			});
+			btnVerOcupacion.setHorizontalAlignment(SwingConstants.RIGHT);
+		}
+		return btnVerOcupacion;
 	}
 }
