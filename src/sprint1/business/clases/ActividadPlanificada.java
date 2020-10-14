@@ -1,20 +1,45 @@
 package sprint1.business.clases;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class ActividadPlanificada {
+
+	private String codigoPlanificada;
 	private String codigoActividad;
-	private Date fecha;
-	private int limitePlazas;
+	private String codigoMonitor;
+	private int dia;
+	private int mes;
+	private int año;
 	private int horaInicio;
 	private int horaFin;
-	private String codigoMonitor;
-	private String codigoPlanificada;
+	private int limitePlazas;
+	private List<Recurso> recursosActividad;
 
-	public ActividadPlanificada(Date fecha, int limitePlazas, int horaInicio, int horaFin,
-			String codigoMonitor, String codigoActividad) {
-		this.codigoPlanificada = codigoActividad + "_" + codigoMonitor;
-		this.fecha = fecha;
+//	public ActividadPlanificada(String codigoActividad, int dia, int mes, int año, int horaInicio, int horaFin, int limitePlazas, String codigoMonitor) {
+//		this(codigoActividad + "_" + codigoMonitor, codigoActividad, dia, mes, año, horaInicio, horaFin, limitePlazas, codigoMonitor);
+//	}
+
+//	public ActividadPlanificada(int dia, int mes, int año, int limitePlazas, int horaInicio, int horaFin,
+//			String codigoMonitor, String codigoActividad) {
+//		this.codigoPlanificada = "P-" + codigoActividad + "/" + codigoMonitor;
+//		this.dia = dia;
+//		this.mes = mes;
+//		this.año = año;
+//		this.limitePlazas = limitePlazas;
+//		this.horaInicio = horaInicio;
+//		this.horaFin = horaFin;
+//		this.codigoMonitor = codigoMonitor;
+//		this.codigoActividad = codigoActividad;
+//	}
+
+	public ActividadPlanificada(String codigoActividad, int dia, int mes, int año, int limitePlazas, int horaInicio,
+			int horaFin, String codigoMonitor, String codigoPlanificada) {
+		this.codigoPlanificada = codigoPlanificada;
+		this.dia = dia;
+		this.mes = mes;
+		this.año = año;
 		this.limitePlazas = limitePlazas;
 		this.horaInicio = horaInicio;
 		this.horaFin = horaFin;
@@ -22,15 +47,18 @@ public class ActividadPlanificada {
 		this.codigoActividad = codigoActividad;
 	}
 
-	public ActividadPlanificada(String codigoActividad, Date fecha, int limitePlazas, int horaInicio, int horaFin,
-			String codigoMonitor, String codigoPlanificada) {
-		this.codigoPlanificada = codigoPlanificada;
-		this.fecha = fecha;
-		this.limitePlazas = limitePlazas;
-		this.horaInicio = horaInicio;
-		this.horaFin = horaFin;
-		this.codigoMonitor = codigoMonitor;
-		this.codigoActividad = codigoActividad;
+	public ActividadPlanificada(String codigoPlanificada, String codigoActividad, int dia, int mes, int año,
+			int horaInicio, int horaFin, int limitePlazas, String codigoMonitor) {
+
+		setCodigoPlanificada(codigoPlanificada);
+		setFecha(dia, mes, año);
+		setLimitePlazas(limitePlazas);
+		setHoraInicio(horaInicio);
+		setHoraFin(horaFin);
+		setCodigoMonitor(codigoMonitor);
+		setCodigoActividad(codigoActividad);
+
+		recursosActividad = new ArrayList<>();
 	}
 
 	public String getCodigoPlanificada() {
@@ -41,12 +69,26 @@ public class ActividadPlanificada {
 		this.codigoPlanificada = codigoPlanificada;
 	}
 
-	public Date getFecha() {
-		return fecha;
+	public String getFecha() {
+		return dia + "-" + mes + "-" + año;
 	}
 
-	public void setFecha(Date fecha) {
-		this.fecha = fecha;
+	public void setFecha(int dia, int mes, int año) {
+		this.dia = dia;
+		this.mes = mes;
+		this.año = año;
+	}
+
+	public int getDia() {
+		return dia;
+	}
+
+	public int getMes() {
+		return mes;
+	}
+
+	public int getAño() {
+		return año;
 	}
 
 	public int getLimitePlazas() {
@@ -89,11 +131,27 @@ public class ActividadPlanificada {
 		this.codigoActividad = codigoActividad;
 	}
 
+	public void añadirRecurso(Recurso r) {
+		recursosActividad.add(r);
+	}
+
+	public boolean tieneMonitor() {
+		if (getCodigoMonitor() == null || getCodigoMonitor().isEmpty()) {
+			return false;
+		}
+		return true;
+	}
+
 	@Override
 	public String toString() {
-		return "ActividadPlanificada [codigoPlanificada=" + codigoPlanificada + ", fecha=" + fecha + ", limitePlazas="
-				+ limitePlazas + ", horaInicio=" + horaInicio + ", horaFin=" + horaFin + ", codigoMonitor="
-				+ codigoMonitor + ", codigoActividad=" + codigoActividad + "]";
+		String monitor;
+		if (!tieneMonitor()) {
+			monitor = ", todavía sin ningún monitor";
+		} else {
+			monitor = " impartida por el monitor " + getCodigoMonitor();
+		}
+		return "Actividad " + codigoActividad + " empieza a las " + horaInicio + " horas y acaba a las " + horaFin
+				+ " del " + dia + "/" + mes + "/" + año + monitor;
 	}
 
 }
