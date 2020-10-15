@@ -43,6 +43,6 @@ public class Monitor {
 
 	@Override
 	public String toString() {
-		return "Monitor [codigoMonitor=" + codigoMonitor + ", nombre=" + nombre + ", apellido=" + apellido + "]";
+		return nombre + " " + apellido + " con código de monitor: " + codigoMonitor;
 	}
 }
