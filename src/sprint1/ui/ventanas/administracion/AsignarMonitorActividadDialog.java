@@ -37,7 +37,6 @@ public class AsignarMonitorActividadDialog extends JDialog {
 	private JButton btnVolver;
 
 	private AdminWindow parent;
-	private Programa programa;
 	private DefaultListModel<ActividadPlanificada> modeloActividades = new DefaultListModel<>();
 	private DefaultListModel<Monitor> modeloMonitores = new DefaultListModel<>();
 	private JPanel pngGeneral;
@@ -57,7 +56,7 @@ public class AsignarMonitorActividadDialog extends JDialog {
 	public AsignarMonitorActividadDialog(AdminWindow parent) {
 		setTitle("Administraci\u00F3n: Asignando monitor");
 		this.parent = parent;
-		setBounds(100, 100, 658, 522);
+		setBounds(100, 100, 1244, 614);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
@@ -174,7 +173,7 @@ public class AsignarMonitorActividadDialog extends JDialog {
 	private void cargarActividadesEnModelo() {
 		modeloActividades.clear();
 		List<ActividadPlanificada> listaPlanificada = new ArrayList<ActividadPlanificada>();
-		listaPlanificada = programa.getActividadesPlanificadas();
+		listaPlanificada = getPrograma().getActividadesPlanificadas();
 
 		for (ActividadPlanificada ap : listaPlanificada) {
 			if (!ap.tieneMonitor() && !modeloActividades.contains(ap)) {
@@ -191,16 +190,16 @@ public class AsignarMonitorActividadDialog extends JDialog {
 		List<Monitor> listaMonitores = getPrograma().getMonitores();
 		modeloMonitores.clear();
 		for (Monitor monitor : listaMonitores) {
+			boolean monitorPuede = true;
 			for (ActividadPlanificada actividad : listaPlanificada) {
 				if (actividad.tieneMonitor() && actividad.getCodigoMonitor().equals(monitor.getCodigoMonitor())
 						&& (actividadSeleccionada.getFecha().equals(actividad.getFecha()))
 						&& ((getPrograma().comprobarTiempoActividadesColisiona(actividadSeleccionada, actividad)))) {
-					continue;
-				} else {
-					if (!modeloMonitores.contains(monitor)) {
-						modeloMonitores.addElement(monitor);
-					}
+					monitorPuede = false;
 				}
+			}
+			if (!modeloMonitores.contains(monitor) && monitorPuede) {
+				modeloMonitores.addElement(monitor);
 			}
 		}
 		if (modeloMonitores.isEmpty()) {
@@ -224,18 +223,21 @@ public class AsignarMonitorActividadDialog extends JDialog {
 			btnAsignar = new JButton("Asignar");
 			btnAsignar.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					int yesNo = JOptionPane.showConfirmDialog(null,
-							"Acepta para que el monitor " + listMonitores.getSelectedValue().getNombre()
-									+ " imparta clase en la actividad "
-									+ listActividades.getSelectedValue().getCodigoActividad());
-					if (yesNo == JOptionPane.YES_OPTION) {
-						ActividadPlanificada actividadSeleccionada = getListActividades().getSelectedValue();
-						Monitor monitorSeleccionado = getListMonitores().getSelectedValue();
-						getPrograma().asignarMonitorActividad(monitorSeleccionado, actividadSeleccionada);
-						programa.encontrarActividadPlanificada(actividadSeleccionada.getCodigoPlanificada())
-								.setCodigoMonitor(monitorSeleccionado.getCodigoMonitor());
-						JOptionPane.showMessageDialog(null, "El monitor ha sido añadido correctamente");
-						dispose();
+					if (listMonitores.isSelectionEmpty() || listActividades.isSelectionEmpty()) {
+						JOptionPane.showMessageDialog(null,
+								"Por favor, selecciona tanto una actividad como un monitor");
+					} else {
+						int yesNo = JOptionPane.showConfirmDialog(null,
+								"Acepta para que el monitor " + listMonitores.getSelectedValue().getNombre()
+										+ " imparta clase en la actividad "
+										+ listActividades.getSelectedValue().getCodigoActividad());
+						if (yesNo == JOptionPane.YES_OPTION) {
+							ActividadPlanificada actividadSeleccionada = getListActividades().getSelectedValue();
+							Monitor monitorSeleccionado = getListMonitores().getSelectedValue();
+							getPrograma().asignarMonitorActividad(monitorSeleccionado, actividadSeleccionada);
+							JOptionPane.showMessageDialog(null, "El monitor ha sido añadido correctamente");
+							dispose();
+						}
 					}
 				}
 			});

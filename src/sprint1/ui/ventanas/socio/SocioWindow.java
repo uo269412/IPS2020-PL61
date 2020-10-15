@@ -7,6 +7,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import sprint1.business.clases.Actividad;
+import sprint1.business.clases.ActividadPlanificada;
+import sprint1.business.clases.Reserva;
 import sprint1.business.clases.Socio;
 import sprint1.ui.ventanas.MainWindow;
 
@@ -17,6 +19,7 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 import java.awt.event.ActionEvent;
 
@@ -34,8 +37,7 @@ public class SocioWindow extends JDialog {
 	private JButton btnLogOut;
 	private JButton btnVerActividades;
 	private ListaDeActividadesWindow listaDeActividadesWindow = null;
-	
-	
+
 	/**
 	 * Create the dialog.
 	 */
@@ -48,8 +50,7 @@ public class SocioWindow extends JDialog {
 		getContentPane().add(getPnTextos(), BorderLayout.NORTH);
 		getContentPane().add(getPnFuncionalidad(), BorderLayout.CENTER);
 	}
-	
-	
+
 	private JPanel getPnTextos() {
 		if (pnTextos == null) {
 			pnTextos = new JPanel();
@@ -60,12 +61,14 @@ public class SocioWindow extends JDialog {
 		}
 		return pnTextos;
 	}
+
 	private JLabel getLblBienvenida() {
 		if (lblBienvenida == null) {
 			lblBienvenida = new JLabel("Bienvenido, socio " + socio.getId_cliente());
 		}
 		return lblBienvenida;
 	}
+
 	private JLabel getLblAcciones() {
 		if (lblAcciones == null) {
 			lblAcciones = new JLabel("Acciones disponibles como socio:");
@@ -75,6 +78,7 @@ public class SocioWindow extends JDialog {
 		}
 		return lblAcciones;
 	}
+
 	private JPanel getPnFuncionalidad() {
 		if (pnFuncionalidad == null) {
 			pnFuncionalidad = new JPanel();
@@ -84,6 +88,7 @@ public class SocioWindow extends JDialog {
 		}
 		return pnFuncionalidad;
 	}
+
 	private JPanel getPnLogOut() {
 		if (pnLogOut == null) {
 			pnLogOut = new JPanel();
@@ -93,6 +98,7 @@ public class SocioWindow extends JDialog {
 		}
 		return pnLogOut;
 	}
+
 	private JPanel getPnAcciones() {
 		if (pnAcciones == null) {
 			pnAcciones = new JPanel();
@@ -101,6 +107,7 @@ public class SocioWindow extends JDialog {
 		}
 		return pnAcciones;
 	}
+
 	private JButton getBtnLogOut() {
 		if (btnLogOut == null) {
 			btnLogOut = new JButton("Log Out");
@@ -116,19 +123,45 @@ public class SocioWindow extends JDialog {
 		}
 		return btnLogOut;
 	}
-	
 
 	public MainWindow getParent() {
 		return parent;
 	}
-	
+
 	private void openListaDeActividadesWindow() {
-		listaDeActividadesWindow = new ListaDeActividadesWindow(this, socio);
-		listaDeActividadesWindow.setModal(true);
-		listaDeActividadesWindow.setLocationRelativeTo(this);
-		listaDeActividadesWindow.setVisible(true);
+		if (checkIfListWillOpen()) {
+			listaDeActividadesWindow = new ListaDeActividadesWindow(this, socio);
+			listaDeActividadesWindow.setModal(true);
+			listaDeActividadesWindow.setLocationRelativeTo(this);
+			listaDeActividadesWindow.setVisible(true);
+		} else {
+			JOptionPane.showMessageDialog(this, "No tienes ninguna reserva de ninguna actividad");
+		}
+
 	}
-	
+
+	public boolean checkIfListWillOpen() {
+		List<String> codigosActividades = new ArrayList<String>();
+		for (Reserva reserva : getParent().getPrograma().getReservas()) {
+			if (reserva.getId_cliente().equals(socio.getId_cliente())) {
+				codigosActividades.add(reserva.getCodigo_actividad());
+			}
+		}
+		if (codigosActividades.isEmpty()) {
+			return false;
+		} else {
+			for (String codigo : codigosActividades) {
+				for (ActividadPlanificada actividad : getParent().getPrograma().getActividadesPlanificadas()) {
+					if (codigo.equals(actividad.getCodigoPlanificada())
+							&& getParent().getPrograma().comprobarActividadAntesQueFecha(actividad)) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
 	private JButton getBtnVerActividades() {
 		if (btnVerActividades == null) {
 			btnVerActividades = new JButton("Listado de reservas para ver o cancelar");

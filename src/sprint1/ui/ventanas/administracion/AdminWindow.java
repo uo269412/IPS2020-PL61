@@ -6,6 +6,8 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -14,6 +16,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import sprint1.business.clases.ActividadPlanificada;
 import sprint1.business.clases.Socio;
 import sprint1.ui.ventanas.MainWindow;
 
@@ -187,6 +190,33 @@ public class AdminWindow extends JDialog {
 		adminReservaSocio.setVisible(true);
 	}
 
+	public boolean checkIfAdminReservaSocioWindowOpens(Socio socio) {
+		int fecha[] = getParent().getPrograma().obtenerHoraDiaMesAño();
+		int dia = fecha[1];
+		int mes = fecha[2];
+		int año = fecha[3];
+		List<ActividadPlanificada> actividadesYaReservadasPorSocio = new ArrayList<ActividadPlanificada>();
+		actividadesYaReservadasPorSocio = getParent().getPrograma()
+				.getActividadesPlanificadasQueHaReservadoSocioEnUnDiaEspecifico(socio, dia, mes, año);
+		for (ActividadPlanificada actividadPosible : getParent().getPrograma().getActividadesPlanificadas(dia, mes,
+				año)) {
+			if (actividadPosible.getHoraInicio() > fecha[0] && actividadPosible.getLimitePlazas() != 0) {
+				if (actividadesYaReservadasPorSocio.isEmpty()) {
+					return true;
+				} else if (!actividadesYaReservadasPorSocio.contains(actividadPosible)) {
+					for (ActividadPlanificada actividadYaReservada : actividadesYaReservadasPorSocio) {
+						if (!getParent().getPrograma().comprobarTiempoActividadesColisiona(actividadPosible,
+								actividadYaReservada)) {
+							return true;
+
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
+
 	private JButton getBtnReservaSocio() {
 		if (btnReservaSocio == null) {
 			btnReservaSocio = new JButton("Hacer una reserva para un socio en una actividad que se realiza hoy");
@@ -196,7 +226,13 @@ public class AdminWindow extends JDialog {
 					do {
 						id_socio = JOptionPane.showInputDialog("Por favor, introduce un id de socio válido ");
 					} while (getParent().getPrograma().encontrarSocio(id_socio) == null);
-					openAdminReservaSocioWindow(getParent().getPrograma().encontrarSocio(id_socio));
+					Socio socio = getParent().getPrograma().encontrarSocio(id_socio);
+					if (checkIfAdminReservaSocioWindowOpens(socio)) {
+						openAdminReservaSocioWindow(socio);
+					} else {
+						JOptionPane.showMessageDialog(null, "No se puede realizar ninguna reserva para este usuario");
+					}
+
 				}
 			});
 		}
