@@ -17,6 +17,7 @@ public class ActividadPlanificada {
 	private int limitePlazas;
 	private List<Recurso> recursosActividad;
 
+	
 	public ActividadPlanificada(String codigoActividad, int dia, int mes, int año, int horaInicio, int horaFin, int limitePlazas, String codigoMonitor) {
 		this(codigoActividad + "_" + codigoMonitor, codigoActividad, dia, mes, año, horaInicio, horaFin, limitePlazas, codigoMonitor);
 	}
@@ -45,6 +46,7 @@ public class ActividadPlanificada {
 		setCodigoActividad(codigoActividad);
 	}
 
+
 	public ActividadPlanificada(String codigoActividad, int dia, int mes, int año, int limitePlazas, int horaInicio,
 			int horaFin, String codigoMonitor, String codigoPlanificada) {
 		this.codigoPlanificada = codigoPlanificada;
@@ -69,7 +71,7 @@ public class ActividadPlanificada {
 		setCodigoMonitor(codigoMonitor);
 		setCodigoActividad(codigoActividad);
 
-		recursosActividad = new ArrayList<>();
+		recursosActividad = new ArrayList<Recurso>();
 	}
 	
 	public ActividadPlanificada(String codigoPlanificada, String codigoActividad, int dia, int mes, int año,
@@ -81,7 +83,7 @@ public class ActividadPlanificada {
 		setHoraInicio(horaInicio);
 		setHoraFin(horaFin);
 		setCodigoActividad(codigoActividad);
-
+		
 		recursosActividad = new ArrayList<>();
 	}
 

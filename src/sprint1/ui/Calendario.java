@@ -40,15 +40,15 @@ public class Calendario extends JFrame {
 	private JLabel lblViernes;
 	private JLabel lblSabado;
 	private JLabel lblDomingo;
-	protected JPanel pnDiasMes;
+	private JPanel pnDiasMes;
 	private ArrayList<String> meses;
 	private ArrayList<Integer> años;
 	private JPanel pnNextMonth;
 	private JButton btnNextMonth;
 	private JPanel pnPreviousMonth;
 	private JButton btnPreviousMonth;
-	protected JComboBox<String> cbMeses;
-	protected JComboBox<Integer> cbAños;
+	private JComboBox<String> cbMeses;
+	private JComboBox<Integer> cbAños;
 
 	/**
 	 * Launch the application.

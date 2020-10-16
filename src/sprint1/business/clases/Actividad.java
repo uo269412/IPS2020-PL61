@@ -8,7 +8,7 @@ public class Actividad {
 	public static final int INTENSIDAD_BAJA = 0;
 	public static final int INTENSIDAD_MODERADA = 1;
 	public static final int INTENSIDAD_ALTA = 2;
-	// en un futuro se cambiarán por un enum
+	// en un futuro se cambiarï¿½n por un enum
 
 	private String codigo;
 	private String nombre;
@@ -38,7 +38,7 @@ public class Actividad {
 
 	private void setIntensidad(int intensidad) {
 		if (intensidad != INTENSIDAD_BAJA && intensidad != INTENSIDAD_MODERADA && intensidad != INTENSIDAD_ALTA)
-			throw new IllegalArgumentException("El nivel de intensidad no es válido");
+			throw new IllegalArgumentException("El nivel de intensidad no es vï¿½lido");
 		else
 			this.intensidad = intensidad;
 	}
@@ -60,9 +60,8 @@ public class Actividad {
 	}
 
 	@Override
-	public String toString() { // conviene imprimir también los recursos necesarios
-		return "Actividad [codigo=" + codigo + ", nombre=" + nombre + ", " + "intensidad=" + intensidad
-				+ "]";
+	public String toString() { // conviene imprimir tambiï¿½n los recursos necesarios
+		return "Actividad [codigo=" + codigo + ", nombre=" + nombre + ", " + "intensidad=" + intensidad	+ "]";
 	}
 
 	@Override
@@ -82,6 +81,8 @@ public class Actividad {
 
 		return true;
 	}
+
+
 
 	public int getIntensidad() {
 		return this.intensidad;
