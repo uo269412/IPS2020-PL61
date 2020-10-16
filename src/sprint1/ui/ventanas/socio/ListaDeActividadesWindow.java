@@ -6,6 +6,7 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.swing.DefaultListModel;
@@ -75,16 +76,19 @@ public class ListaDeActividadesWindow extends JDialog {
 				codigosActividades.add(reserva.getCodigo_actividad());
 			}
 		}
-		if (codigosActividades.isEmpty()) {
-			JOptionPane.showMessageDialog(this, "Todavía no tienes ninguna reserva hecha para los próximos días");
-		} else {
+		if (!codigosActividades.isEmpty()) {
 			for (String codigo : codigosActividades) {
 				for (ActividadPlanificada actividad : getPrograma().getActividadesPlanificadas()) {
-					if (codigo.equals(actividad.getCodigoPlanificada())) {
+					if (codigo.equals(actividad.getCodigoPlanificada())
+							&& getPrograma().comprobarActividadAntesQueFecha(actividad)) {
 						modeloActividades.addElement(actividad);
 					}
 				}
 			}
+		}
+		if (modeloActividades.isEmpty()) {
+			JOptionPane.showMessageDialog(this, "No queda ninguna reserva que ver ni anular para este socio");
+			dispose();
 		}
 	}
 
@@ -122,11 +126,9 @@ public class ListaDeActividadesWindow extends JDialog {
 							"¿Seguro de que quiere cancelar su reserva en la actividad "
 									+ listActividades.getSelectedValue().getCodigoActividad() + " ?");
 					if (yesNo == JOptionPane.YES_OPTION) {
-						getPrograma().anularReserva(socio, listActividades.getSelectedValue(),
-								getParent().getParent().getPrograma().getReservas());
-						eliminarReservaLista();
-						cargarActividades();
+						getPrograma().anularReserva(socio, listActividades.getSelectedValue());
 						JOptionPane.showMessageDialog(null, "Se ha borrado la reserva correctamente");
+						cargarActividades();
 					}
 				}
 			});

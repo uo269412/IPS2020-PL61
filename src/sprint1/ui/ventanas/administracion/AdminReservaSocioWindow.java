@@ -78,17 +78,23 @@ public class AdminReservaSocioWindow extends JDialog {
 		actividadesYaReservadasPorSocio = getPrograma()
 				.getActividadesPlanificadasQueHaReservadoSocioEnUnDiaEspecifico(socio, dia, mes, año);
 		for (ActividadPlanificada actividadPosible : getPrograma().getActividadesPlanificadas(dia, mes, año)) {
-			if (!actividadesYaReservadasPorSocio.contains(actividadPosible)) {
-				for (ActividadPlanificada actividadYaReservada : actividadesYaReservadasPorSocio) {
-					if (!getPrograma().comprobarTiempoActividadesColisiona(actividadPosible, actividadYaReservada)) {
-						modeloActividades.addElement(actividadPosible);
+			if (actividadPosible.getHoraInicio() > fecha[0] && actividadPosible.getLimitePlazas() != 0) {
+				if (actividadesYaReservadasPorSocio.isEmpty()) {
+					modeloActividades.addElement(actividadPosible);
+				} else if (!actividadesYaReservadasPorSocio.contains(actividadPosible)) {
+					for (ActividadPlanificada actividadYaReservada : actividadesYaReservadasPorSocio) {
+						if (!getPrograma().comprobarTiempoActividadesColisiona(actividadPosible,
+								actividadYaReservada)) {
+							modeloActividades.addElement(actividadPosible);
+						}
 					}
 				}
 			}
 		}
 		if (modeloActividades.isEmpty()) {
 			JOptionPane.showMessageDialog(null,
-					"No se puede realizar ninguna reserva para este usuario ya que su horario choca con el del resto de actividades");
+					"No se puede realizar ninguna reserva para este usuario");
+			dispose();
 		}
 	}
 
@@ -126,11 +132,10 @@ public class AdminReservaSocioWindow extends JDialog {
 							+ listActividades.getSelectedValue().getCodigoActividad() + " ?");
 					if (yesNo == JOptionPane.YES_OPTION) {
 						ActividadPlanificada ap = listActividades.getSelectedValue();
-						getPrograma().añadirReserva(socio.getId_cliente(), ap.getCodigoPlanificada());
-						getPrograma().actualizarPlazasActividadPlanificada(ap, ap.getLimitePlazas() - 1);
-						añadirReservaLista();
-						cargarActividades();
+						getPrograma().añadirReserva(socio, ap);
 						JOptionPane.showMessageDialog(null, "Se ha realizado la reserva correctamente");
+						cargarActividades();
+
 					}
 				}
 			});

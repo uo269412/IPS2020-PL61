@@ -6,7 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -180,8 +181,6 @@ public class Programa {
 
 	public boolean comprobarTiempoActividadesColisiona(ActividadPlanificada actividadSeleccionada,
 			ActividadPlanificada actividad) {
-//		return ((actividadSeleccionada.getHoraInicio() == actividad.getHoraInicio())
-//				&& (actividadSeleccionada.getHoraFin() == actividad.getHoraFin()));
 		return ((actividadSeleccionada.getHoraInicio() == actividad.getHoraInicio())
 				|| (actividadSeleccionada.getHoraFin() == actividad.getHoraFin())
 				|| ((actividadSeleccionada.getHoraInicio() < actividad.getHoraInicio())
@@ -211,10 +210,10 @@ public class Programa {
 		}
 	}
 
-	private boolean validarHora(ActividadPlanificada actividad, int hora, int dia, int mes, int año) {
-//		return hora < actividad.getHoraInicio();
-		return true;
-	}
+//	private boolean validarHora(ActividadPlanificada actividad, int hora, int dia, int mes, int año) {
+////		return hora < actividad.getHoraInicio();
+//		return true;
+//	}
 
 //SOCIOS	
 
@@ -343,22 +342,33 @@ public class Programa {
 		reservas.add(new Reserva(id_cliente, codigoPlanificada));
 	}
 
-	public void anularReserva(Socio socio, ActividadPlanificada actividad, List<Reserva> reservas) {
-		Calendar calendar = Calendar.getInstance();
-		int hora = calendar.get(Calendar.HOUR_OF_DAY);
-		int dia = calendar.get(Calendar.DAY_OF_MONTH);
-		int mes = calendar.get(Calendar.MONTH)+1;
-		int año = calendar.get(Calendar.YEAR);
+	public void anularReserva(Socio socio, ActividadPlanificada actividad) {
 		for (Reserva reserva : reservas) {
-			if (reserva.getCodigo_actividad().equals(actividad.getCodigoPlanificada())
-					&& validarHora(actividad, hora, dia, mes, año)) {
+			if (reserva.getCodigo_actividad().equals(actividad.getCodigoPlanificada())) {
 				cancelarPlazaReserva(socio.getId_cliente(), actividad.getCodigoPlanificada());
-				actualizarPlazasActividadPlanificada(actividad, +1);
+				actualizarPlazasActividadPlanificada(actividad, actividad.getLimitePlazas() + 1);
+				try {
+					cargarReservas();
+					cargarActividadesPlanificadas();
+				} catch (SQLException e) {
+					System.out.println("Fallo al cargar reservas");
+				}
 			}
 		}
 	}
 
-	public void añadirReserva(String id_cliente, String codigoPlanificada) {
+	public void añadirReserva(Socio socio, ActividadPlanificada actividad) {
+		insertarReserva(socio.getId_cliente(), actividad.getCodigoPlanificada());
+		actualizarPlazasActividadPlanificada(actividad, actividad.getLimitePlazas() - 1);
+		try {
+			cargarReservas();
+			cargarActividadesPlanificadas();
+		} catch (SQLException e) {
+			System.out.println("Fallo al cargar reservas");
+		}
+	}
+
+	public void insertarReserva(String id_cliente, String codigoPlanificada) {
 		try {
 			Connection con = DriverManager.getConnection(Programa.URL);
 			PreparedStatement pst = con
@@ -465,8 +475,6 @@ public class Programa {
 	public void asignarMonitorActividad(Monitor monitor, ActividadPlanificada actividadPlanificada) {
 		String codigoMonitor = monitor.getCodigoMonitor();
 		String codigoActividadPlanificada = actividadPlanificada.getCodigoPlanificada();
-		System.out.println(codigoMonitor);
-		System.out.println(codigoActividadPlanificada);
 		try {
 			Connection con = DriverManager.getConnection(URL);
 			PreparedStatement pst = con
@@ -476,32 +484,11 @@ public class Programa {
 			pst.execute();
 			pst.close();
 			con.close();
+			cargarActividadesPlanificadas();
 		} catch (SQLException e) {
 			System.out.println("Error asignando monitor");
-			encontrarActividadPlanificada(codigoActividadPlanificada).setCodigoMonitor(codigoMonitor);
 		}
-	}
 
-	private boolean checkActividadNoTieneMonitor(String codigoActividadPlanificada) {
-		for (ActividadPlanificada actividad : actividadesPlanificadas) {
-			if (actividad.getCodigoPlanificada().equals(codigoActividadPlanificada)
-					&& !actividad.getCodigoMonitor().isEmpty()) {
-				return false;
-			}
-		}
-		return true;
-
-	}
-
-	private boolean checkMonitorNoTieneActividad(String codigoMonitor) {
-		for (Monitor monitor : monitores) {
-			for (ActividadPlanificada actividad : actividadesPlanificadas) {
-				if (actividad.getCodigoMonitor().equals(monitor.getCodigoMonitor())) {
-					return false;
-				}
-			}
-		}
-		return true;
 	}
 
 	// UTIL
@@ -510,10 +497,30 @@ public class Programa {
 		Calendar calendar = Calendar.getInstance();
 		int hora = calendar.get(Calendar.HOUR_OF_DAY);
 		int dia = calendar.get(Calendar.DAY_OF_MONTH);
-		int mes = calendar.get(Calendar.MONTH)+1;
+		int mes = calendar.get(Calendar.MONTH) + 1;
 		int año = calendar.get(Calendar.YEAR);
 		int[] fecha = { hora, dia, mes, año };
 		return fecha;
 	}
 
+	public boolean comprobarActividadAntesQueFecha(ActividadPlanificada actividad) {
+		int[] fechaActual = obtenerHoraDiaMesAño();
+		int horaActividad = actividad.getHoraInicio();
+		int diaActividad = actividad.getDia();
+		int mesActividad = actividad.getMes();
+		int añoActividad = actividad.getAño();
+		SimpleDateFormat sdformat = new SimpleDateFormat("yyyy-MM-dd");
+
+		try {
+			Date real = sdformat.parse(fechaActual[3] + "-" + fechaActual[2] + "-" + fechaActual[1]);
+			Date fechaActividad = sdformat.parse(añoActividad + "-" + mesActividad + "-" + diaActividad);
+			if ((real.compareTo(fechaActividad) < 0)
+					|| (real.compareTo(fechaActividad) == 0 && fechaActual[0] < horaActividad)) {
+				return true;
+			}
+		} catch (ParseException e) {
+			System.out.println("Error parseando fechas");
+		}
+		return false;
+	}
 }
