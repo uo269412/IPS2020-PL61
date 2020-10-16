@@ -1,14 +1,11 @@
 package sprint1.business.clases;
 
 public class Recurso {
-	//TODO
-	//recursos para las actividades, a la espera de desarrollo.
-	
-	private String id;
+	private String id; //formato: 
+	private String nombre;
 	private String codigo_actividad;
+	private String codigo_instalacion;
 	
-	public Recurso(String id, String actividadObjetivo) {
-		this.id = id;
-		this.codigo_actividad = actividadObjetivo;
+	public Recurso(String nombre) {
 	}
 }

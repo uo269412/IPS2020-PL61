@@ -8,30 +8,37 @@ public class Actividad {
 	public static final int INTENSIDAD_BAJA = 0;
 	public static final int INTENSIDAD_MODERADA = 1;
 	public static final int INTENSIDAD_ALTA = 2;
-	// en un futuro se cambiar√°n por un enum
+	// en un futuro se cambiar·n por un enum
 
 	private String codigo;
 	private String nombre;
 	private int intensidad;
-	private List<Recurso> recursosRequeridos;
+	private Recurso[] recursosRequeridos;
 
+	public Actividad(String codigo, String nombre, int intensidad, Recurso... recursos) {
+		setCodigo(codigo);
+		setNombre(nombre);
+		setIntensidad(intensidad);
+		recursosRequeridos = recursos;
+	}
+	
 	public Actividad(String codigo, String nombre, int intensidad) {
 		setCodigo(codigo);
 		setNombre(nombre);
 		setIntensidad(intensidad);
-		recursosRequeridos = new LinkedList<>();
+		recursosRequeridos = new Recurso[0];
 	}
 
-	public Actividad(String nombre, int intensidad) {
-		setCodigo(nombre.substring(0, 3).toUpperCase() + "_" + intensidad);
-		setNombre(nombre);
-		setIntensidad(intensidad);
-		recursosRequeridos = new LinkedList<>();
-	}
+//	public Actividad(String nombre, int intensidad) {
+//		setCodigo(nombre.substring(0, 3).toUpperCase() + "_" + intensidad);
+//		setNombre(nombre);
+//		setIntensidad(intensidad);
+//		recursosRequeridos = new LinkedList<>();
+//	}
 
 	private void setIntensidad(int intensidad) {
 		if (intensidad != INTENSIDAD_BAJA && intensidad != INTENSIDAD_MODERADA && intensidad != INTENSIDAD_ALTA)
-			throw new IllegalArgumentException("El nivel de intensidad no es v√°lido");
+			throw new IllegalArgumentException("El nivel de intensidad no es v·lido");
 		else
 			this.intensidad = intensidad;
 	}
@@ -53,8 +60,8 @@ public class Actividad {
 	}
 
 	@Override
-	public String toString() { // conviene imprimir tambi√©n los recursos necesarios
-		return "Actividad [codigo=" + codigo + ", nombre=" + nombre + ", horaInicio=" + ", intensidad=" + intensidad
+	public String toString() { // conviene imprimir tambiÈn los recursos necesarios
+		return "Actividad [codigo=" + codigo + ", nombre=" + nombre + ", " + "intensidad=" + intensidad
 				+ "]";
 	}
 
@@ -76,12 +83,16 @@ public class Actividad {
 		return true;
 	}
 
-	public void a√±adirRecurso(Recurso recurso) {
-		recursosRequeridos.add(recurso);
-	}
-
 	public int getIntensidad() {
 		return this.intensidad;
+	}
+	
+	public Recurso[] getRecursos() {
+		return this.recursosRequeridos;
+	}
+	
+	public boolean requiresRecursos()  {
+		return recursosRequeridos.length > 0;
 	}
 
 }

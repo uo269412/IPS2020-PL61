@@ -6,9 +6,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 public class Programa {
 
@@ -19,11 +22,11 @@ public class Programa {
 	private List<Monitor> monitores;
 
 	// Conexión Javi
-	// public static String URL =
-	// "jdbc:sqlite:C:\\Users\\javie\\Desktop\\master\\sprint1\\resources\\bdProject.db";
+	//public static String URL = "jdbc:sqlite:C:\\Users\\javie\\Desktop\\master\\sprint1\\resources\\bdProject.db";
 
 	// Conexión Dani
-	public static String URL = "jdbc:sqlite:C:\\Users\\Dani\\git\\IPS2020-PL61\\resources\\bdProject.db";
+	 public static String URL =
+	 "jdbc:sqlite:C:\\Users\\Dani\\git\\IPS2020-PL61\\resources\\bdProject.db";
 
 	public Programa() throws SQLException {
 		cargarBaseDatos();
@@ -111,6 +114,74 @@ public class Programa {
 	}
 
 //ACTIVIDADES PLANIFICADAS	
+	
+	public void añadirActividadPlanificada(ActividadPlanificada a) throws SQLException {
+		if(encontrarActividadPlanificada(a.getCodigoPlanificada()) == null) {
+			Connection con = DriverManager.getConnection(URL);
+			PreparedStatement pst = con.prepareStatement("INSERT INTO actividad_planificada"
+					+ " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)");
+			pst.setString(1, a.getCodigoActividad());
+			pst.setInt(2, a.getDia());
+			pst.setInt(3, a.getMes());
+			pst.setInt(4, a.getAño());
+			pst.setInt(5, a.getLimitePlazas());
+			pst.setInt(6, a.getHoraInicio());
+			pst.setInt(7, a.getHoraFin());
+			pst.setString(8, a.getCodigoMonitor());
+			pst.setString(9, a.getCodigoPlanificada());
+			pst.executeUpdate();
+			
+			actividadesPlanificadas.add(a);
+		} else {
+			updateActividadPlanificada(a);
+		}
+	}
+	
+	public void updateActividadPlanificada(ActividadPlanificada a) throws SQLException {
+		Connection con = DriverManager.getConnection(URL);
+		PreparedStatement pst = con.prepareStatement("UPDATE actividad_planificada"
+				+ " SET codigoActividad = ?, dia = ?, mes = ?, año = ?, "
+				+ "limitePlazas = ?, horaInicio = ?, horaFin = ?, "
+				+ "codigoMonitor = ? WHERE codigoPlanificada = ?");
+		pst.setString(1, a.getCodigoActividad());
+		pst.setInt(2, a.getDia());
+		pst.setInt(3, a.getMes());
+		pst.setInt(4, a.getAño());
+		pst.setInt(5, a.getLimitePlazas());
+		pst.setInt(6, a.getHoraInicio());
+		pst.setInt(7, a.getHoraFin());
+		pst.setString(8, a.getCodigoMonitor());
+		pst.setString(9, a.getCodigoPlanificada());
+		pst.executeUpdate();
+	}
+	
+	public List<ActividadPlanificada> getActividadesPlanificadasDia(int dia, int mes, int año) throws SQLException {
+		List<ActividadPlanificada> actividadesDia = new ArrayList<>();
+
+		Connection con = DriverManager.getConnection(URL);
+		PreparedStatement pst = con.prepareStatement(
+				"SELECT codigoPlanificada FROM actividad_planificada WHERE dia = ? AND mes = ? AND año = ?");
+		pst.setInt(1, dia);
+		pst.setInt(2, mes);
+		pst.setInt(3, año);
+		ResultSet rs = pst.executeQuery();
+
+		while (rs.next()) {
+			actividadesDia.add(encontrarActividadPlanificada(rs.getString(1)));
+		}
+
+		return actividadesDia;
+	}
+
+	public void eliminarActividadPlanificada(ActividadPlanificada a) throws SQLException {
+		if(encontrarActividadPlanificada(a.getCodigoPlanificada()) != null) {
+			Connection con = DriverManager.getConnection(URL);
+			PreparedStatement pst = con.prepareStatement("DELETE FROM actividad_planificada WHERE codigoPlanificada = ?");
+			pst.setString(1, a.getCodigoPlanificada());
+			pst.execute();
+		}
+		
+	}
 
 	private void cargarActividadesPlanificadas() throws SQLException {
 		Connection con = DriverManager.getConnection(URL);
@@ -129,17 +200,17 @@ public class Programa {
 			actividadesPlanificadas.add(convertirActividadPlanificada(rs));
 		}
 	}
-
+	
 	private ActividadPlanificada convertirActividadPlanificada(ResultSet rs) throws SQLException {
 		String codigoActividad = rs.getString(1);
 		int dia = rs.getInt(2);
 		int mes = rs.getInt(3);
 		int año = rs.getInt(4);
-		int limitePlazas = rs.getInt(3);
-		int horaInicio = rs.getInt(4);
-		int horaFin = rs.getInt(5);
-		String codigoMonitor = rs.getString(6);
-		String codigoPlanificada = rs.getString(7);
+		int limitePlazas = rs.getInt(5);
+		int horaInicio = rs.getInt(6);
+		int horaFin = rs.getInt(7);
+		String codigoMonitor = rs.getString(8);
+		String codigoPlanificada = rs.getString(9);
 		return new ActividadPlanificada(codigoActividad, dia, mes, año, limitePlazas, horaInicio, horaFin,
 				codigoMonitor, codigoPlanificada);
 	}
@@ -161,6 +232,49 @@ public class Programa {
 		System.out.println("Lista de actividades planificadas");
 		for (ActividadPlanificada actividad : actividadesPlanificadas) {
 			System.out.println(actividad.toString());
+		}
+	}
+
+	public List<ActividadPlanificada> getActividadesPlanificadas(int dia, int mes, int año) {
+		List<ActividadPlanificada> listaSort = new ArrayList<ActividadPlanificada>();
+		for (ActividadPlanificada ap : getActividadesPlanificadas()) {
+			if (ap.getDia() == dia && ap.getMes() == mes && ap.getAño() == año) {
+				listaSort.add(ap);
+			}
+		}
+		return listaSort;
+	}
+
+	public boolean comprobarTiempoActividadesColisiona(ActividadPlanificada actividadSeleccionada,
+			ActividadPlanificada actividad) {
+//		return ((actividadSeleccionada.getHoraInicio() == actividad.getHoraInicio())
+//				&& (actividadSeleccionada.getHoraFin() == actividad.getHoraFin()));
+		return ((actividadSeleccionada.getHoraInicio() == actividad.getHoraInicio())
+				|| (actividadSeleccionada.getHoraFin() == actividad.getHoraFin())
+				|| ((actividadSeleccionada.getHoraInicio() < actividad.getHoraInicio())
+						&& (actividadSeleccionada.getHoraFin() < actividad.getHoraFin())
+						&& (actividadSeleccionada.getHoraFin() > actividad.getHoraInicio()))
+				|| ((actividadSeleccionada.getHoraInicio() > actividad.getHoraInicio())
+						&& (actividadSeleccionada.getHoraFin() > actividad.getHoraFin())
+						&& (actividadSeleccionada.getHoraFin() < actividad.getHoraInicio()))
+				|| ((actividadSeleccionada.getHoraInicio() < actividad.getHoraInicio())
+						&& (actividadSeleccionada.getHoraFin() > actividad.getHoraFin()))
+				|| ((actividadSeleccionada.getHoraInicio() > actividad.getHoraInicio())
+						&& (actividadSeleccionada.getHoraFin() < actividad.getHoraFin())));
+	}
+
+	public void actualizarPlazasActividadPlanificada(ActividadPlanificada actividad, int incremento) {
+		try {
+			Connection con = DriverManager.getConnection(Programa.URL);
+			PreparedStatement pst = con
+					.prepareStatement("UPDATE ACTIVIDAD_PLANIFICADA SET limitePlazas = ? WHERE codigoPlanificada = ?");
+			pst.setInt(1, incremento);
+			pst.setString(2, actividad.getCodigoPlanificada());
+			pst.execute();
+			pst.close();
+			con.close();
+		} catch (SQLException e) {
+			System.out.println("Error borrando la reserva");
 		}
 	}
 
@@ -211,9 +325,39 @@ public class Programa {
 		}
 	}
 
+	public List<ActividadPlanificada> getActividadesPlanificadasQueHaReservadoSocio(Socio socio) {
+		List<ActividadPlanificada> actividadesQueYaTieneReservadasElSocio = new ArrayList<ActividadPlanificada>();
+		for (Reserva reserva : getReservas()) {
+			if (reserva.getId_cliente().equals(socio.getId_cliente())) {
+				for (ActividadPlanificada ap : getActividadesPlanificadas()) {
+					if (reserva.getCodigo_actividad().equals(ap.getCodigoPlanificada())) {
+						actividadesQueYaTieneReservadasElSocio.add(ap);
+					}
+				}
+			}
+		}
+		return actividadesQueYaTieneReservadasElSocio;
+	}
+
+	public List<ActividadPlanificada> getActividadesPlanificadasQueHaReservadoSocioEnUnDiaEspecifico(Socio socio,
+			int dia, int mes, int año) {
+		List<ActividadPlanificada> actividadesQueYaTieneReservadasElSocio = new ArrayList<ActividadPlanificada>();
+		for (Reserva reserva : getReservas()) {
+			if (reserva.getId_cliente().equals(socio.getId_cliente())) {
+				for (ActividadPlanificada ap : getActividadesPlanificadas()) {
+					if (ap.getDia() == dia && ap.getMes() == mes && ap.getAño() == año
+							&& reserva.getCodigo_actividad().equals(ap.getCodigoPlanificada())) {
+						actividadesQueYaTieneReservadasElSocio.add(ap);
+					}
+				}
+			}
+		}
+		return actividadesQueYaTieneReservadasElSocio;
+	}
+
 //RESERVAS	
 
-	private void cargarReservas() throws SQLException {
+	public void cargarReservas() throws SQLException {
 		Connection con = DriverManager.getConnection(URL);
 		Statement st = con.createStatement();
 		ResultSet rs = st.executeQuery("SELECT * FROM RESERVA");
@@ -246,6 +390,62 @@ public class Programa {
 		System.out.println("Lista de reservas");
 		for (Reserva reserva : reservas) {
 			System.out.println(reserva.toString());
+		}
+	}
+
+	public void eliminarReserva(String codigoActividad) {
+		for (Reserva reserva : reservas) {
+			if (reserva.getCodigo_actividad().equals(codigoActividad)) {
+				reservas.remove(reserva);
+			}
+		}
+	}
+
+	public void addReserva(String id_cliente, String codigoPlanificada) {
+		reservas.add(new Reserva(id_cliente, codigoPlanificada));
+	}
+
+	public void anularReserva(Socio socio, ActividadPlanificada actividad, List<Reserva> reservas) {
+		Calendar calendar = Calendar.getInstance();
+		int hora = calendar.get(Calendar.HOUR_OF_DAY);
+		int dia = calendar.get(Calendar.DAY_OF_MONTH);
+		int mes = calendar.get(Calendar.MONTH)+1;
+		int año = calendar.get(Calendar.YEAR);
+		for (Reserva reserva : reservas) {
+			if (reserva.getCodigo_actividad().equals(actividad.getCodigoPlanificada())) {
+				cancelarPlazaReserva(socio.getId_cliente(), actividad.getCodigoPlanificada());
+				actualizarPlazasActividadPlanificada(actividad, +1);
+			}
+		}
+	}
+
+	public void añadirReserva(String id_cliente, String codigoPlanificada) {
+		try {
+			Connection con = DriverManager.getConnection(Programa.URL);
+			PreparedStatement pst = con
+					.prepareStatement("INSERT INTO RESERVA (id_cliente, codigo_actividad) VALUES(?,?)");
+			pst.setString(1, id_cliente);
+			pst.setString(2, codigoPlanificada);
+			pst.execute();
+			pst.close();
+			con.close();
+		} catch (SQLException e) {
+			System.out.println("Error añadiendo la reserva");
+		}
+	}
+
+	private void cancelarPlazaReserva(String id_cliente, String id_actividad) {
+		try {
+			Connection con = DriverManager.getConnection(Programa.URL);
+			PreparedStatement pst = con
+					.prepareStatement("DELETE FROM RESERVA WHERE id_cliente = ? AND codigo_actividad = ?");
+			pst.setString(1, id_cliente);
+			pst.setString(2, id_actividad);
+			pst.execute();
+			pst.close();
+			con.close();
+		} catch (SQLException e) {
+			System.out.println("Error borrando la reserva");
 		}
 	}
 
@@ -294,70 +494,61 @@ public class Programa {
 		}
 		return null;
 	}
-	
-	public List<ActividadPlanificada> getActividadesPlanificadasDia(int dia, int mes, int año) throws SQLException {
-		List<ActividadPlanificada> actividadesDia = new ArrayList<>();
-		
-		Connection con = DriverManager.getConnection(URL);
-		PreparedStatement pst = con.prepareStatement("SELECT codigoPlanificada FROM actividad_planificada WHERE dia = ? AND mes = ? AND año = ?");
-		pst.setInt(1, dia);
-		pst.setInt(2, mes);
-		pst.setInt(3, año);
-		ResultSet rs = pst.executeQuery();
-		
-		while(rs.next()) {
-			actividadesDia.add(encontrarActividadPlanificada(rs.getString(1)));
-		}
-		
-		return actividadesDia;
-	}
-	
-	public void eliminarActividadPlanificada(ActividadPlanificada a) throws SQLException {
-		Connection con = DriverManager.getConnection(URL);
-		PreparedStatement pst = con.prepareStatement("DELETE FROM actividad_planificada WHERE codigoPlanificada = ?");
-		
-		pst.setString(1, a.getCodigoPlanificada());
-		pst.execute();
-	}
 
 //ADMINISTRACIÓN
 
-//	public void asignarMonitorActividad(String codigoMonitor, String codigoActividad) {
-//		if (checkMonitorNoTieneActividad(codigoMonitor) && checkActividadNoTieneMonitor(codigoActividad)) {
-//			try {
-//				Connection con = DriverManager.getConnection(URL);
-//				Statement st = con.createStatement();
-//				ResultSet rs = st.executeQuery(
-//						"UPDATE ACTIVIDAD SET codigoMonitor = " + codigoMonitor + " WHERE codigo = " + codigoActividad);
-//				rs.close();
-//				st.close();
-//				con.close();
-//			} catch (SQLException e) {
-//				System.out.println("Error asignando monitor");
-//			}
-//			encontrarActividad(codigoActividad).setCodigoMonitor(codigoMonitor);
-//		}
-//	}
-//
-//	private boolean checkActividadNoTieneMonitor(String codigoActividad) {
-//		for (Actividad actividad : actividades) {
-//			if (actividad.getCodigo().equals(codigoActividad) && !actividad.getCodigoMonitor().isEmpty()) {
-//				return false;
-//			}
-//		}
-//		return true;
-//
-//	}
-//
-//	private boolean checkMonitorNoTieneActividad(String codigoMonitor) {
-//		for (Monitor monitor : monitores) {
-//			for (Actividad actividad : actividades) {
-//				if (actividad.getCodigoMonitor().equals(monitor.getCodigoMonitor())) {
-//					return false;
-//				}
-//			}
-//		}
-//		return true;
-//	}
+	public void asignarMonitorActividad(Monitor monitor, ActividadPlanificada actividadPlanificada) {
+		String codigoMonitor = monitor.getCodigoMonitor();
+		String codigoActividadPlanificada = actividadPlanificada.getCodigoPlanificada();
+		System.out.println(codigoMonitor);
+		System.out.println(codigoActividadPlanificada);
+		try {
+			Connection con = DriverManager.getConnection(URL);
+			PreparedStatement pst = con
+					.prepareStatement("UPDATE ACTIVIDAD_PLANIFICADA SET codigoMonitor = ? WHERE codigoPlanificada = ?");
+			pst.setString(1, codigoMonitor);
+			pst.setString(2, codigoActividadPlanificada);
+			pst.execute();
+			pst.close();
+			con.close();
+		} catch (SQLException e) {
+			System.out.println("Error asignando monitor");
+			encontrarActividadPlanificada(codigoActividadPlanificada).setCodigoMonitor(codigoMonitor);
+		}
+	}
+
+	private boolean checkActividadNoTieneMonitor(String codigoActividadPlanificada) {
+		for (ActividadPlanificada actividad : actividadesPlanificadas) {
+			if (actividad.getCodigoPlanificada().equals(codigoActividadPlanificada)
+					&& !actividad.getCodigoMonitor().isEmpty()) {
+				return false;
+			}
+		}
+		return true;
+
+	}
+
+	private boolean checkMonitorNoTieneActividad(String codigoMonitor) {
+		for (Monitor monitor : monitores) {
+			for (ActividadPlanificada actividad : actividadesPlanificadas) {
+				if (actividad.getCodigoMonitor().equals(monitor.getCodigoMonitor())) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	// UTIL
+
+	public int[] obtenerHoraDiaMesAño() {
+		Calendar calendar = Calendar.getInstance();
+		int hora = calendar.get(Calendar.HOUR_OF_DAY);
+		int dia = calendar.get(Calendar.DAY_OF_MONTH);
+		int mes = calendar.get(Calendar.MONTH)+1;
+		int año = calendar.get(Calendar.YEAR);
+		int[] fecha = { hora, dia, mes, año };
+		return fecha;
+	}
 
 }
