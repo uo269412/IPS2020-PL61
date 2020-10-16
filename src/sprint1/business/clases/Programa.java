@@ -20,7 +20,6 @@ public class Programa {
 	private List<Reserva> reservas;
 	private List<Monitor> monitores;
 
-<<<<<<< HEAD
 	//Conexión Javi
 	//public static String URL = "jdbc:sqlite:C:\\Users\\javie\\Desktop\\master\\sprint1\\resources\\bdProject.db";
 	
@@ -30,15 +29,6 @@ public class Programa {
 	//Conexión Juan.elo
 	public static String URL = "jdbc:sqlite:C:\\Users\\Usuario\\git\\IPS2020-PL61\\resources\\bdProject.db";
 	
-=======
-	// Conexión Javi
-	public static String URL = "jdbc:sqlite:C:\\Users\\javie\\Desktop\\master\\sprint1\\resources\\bdProject.db";
-
-	// Conexión Dani
-	// public static String URL =
-	// "jdbc:sqlite:C:\\Users\\Dani\\git\\IPS2020-PL61\\resources\\bdProject.db";
-
->>>>>>> branch 'master' of https://github.com/uo269412/IPS2020-PL61
 	public Programa() throws SQLException {
 		cargarBaseDatos();
 	}
