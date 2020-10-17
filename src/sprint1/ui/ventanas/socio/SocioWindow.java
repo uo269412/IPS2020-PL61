@@ -2,11 +2,9 @@ package sprint1.ui.ventanas.socio;
 
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import sprint1.business.clases.Actividad;
 import sprint1.business.clases.Socio;
 import sprint1.ui.ventanas.MainWindow;
 
@@ -14,10 +12,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GridLayout;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
-import java.util.List;
 import java.awt.event.ActionEvent;
 
 public class SocioWindow extends JDialog {
@@ -34,6 +30,8 @@ public class SocioWindow extends JDialog {
 	private JButton btnLogOut;
 	private JButton btnVerActividades;
 	private ListaDeActividadesWindow listaDeActividadesWindow = null;
+	private JButton btnVerHorario;
+	private VerHorariosSocioWindow vhsw;
 	
 	
 	/**
@@ -98,6 +96,7 @@ public class SocioWindow extends JDialog {
 			pnAcciones = new JPanel();
 			pnAcciones.setBackground(new Color(255, 255, 255));
 			pnAcciones.add(getBtnVerActividades());
+			pnAcciones.add(getBtnVerHorario());
 		}
 		return pnAcciones;
 	}
@@ -140,5 +139,22 @@ public class SocioWindow extends JDialog {
 			});
 		}
 		return btnVerActividades;
+	}
+	private JButton getBtnVerHorario() {
+		if (btnVerHorario == null) {
+			btnVerHorario = new JButton("Ver horarios");
+			btnVerHorario.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					abrirHorariosSocio();
+				}
+			});
+		}
+		return btnVerHorario;
+	}
+	private void abrirHorariosSocio() {
+		vhsw = new VerHorariosSocioWindow(socio, parent.getPrograma());
+		vhsw.setModal(true);
+		vhsw.setLocationRelativeTo(this);
+		vhsw.setVisible(true);
 	}
 }

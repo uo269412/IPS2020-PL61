@@ -2,7 +2,6 @@ package sprint1.ui.ventanas.administracion;
 
 import java.awt.BorderLayout;
 
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -170,7 +169,7 @@ public class VerOcupacionWindow extends JDialog {
 	private boolean hayActividadAEsaHora(int hora, Actividad actividad, int dia) {
 		List<ActividadPlanificada> actividades = programa.getActividadesPlanificadas();
 		for (ActividadPlanificada ap : actividades) {
-			if (ap.getHoraInicio() == hora && dia == ap.getFecha().getDay())
+			if (ap.getHoraInicio() == hora /*&& dia == ap.getFecha().getDay()*/)
 				return true;
 		}
 		return false;

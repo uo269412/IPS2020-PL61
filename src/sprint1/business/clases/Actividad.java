@@ -53,14 +53,9 @@ public class Actividad {
 	}
 
 	@Override
-<<<<<<< HEAD
-	public String toString() { //conviene imprimir también los recursos necesarios
-		return "Actividad [codigo=" + codigo + ", nombre=" + nombre + ", intensidad=" + intensidad + "]";
-=======
 	public String toString() { // conviene imprimir también los recursos necesarios
 		return "Actividad [codigo=" + codigo + ", nombre=" + nombre + ", horaInicio=" + ", intensidad=" + intensidad
 				+ "]";
->>>>>>> branch 'master' of https://github.com/uo269412/IPS2020-PL61
 	}
 
 	@Override

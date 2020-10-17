@@ -6,10 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 public class Programa {
@@ -30,19 +28,6 @@ public class Programa {
 	//Conexión Juan.elo
 	public static String URL = "jdbc:sqlite:C:\\Users\\Usuario\\git\\IPS2020-PL61\\resources\\bdProject.db";
 	
-//=======
-	// Conexión Javi
-	public static String URL = "jdbc:sqlite:C:\\Users\\javie\\Desktop\\master\\sprint1\\resources\\bdProject.db";
-
-	// Conexión Dani
-<<<<<<< HEAD
-	//public static String URL = "jdbc:sqlite:C:\\Users\\Dani\\git\\IPS2020-PL61\\resources\\bdProject.db";
-=======
-	// public static String URL =
-	// "jdbc:sqlite:C:\\Users\\Dani\\git\\IPS2020-PL61\\resources\\bdProject.db";
->>>>>>> branch 'master' of https://github.com/uo269412/IPS2020-PL61
-
-//>>>>>>> branch 'master' of https://github.com/uo269412/IPS2020-PL61
 	public Programa() throws SQLException {
 		cargarBaseDatos();
 	}
@@ -153,27 +138,13 @@ public class Programa {
 		int dia = rs.getInt(2);
 		int mes = rs.getInt(3);
 		int año = rs.getInt(4);
-<<<<<<< HEAD
-		Calendar calendar = Calendar.getInstance();
-		calendar.set(año, mes, dia, 59, 59, 59);
-		Date fecha = calendar.getTime();
 		int limitePlazas = rs.getInt(5);
 		int horaInicio = rs.getInt(6);
 		int horaFin = rs.getInt(7);
 		String codigoMonitor = rs.getString(8);
 		String codigoPlanificada = rs.getString(9);
-		return new ActividadPlanificada(codigoActividad, fecha, limitePlazas, horaInicio, horaFin, codigoMonitor,
-				codigoPlanificada);
-
-=======
-		int limitePlazas = rs.getInt(5);
-		int horaInicio = rs.getInt(6);
-		int horaFin = rs.getInt(7);
-		String codigoMonitor = rs.getString(8);
-		String codigoPlanificada = rs.getString(9);
-		return new ActividadPlanificada(codigoActividad, dia, mes, año, limitePlazas, horaInicio, horaFin,
+		return new ActividadPlanificada(codigoActividad, 18, mes, año, limitePlazas, horaInicio, horaFin,
 				codigoMonitor, codigoPlanificada);
->>>>>>> branch 'master' of https://github.com/uo269412/IPS2020-PL61
 	}
 
 	public List<ActividadPlanificada> getActividadesPlanificadas() {
