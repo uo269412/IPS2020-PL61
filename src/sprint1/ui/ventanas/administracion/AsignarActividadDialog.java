@@ -18,8 +18,10 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 
 import sprint1.business.clases.ActividadPlanificada;
+import sprint1.business.clases.Instalacion;
 import sprint1.business.clases.Monitor;
 import sprint1.business.clases.Programa;
+import sprint1.business.clases.Recurso;
 
 import javax.swing.JLabel;
 import javax.swing.BoxLayout;
@@ -32,6 +34,8 @@ import javax.swing.JTextPane;
 import java.awt.Color;
 import java.awt.Font;
 import javax.swing.ListSelectionModel;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 
 public class AsignarActividadDialog extends JDialog {
 
@@ -64,7 +68,7 @@ public class AsignarActividadDialog extends JDialog {
 
 	private List<ActividadPlanificada> aEliminar;
 	private JLabel lblInstalacion;
-	private JComboBox<Integer> cbInstalacion;
+	private JTextField txtInstalacion;
 
 //	/**
 //	 * Launch the application.
@@ -99,6 +103,7 @@ public class AsignarActividadDialog extends JDialog {
 		contentPanel.add(getPnActividadesPlanificadas());
 		getContentPane().add(getPnBotones(), BorderLayout.SOUTH);
 		aEliminar = new LinkedList<>();
+		rellenarInstalacion();
 	}
 
 	private JPanel getPnActividadesPlanificadas() {
@@ -140,7 +145,7 @@ public class AsignarActividadDialog extends JDialog {
 			pnProgramarActividad.add(getLblLimite());
 			pnProgramarActividad.add(gettxtLimitePlazasPlazas());
 			pnProgramarActividad.add(getLblInstalacion());
-			pnProgramarActividad.add(getCbInstalacion());
+			pnProgramarActividad.add(getTxtInstalacion());
 			pnProgramarActividad.add(getPnAñadir());
 		}
 		return pnProgramarActividad;
@@ -156,6 +161,14 @@ public class AsignarActividadDialog extends JDialog {
 	private JComboBox<Actividad> getCmbActividades() {
 		if (cmbActividades == null) {
 			cmbActividades = new JComboBox<Actividad>();
+			cmbActividades.addFocusListener(new FocusAdapter() {
+				@Override
+				public void focusLost(FocusEvent e) {
+					if(cmbActividades.getSelectedItem() != null) {
+						rellenarInstalacion();
+					}
+				}
+			});
 			cmbActividades.setFont(new Font("Tahoma", Font.PLAIN, 8));
 			cmbActividades.setModel(new DefaultComboBoxModel<Actividad>(
 					programa.getActividades().toArray(new Actividad[programa.getActividades().size()])));
@@ -345,7 +358,8 @@ public class AsignarActividadDialog extends JDialog {
 		int limitePlazas = Integer.parseInt(txtLimitePlazas.getText());
 		int horaInicio = Integer.parseInt(txtHoraInicio.getText());
 		int horaFin = Integer.parseInt(txtHoraFin.getText());
-		return new ActividadPlanificada(codigoAAsignar, dia, mes, año, limitePlazas, horaInicio, horaFin);
+		String codigoInstalacion = txtInstalacion.getText().split(" ")[2];
+		return new ActividadPlanificada(codigoAAsignar, dia, mes, año, limitePlazas, horaInicio, horaFin, codigoInstalacion);
 
 	}
 
@@ -388,10 +402,41 @@ public class AsignarActividadDialog extends JDialog {
 		}
 		return lblInstalacion;
 	}
-	private JComboBox<Integer> getCbInstalacion() {
-		if (cbInstalacion == null) {
-			cbInstalacion = new JComboBox();
+	
+	private void rellenarInstalacion() {
+		Actividad a = programa.getActividades().get(cmbActividades.getSelectedIndex());
+		if(a.requiresRecursos()) {
+			boolean todosIguales = true;
+			String i = a.getRecursos().get(0).getInstalacion();
+			for(Recurso r: a.getRecursos()) {
+				if(r.getInstalacion().equals(i)) {
+					todosIguales = true;
+				} else {
+					todosIguales = false;
+					break;
+				}
+			}
+			if(todosIguales) {
+				try {
+					Instalacion inst = programa.obtenerInstalacionPorId(a.getRecursos().get(0).getInstalacion());
+					txtInstalacion.setText(inst.toString());
+				} catch(SQLException e) {
+					JOptionPane.showMessageDialog(this, "Ha habido un problema con la base de datos asignando la instalacion"
+							+ ", póngase en contacto con el desarrollador");
+				}
+			}
+		} else {
+			txtInstalacion.setText("No hay instalaciones disponibles para la actividad");
 		}
-		return cbInstalacion;
 	}
+		
+	private JTextField getTxtInstalacion() {
+		if (txtInstalacion == null) {
+			txtInstalacion = new JTextField();
+			txtInstalacion.setEditable(false);
+			txtInstalacion.setColumns(10);
+		}
+		return txtInstalacion;
+	}
+	
 }
