@@ -13,20 +13,14 @@ public class Actividad {
 	private String codigo;
 	private String nombre;
 	private int intensidad;
-	private Recurso[] recursosRequeridos;
+	private List<Recurso> recursosRequeridos;
 
-	public Actividad(String codigo, String nombre, int intensidad, Recurso... recursos) {
-		setCodigo(codigo);
-		setNombre(nombre);
-		setIntensidad(intensidad);
-		recursosRequeridos = recursos;
-	}
 	
 	public Actividad(String codigo, String nombre, int intensidad) {
 		setCodigo(codigo);
 		setNombre(nombre);
 		setIntensidad(intensidad);
-		recursosRequeridos = new Recurso[0];
+		recursosRequeridos = new LinkedList<>();
 	}
 
 //	public Actividad(String nombre, int intensidad) {
@@ -88,12 +82,21 @@ public class Actividad {
 		return this.intensidad;
 	}
 	
-	public Recurso[] getRecursos() {
+	public boolean añadirRecurso(Recurso r)  {
+		if(r.getActividad() == null) {
+			r.setActividad(getCodigo());
+			recursosRequeridos.add(r);
+			return true;
+		}
+		return false;
+	}
+	
+	public List<Recurso> getRecursos() {
 		return this.recursosRequeridos;
 	}
 	
 	public boolean requiresRecursos()  {
-		return recursosRequeridos.length > 0;
+		return recursosRequeridos.size() > 0;
 	}
 
 }

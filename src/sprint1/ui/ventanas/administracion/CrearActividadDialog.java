@@ -111,11 +111,6 @@ public class CrearActividadDialog extends JDialog {
 								creacionActividadSatisfactoria = false;
 							}
 							if (creacionActividadSatisfactoria) {
-//								String[] recursos = txtRecursos.getText().split(", ");
-//								for (String r : recursos) {
-//									Recurso rec = new Recurso(r, codigoActividad);
-//									a.añadirRecurso(rec);
-//								}
 
 								try {
 
@@ -155,13 +150,21 @@ public class CrearActividadDialog extends JDialog {
 		if(recursos.equals("")) {
 			return new Actividad(codigoActividad, nombreActividad, intensidad);
 		} else {
-			String[] nombreRecursosArray = recursos.split(", ");
-			Recurso[] recursosArray = new Recurso[nombreRecursosArray.length];
-			for(int i = 0; i < nombreRecursosArray.length; i++) {
-				recursosArray[i] = new Recurso(nombreRecursosArray[i]);
+			try {
+				Actividad a = new Actividad(codigoActividad, nombreActividad, intensidad);
+				String[] nombreRecursosArray = recursos.split(", ");
+				for(String nombreRecurso: nombreRecursosArray) {
+					Recurso r = p.obtenerRecursoPorNombre(nombreRecurso);
+					a.añadirRecurso(r);
+				}
+				p.updateRecursosFromLista(a.getRecursos());
+				return a;
+			} catch(SQLException e) {
+				JOptionPane.showMessageDialog(this,
+						"Ha habido un problema con la base de datos comprobando los recursos, por favor contacte con el desarrollador");
+				return new Actividad(codigoActividad, nombreActividad, intensidad);
 			}
 			
-			return new Actividad(codigoActividad, nombreActividad, intensidad, recursosArray);
 		}
 	}
 	
@@ -308,8 +311,21 @@ public class CrearActividadDialog extends JDialog {
 			return true;
 		} else {
 			String rawRecursos = txtRecursos.getText();
-			String[] idRecursos = rawRecursos.split(", ");
-			return true;
+			String[] nombreRecursos = rawRecursos.split(", ");
+			try {
+				if(!p.checkRecursosExisten(nombreRecursos)) {
+					JOptionPane.showMessageDialog(this, "Algunos de los recursos que se intentan asociar no están disponibles.");
+					return false;
+				}
+				else
+					return true;
+				
+			} catch(SQLException e) {
+				JOptionPane.showMessageDialog(this,
+						"Ha habido un problema con la base de datos comprobando los recursos, por favor contacte con el desarrollador");
+				return false;
+			}
+			
 		}
 		
 	}

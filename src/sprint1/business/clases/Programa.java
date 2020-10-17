@@ -25,10 +25,10 @@ public class Programa {
 	//public static String URL = "jdbc:sqlite:C:\\Users\\javie\\Desktop\\master\\sprint1\\resources\\bdProject.db";
 	
 	//Conexión Dani
-	//public static String URL = "jdbc:sqlite:C:\\Users\\Dani\\git\\IPS2020-PL61\\resources\\bdProject.db";
+	public static String URL = "jdbc:sqlite:C:\\Users\\Dani\\git\\IPS2020-PL61\\resources\\bdProject.db";
 	
 	//Conexión Juan.elo
-	public static String URL = "jdbc:sqlite:C:\\Users\\Usuario\\git\\IPS2020-PL61\\resources\\bdProject.db";
+	//public static String URL = "jdbc:sqlite:C:\\Users\\Usuario\\git\\IPS2020-PL61\\resources\\bdProject.db";
 	
 	public Programa() throws SQLException {
 		cargarBaseDatos();
@@ -227,6 +227,7 @@ public class Programa {
 			pst.executeUpdate();
 			
 			actividadesPlanificadas.add(a);
+			printActividadesPlanificadas();
 		} else {
 			updateActividadPlanificada(a);
 		}
@@ -532,6 +533,46 @@ public class Programa {
 			System.out.println("Error asignando monitor");
 		}
 
+	}
+	
+	//RECURSOS
+	
+	public boolean checkRecursosExisten(String...nombreRecursos) throws SQLException {
+		Connection con = DriverManager.getConnection(URL);
+		PreparedStatement pst = con.prepareStatement("SELECT nombre_recurso FROM recurso");
+		boolean todosValidos = true;
+		ResultSet rs = pst.executeQuery();
+		while(rs.next()) {
+			for(String nombre: nombreRecursos) {
+				if(!rs.getString(1).equals(nombre)) {
+					todosValidos = false;
+				} else {
+					todosValidos = true;
+				}
+			}
+		}
+		
+		return todosValidos;
+	}
+	
+	public void updateRecursosFromLista(List<Recurso> listaRecursos) throws SQLException {
+		Connection con = DriverManager.getConnection(URL);
+		PreparedStatement pst = con.prepareStatement("UPDATE RECURSO SET codigo_actividad = ? WHERE id_recurso = ?");
+		for(Recurso r: listaRecursos) {
+			pst.setString(1, r.getActividad());
+			pst.setString(2, r.getIdRecurso());
+			pst.executeUpdate();
+		}
+	}
+	
+	public Recurso obtenerRecursoPorNombre(String nombreRecurso) throws SQLException {
+		//no hay que hacer check aqui porque se supone que ya hemos checkeado los nombres usando el otro método antes que este
+		Connection con = DriverManager.getConnection(URL);
+		PreparedStatement pst =  con.prepareStatement("SELECT codigo_instalacion FROM recurso WHERE nombre_recurso = ?");
+		pst.setString(1, nombreRecurso);
+		ResultSet rs = pst.executeQuery();
+		String codigo_instalacion = rs.getString(1);
+		return new Recurso(nombreRecurso, codigo_instalacion);
 	}
 
 	// UTIL
