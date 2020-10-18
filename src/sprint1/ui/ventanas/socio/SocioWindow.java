@@ -6,7 +6,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import sprint1.business.clases.Actividad;
 import sprint1.business.clases.ActividadPlanificada;
 import sprint1.business.clases.Reserva;
 import sprint1.business.clases.Socio;
@@ -16,7 +15,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GridLayout;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -37,6 +35,8 @@ public class SocioWindow extends JDialog {
 	private JButton btnLogOut;
 	private JButton btnVerActividades;
 	private ListaDeActividadesWindow listaDeActividadesWindow = null;
+	private JButton btnVerHorariosSocios;
+	private JButton btnReservar;
 
 	/**
 	 * Create the dialog.
@@ -103,7 +103,9 @@ public class SocioWindow extends JDialog {
 		if (pnAcciones == null) {
 			pnAcciones = new JPanel();
 			pnAcciones.setBackground(new Color(255, 255, 255));
+			pnAcciones.add(getButton_1());
 			pnAcciones.add(getBtnVerActividades());
+			pnAcciones.add(getBtnVerHorariosSocios());
 		}
 		return pnAcciones;
 	}
@@ -173,5 +175,33 @@ public class SocioWindow extends JDialog {
 			});
 		}
 		return btnVerActividades;
+	}
+	private JButton getBtnVerHorariosSocios() {
+		if (btnVerHorariosSocios == null) {
+			btnVerHorariosSocios = new JButton("Ver horarios");
+			btnVerHorariosSocios.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					VerHorariosSocioWindow vosw = new VerHorariosSocioWindow(SocioWindow.this.getParent().getPrograma());
+					vosw.setModal(true);
+					vosw.setLocationRelativeTo(SocioWindow.this);
+					vosw.setVisible(true);
+				}
+			});
+		}
+		return btnVerHorariosSocios;
+	}
+	private JButton getButton_1() {
+		if (btnReservar == null) {
+			btnReservar = new JButton("Hacer reserva");
+			btnReservar.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					ReservaSocioWindow rsw = new ReservaSocioWindow(SocioWindow.this, socio);
+					rsw.setModal(true);
+					rsw.setLocationRelativeTo(SocioWindow.this);
+					rsw.setVisible(true);
+				}
+			});
+		}
+		return btnReservar;
 	}
 }

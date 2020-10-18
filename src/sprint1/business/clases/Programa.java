@@ -25,10 +25,10 @@ public class Programa {
 	//public static String URL = "jdbc:sqlite:C:\\Users\\javie\\Desktop\\master\\sprint1\\resources\\bdProject.db";
 	
 	//Conexión Dani
-	public static String URL = "jdbc:sqlite:C:\\Users\\Dani\\git\\IPS2020-PL61\\resources\\bdProject.db";
+	//public static String URL = "jdbc:sqlite:C:\\Users\\Dani\\git\\IPS2020-PL61\\resources\\bdProject.db";
 	
 	//Conexión Juan.elo
-	//public static String URL = "jdbc:sqlite:C:\\Users\\Usuario\\git\\IPS2020-PL61\\resources\\bdProject.db";
+	public static String URL = "jdbc:sqlite:C:\\Users\\Usuario\\git\\IPS2020-PL61\\resources\\bdProject.db";
 	
 	public Programa() throws SQLException {
 		cargarBaseDatos();
@@ -360,6 +360,18 @@ public class Programa {
 		}
 		return actividadesQueYaTieneReservadasElSocio;
 	}
+	
+	public List<ActividadPlanificada> getActividadesDisponiblesParaReservaDeSocio(int dia, int mes, int año, int hora) {
+		List<ActividadPlanificada> listaSort = new ArrayList<ActividadPlanificada>();
+		for (ActividadPlanificada ap : getActividadesPlanificadas()) {
+			if (ap.getDia() == dia + 1 && ap.getMes() == mes && ap.getAño() == año) {
+				listaSort.add(ap);
+			} else if(ap.getDia() == dia && ap.getMes() == mes && ap.getAño() == año && ap.getHoraInicio() >= hora + 1) {
+				listaSort.add(ap);
+			}
+		}
+		return listaSort;
+	}
 
 //RESERVAS	
 
@@ -426,8 +438,8 @@ public class Programa {
 		}
 	}
 
-	public void añadirReserva(Socio socio, ActividadPlanificada actividad) {
-		insertarReserva(socio.getId_cliente(), actividad.getCodigoPlanificada());
+	public boolean añadirReserva(Socio socio, ActividadPlanificada actividad) {
+		boolean result = insertarReserva(socio.getId_cliente(), actividad.getCodigoPlanificada());
 		actualizarPlazasActividadPlanificada(actividad, actividad.getLimitePlazas() - 1);
 		try {
 			cargarReservas();
@@ -435,9 +447,10 @@ public class Programa {
 		} catch (SQLException e) {
 			System.out.println("Fallo al cargar reservas");
 		}
+		return result;
 	}
 
-	public void insertarReserva(String id_cliente, String codigoPlanificada) {
+	public boolean insertarReserva(String id_cliente, String codigoPlanificada) {
 		try {
 			Connection con = DriverManager.getConnection(Programa.URL);
 			PreparedStatement pst = con
@@ -447,8 +460,10 @@ public class Programa {
 			pst.execute();
 			pst.close();
 			con.close();
+			return true;
 		} catch (SQLException e) {
 			System.out.println("Error añadiendo la reserva");
+			return false;
 		}
 	}
 
