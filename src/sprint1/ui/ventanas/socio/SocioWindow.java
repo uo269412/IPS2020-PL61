@@ -37,7 +37,7 @@ public class SocioWindow extends JDialog {
 	private ListaDeActividadesWindow listaDeActividadesWindow = null;
 	private JButton btnVerHorariosSocios;
 	private JButton btnReservar;
-
+	
 	/**
 	 * Create the dialog.
 	 */

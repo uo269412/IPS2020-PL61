@@ -41,6 +41,7 @@ public class AdminWindow extends JDialog {
 	private AsignarMonitorActividadDialog asignarMonitor;
 	private AdminReservaSocioWindow adminReservaSocio;
 	private JButton btnReservaSocio;
+	private JButton btnVerOcupacion;
 
 	/**
 	 * Create the dialog.
@@ -111,6 +112,7 @@ public class AdminWindow extends JDialog {
 			pnAcciones.add(getBtnCrearActividad());
 			pnAcciones.add(getBtnAsignarActividad());
 			pnAcciones.add(getBtnReservaSocio());
+			pnAcciones.add(getBtnVerOcupacion());
 		}
 		return pnAcciones;
 	}
@@ -244,5 +246,20 @@ public class AdminWindow extends JDialog {
 			});
 		}
 		return btnReservaSocio;
+	}
+	private JButton getBtnVerOcupacion() {
+		if (btnVerOcupacion == null) {
+			btnVerOcupacion = new JButton("Ver ocupaci\u00F3n");
+			btnVerOcupacion.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					VerOcupacionWindow vow = new VerOcupacionWindow(parent.getPrograma());
+					vow.setModal(true);
+					vow.setLocationRelativeTo(AdminWindow.this);
+					vow.setVisible(true);
+				}
+			});
+			btnVerOcupacion.setMnemonic('V');
+		}
+		return btnVerOcupacion;
 	}
 }
