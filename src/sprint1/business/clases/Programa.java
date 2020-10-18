@@ -145,8 +145,9 @@ public class Programa {
 		int horaFin = rs.getInt(7);
 		String codigoMonitor = rs.getString(8);
 		String codigoPlanificada = rs.getString(9);
+		String codigoInstalacion = rs.getString(10);
 		return new ActividadPlanificada(codigoActividad, dia, mes, año, limitePlazas, horaInicio, horaFin,
-				codigoMonitor, codigoPlanificada);
+				codigoMonitor, codigoPlanificada, codigoInstalacion);
 	}
 
 	public List<ActividadPlanificada> getActividadesPlanificadas() {
@@ -224,6 +225,7 @@ public class Programa {
 			pst.setInt(7, a.getHoraFin());
 			pst.setString(8, a.getCodigoMonitor());
 			pst.setString(9, a.getCodigoPlanificada());
+			pst.setString(10, a.getCodigoInstalacion());
 			pst.executeUpdate();
 			
 			actividadesPlanificadas.add(a);
@@ -238,7 +240,7 @@ public class Programa {
 		PreparedStatement pst = con.prepareStatement("UPDATE actividad_planificada"
 				+ " SET codigoActividad = ?, dia = ?, mes = ?, año = ?, "
 				+ "limitePlazas = ?, horaInicio = ?, horaFin = ?, "
-				+ "codigoMonitor = ? WHERE codigoPlanificada = ?");
+				+ "codigoMonitor = ?, codigo_instalacion = ? WHERE codigoPlanificada = ?");
 		pst.setString(1, a.getCodigoActividad());
 		pst.setInt(2, a.getDia());
 		pst.setInt(3, a.getMes());
@@ -247,7 +249,8 @@ public class Programa {
 		pst.setInt(6, a.getHoraInicio());
 		pst.setInt(7, a.getHoraFin());
 		pst.setString(8, a.getCodigoMonitor());
-		pst.setString(9, a.getCodigoPlanificada());
+		pst.setString(10, a.getCodigoInstalacion());
+		pst.setString(10, a.getCodigoPlanificada());
 		pst.executeUpdate();
 	}
 	
@@ -571,9 +574,9 @@ public class Programa {
 	}
 	
 	public void updateRecursosFromLista(List<Recurso> listaRecursos) throws SQLException {
-		Connection con = DriverManager.getConnection(URL);
-		PreparedStatement pst = con.prepareStatement("UPDATE RECURSO SET codigo_actividad = ? WHERE id_recurso = ?");
 		for(Recurso r: listaRecursos) {
+			Connection con = DriverManager.getConnection(URL);
+			PreparedStatement pst = con.prepareStatement("UPDATE RECURSO SET codigo_actividad = ? WHERE id_recurso = ?");
 			pst.setString(1, r.getActividad());
 			pst.setString(2, r.getIdRecurso());
 			pst.executeUpdate();
@@ -588,6 +591,17 @@ public class Programa {
 		ResultSet rs = pst.executeQuery();
 		String codigo_instalacion = rs.getString(1);
 		return new Recurso(nombreRecurso, codigo_instalacion);
+	}
+	
+	//INSTALACION
+	
+	public Instalacion obtenerInstalacionPorId(String id) throws SQLException {
+		Connection con = DriverManager.getConnection(URL);
+		PreparedStatement pst = con.prepareStatement("SELECT codigo_instalacion, nombre_instalacion FROM instalacion WHERE codigo_instalacion = ?");
+		pst.setString(1, id);
+		ResultSet rs = pst.executeQuery();
+		
+		return new Instalacion(rs.getString(1), rs.getString(2));
 	}
 
 	// UTIL
