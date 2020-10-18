@@ -24,4 +24,8 @@ public class Recurso {
 	public String getIdRecurso() {
 		return this.id_recurso;
 	}
+	
+	public String getInstalacion() {
+		return this.codigo_instalacion;
+	}
 }

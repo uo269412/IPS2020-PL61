@@ -14,15 +14,15 @@ public class ActividadPlanificada {
 	private int horaInicio;
 	private int horaFin;
 	private int limitePlazas;
-	private List<Recurso> recursosActividad;
+	private String codigoInstalacion;
 
 	
-	public ActividadPlanificada(String codigoActividad, int dia, int mes, int año, int horaInicio, int horaFin, int limitePlazas, String codigoMonitor) {
-		this(codigoActividad + "_" + codigoMonitor, codigoActividad, dia, mes, año, horaInicio, horaFin, limitePlazas, codigoMonitor);
-	}
+//	public ActividadPlanificada(String codigoActividad, int dia, int mes, int año, int horaInicio, int horaFin, int limitePlazas, String codigoMonitor) {
+//		this(codigoActividad + "_" + codigoMonitor, codigoActividad, dia, mes, año, horaInicio, horaFin, limitePlazas, codigoMonitor);
+//	}
 
 	public ActividadPlanificada(int dia, int mes, int año, int limitePlazas, int horaInicio, int horaFin,
-			String codigoMonitor, String codigoActividad) {
+			String codigoMonitor, String codigoActividad, String codigoInstalacion) {
 		this.codigoPlanificada = "P-" + codigoActividad + "/" + codigoMonitor;
 		this.dia = dia;
 		this.mes = mes;
@@ -32,9 +32,10 @@ public class ActividadPlanificada {
 		this.horaFin = horaFin;
 		this.codigoMonitor = codigoMonitor;
 		this.codigoActividad = codigoActividad;
+		this.codigoInstalacion = codigoInstalacion;
 	}
 	
-	public ActividadPlanificada(String codigoActividad, int dia, int mes, int año, int limitePlazas, int horaInicio, int horaFin) {
+	public ActividadPlanificada(String codigoActividad, int dia, int mes, int año, int limitePlazas, int horaInicio, int horaFin, String codigoInstalacion) {
 		String codigoPlanificada = "P-" + codigoActividad + "/" + codigoMonitor;
 		
 		setCodigoPlanificada(codigoPlanificada);
@@ -43,11 +44,12 @@ public class ActividadPlanificada {
 		setHoraInicio(horaInicio);
 		setHoraFin(horaFin);
 		setCodigoActividad(codigoActividad);
+		setCodigoInstalacion(codigoInstalacion);
 	}
 
 
 	public ActividadPlanificada(String codigoActividad, int dia, int mes, int año, int limitePlazas, int horaInicio,
-			int horaFin, String codigoMonitor, String codigoPlanificada) {
+			int horaFin, String codigoMonitor, String codigoPlanificada, String codigoInstalacion) {
 		this.codigoPlanificada = codigoPlanificada;
 		this.dia = dia;
 		this.mes = mes;
@@ -57,10 +59,11 @@ public class ActividadPlanificada {
 		this.horaFin = horaFin;
 		this.codigoMonitor = codigoMonitor;
 		this.codigoActividad = codigoActividad;
+		this.codigoInstalacion = codigoInstalacion;
 	}
 
 	public ActividadPlanificada(String codigoPlanificada, String codigoActividad, int dia, int mes, int año,
-			int horaInicio, int horaFin, int limitePlazas, String codigoMonitor) {
+			int horaInicio, int horaFin, int limitePlazas, String codigoMonitor, String codigoInstalacion) {
 
 		setCodigoPlanificada(codigoPlanificada);
 		setFecha(dia, mes, año);
@@ -69,12 +72,11 @@ public class ActividadPlanificada {
 		setHoraFin(horaFin);
 		setCodigoMonitor(codigoMonitor);
 		setCodigoActividad(codigoActividad);
-
-		recursosActividad = new ArrayList<Recurso>();
+		setCodigoInstalacion(codigoInstalacion);
 	}
 	
 	public ActividadPlanificada(String codigoPlanificada, String codigoActividad, int dia, int mes, int año,
-			int horaInicio, int horaFin, int limitePlazas) {
+			int horaInicio, int horaFin, int limitePlazas, String codigoInstalacion) {
 
 		setCodigoPlanificada(codigoPlanificada);
 		setFecha(dia, mes, año);
@@ -82,8 +84,7 @@ public class ActividadPlanificada {
 		setHoraInicio(horaInicio);
 		setHoraFin(horaFin);
 		setCodigoActividad(codigoActividad);
-		
-		recursosActividad = new ArrayList<>();
+		setCodigoInstalacion(codigoInstalacion);
 	}
 
 	public String getCodigoPlanificada() {
@@ -155,9 +156,9 @@ public class ActividadPlanificada {
 	public void setCodigoActividad(String codigoActividad) {
 		this.codigoActividad = codigoActividad;
 	}
-
-	public void añadirRecurso(Recurso r) {
-		recursosActividad.add(r);
+	
+	public void setCodigoInstalacion(String codigoInstalacion) {
+		this.codigoInstalacion = codigoInstalacion;
 	}
 
 	public boolean tieneMonitor() {
@@ -165,6 +166,10 @@ public class ActividadPlanificada {
 			return false;
 		}
 		return true;
+	}
+	
+	public String getCodigoInstalacion() {
+		return this.codigoInstalacion;
 	}
 
 	@Override
