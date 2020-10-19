@@ -28,4 +28,24 @@ public class Recurso {
 	public String getInstalacion() {
 		return this.codigo_instalacion;
 	}
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Recurso [id_recurso=");
+		sb.append(id_recurso);
+		sb.append(", nombre_recurso=");
+		sb.append(nombre_recurso);
+		sb.append(", codigo_actividad=");
+		if(codigo_actividad == null) {
+			sb.append("no tiene");
+		} else {
+			sb.append(codigo_actividad);
+		}
+		sb.append(", codigo_instalacion=");
+		sb.append(codigo_instalacion);
+		sb.append("]");
+		
+		return sb.toString();
+	}
 }

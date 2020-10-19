@@ -13,4 +13,14 @@ public class Instalacion {
 	public String toString() {
 		return nombre + ", id: " + codigo_instalacion;
 	}
+
+	public String getCodigoInstalacion() {
+		return codigo_instalacion;
+	}
+
+	public String getNombre() {
+		return nombre;
+	}
+	
+	
 }

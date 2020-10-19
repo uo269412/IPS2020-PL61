@@ -68,7 +68,7 @@ public class AsignarActividadDialog extends JDialog {
 
 	private List<ActividadPlanificada> aEliminar;
 	private JLabel lblInstalacion;
-	private JTextField txtInstalacion;
+	private JComboBox<Instalacion> cmbInstalaciones;
 
 //	/**
 //	 * Launch the application.
@@ -145,7 +145,7 @@ public class AsignarActividadDialog extends JDialog {
 			pnProgramarActividad.add(getLblLimite());
 			pnProgramarActividad.add(gettxtLimitePlazasPlazas());
 			pnProgramarActividad.add(getLblInstalacion());
-			pnProgramarActividad.add(getTxtInstalacion());
+			pnProgramarActividad.add(getCmbInstalaciones());
 			pnProgramarActividad.add(getPnAñadir());
 		}
 		return pnProgramarActividad;
@@ -161,9 +161,9 @@ public class AsignarActividadDialog extends JDialog {
 	private JComboBox<Actividad> getCmbActividades() {
 		if (cmbActividades == null) {
 			cmbActividades = new JComboBox<Actividad>();
-			cmbActividades.addFocusListener(new FocusAdapter() {
+			cmbActividades.addActionListener(new ActionListener() {
 				@Override
-				public void focusLost(FocusEvent e) {
+				public void actionPerformed(ActionEvent arg0) {
 					if(cmbActividades.getSelectedItem() != null) {
 						rellenarInstalacion();
 					}
@@ -358,7 +358,7 @@ public class AsignarActividadDialog extends JDialog {
 		int limitePlazas = Integer.parseInt(txtLimitePlazas.getText());
 		int horaInicio = Integer.parseInt(txtHoraInicio.getText());
 		int horaFin = Integer.parseInt(txtHoraFin.getText());
-		String codigoInstalacion = txtInstalacion.getText().split(" ")[2];
+		String codigoInstalacion = ((Instalacion)cmbInstalaciones.getSelectedItem()).getCodigoInstalacion();
 		return new ActividadPlanificada(codigoAAsignar, dia, mes, año, limitePlazas, horaInicio, horaFin, codigoInstalacion);
 
 	}
@@ -404,6 +404,8 @@ public class AsignarActividadDialog extends JDialog {
 	}
 	
 	private void rellenarInstalacion() {
+		cmbInstalaciones.setEnabled(true);
+		btnAñadir.setEnabled(true);
 		Actividad a = programa.getActividades().get(cmbActividades.getSelectedIndex());
 		if(a.requiresRecursos()) {
 			boolean todosIguales = true;
@@ -419,24 +421,27 @@ public class AsignarActividadDialog extends JDialog {
 			if(todosIguales) {
 				try {
 					Instalacion inst = programa.obtenerInstalacionPorId(a.getRecursos().get(0).getInstalacion());
-					txtInstalacion.setText(inst.toString());
+					Instalacion[] arrayInst = new Instalacion[1];
+					arrayInst[0] = inst;
+					cmbInstalaciones.setModel(new DefaultComboBoxModel<Instalacion>(arrayInst));
 				} catch(SQLException e) {
 					JOptionPane.showMessageDialog(this, "Ha habido un problema con la base de datos asignando la instalacion"
 							+ ", póngase en contacto con el desarrollador");
 				}
+			} else {
+				cmbInstalaciones.setEnabled(false);
+				cmbInstalaciones.setToolTipText("No hay ninguna instalación que tenga recursos para esta actividad");
+				btnAñadir.setEnabled(false);
 			}
 		} else {
-			txtInstalacion.setText("No hay instalaciones disponibles para la actividad");
+			cmbInstalaciones.setModel(new DefaultComboBoxModel<Instalacion>(programa.getInstalaciones().toArray(new Instalacion[programa.getInstalaciones().size()])));
 		}
-	}
-		
-	private JTextField getTxtInstalacion() {
-		if (txtInstalacion == null) {
-			txtInstalacion = new JTextField();
-			txtInstalacion.setEditable(false);
-			txtInstalacion.setColumns(10);
-		}
-		return txtInstalacion;
 	}
 	
+	private JComboBox<Instalacion> getCmbInstalaciones() {
+		if (cmbInstalaciones == null) {
+			cmbInstalaciones = new JComboBox<Instalacion>();
+		}
+		return cmbInstalaciones;
+	}
 }
