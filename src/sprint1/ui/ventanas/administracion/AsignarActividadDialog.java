@@ -31,7 +31,6 @@ import javax.swing.JTextField;
 import java.awt.Color;
 import java.awt.Font;
 import javax.swing.ListSelectionModel;
-import java.awt.SystemColor;
 
 public class AsignarActividadDialog extends JDialog {
 

@@ -16,7 +16,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
-import java.awt.FlowLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 
