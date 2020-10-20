@@ -187,9 +187,6 @@ public class CrearActividadDialog extends JDialog {
 			if (pnRegistrarActividad.getComponent(i) instanceof JTextField) {
 				JTextField toRestore = (JTextField) pnRegistrarActividad.getComponent(i);
 				toRestore.setText("");
-			} else if(pnRegistrarActividad.getComponent(i) instanceof JTextPane) {
-				JTextPane toRestore = (JTextPane) pnRegistrarActividad.getComponent(i);
-				toRestore.setText("");
 			}
 		}
 	}
