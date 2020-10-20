@@ -603,6 +603,29 @@ public class Programa {
 		
 		return new Instalacion(rs.getString(1), rs.getString(2));
 	}
+	 
+	public List<Instalacion> getInstalaciones() {
+		List<Instalacion> toRet = new ArrayList<Instalacion>();
+		try {
+			Connection con = DriverManager.getConnection(URL);
+			PreparedStatement pst = con.prepareStatement("SELECT *, nombre_instalacion FROM instalacion");
+			ResultSet rs = pst.executeQuery();
+			toRet = convertirInstalacionesEnLista(rs);
+		} catch (SQLException e) {
+			System.out.println("Error obteniendo las instalaciones");
+		}
+		return toRet;
+	}
+
+	private List<Instalacion> convertirInstalacionesEnLista(ResultSet rs) throws SQLException {
+		List<Instalacion> instalaciones = new ArrayList<Instalacion>();
+		while (rs.next()) {
+			String codigo = rs.getString(0);
+			String nombre = rs.getString(1);
+			instalaciones.add(new Instalacion(codigo, nombre));
+		}
+		return instalaciones;
+	}
 
 	// UTIL
 

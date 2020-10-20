@@ -144,7 +144,7 @@ public class VerHorariosSocioWindow extends JDialog{
 		for (Actividad a : actividades) {
 			if (a.getCodigo().equals(ap.getCodigoActividad())) {
 				labelText += a.getNombre() + " (" + ap.getHoraInicio() + ":00 - " + ap.getHoraFin() + ":00)";
-				if (ap.getLimitePlazas() > 0) {
+				if (ap.esDeLibreAcceso()) {
 					labelText += " - Límite de plazas: " + ap.getLimitePlazas();
 				} else {
 					labelText += " - Actividad de libre acceso.";

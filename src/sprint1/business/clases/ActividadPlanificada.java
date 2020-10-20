@@ -171,6 +171,10 @@ public class ActividadPlanificada {
 	public String getCodigoInstalacion() {
 		return this.codigoInstalacion;
 	}
+	
+	public boolean esDeLibreAcceso() {
+		return this.limitePlazas == 0;
+	}
 
 	@Override
 	public String toString() {

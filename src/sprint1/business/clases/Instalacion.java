@@ -9,6 +9,14 @@ public class Instalacion {
 		this.nombre = nombre;
 	}
 	
+	public String getCodigo() {
+		return codigo_instalacion;
+	}
+	
+	public String getNombre() {
+		return nombre;
+	}
+	
 	@Override
 	public String toString() {
 		return nombre + ", id: " + codigo_instalacion;

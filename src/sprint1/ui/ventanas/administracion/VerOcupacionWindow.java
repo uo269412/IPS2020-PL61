@@ -17,6 +17,7 @@ import javax.swing.border.LineBorder;
 
 import sprint1.business.clases.Actividad;
 import sprint1.business.clases.ActividadPlanificada;
+import sprint1.business.clases.Instalacion;
 import sprint1.business.clases.Programa;
 
 import javax.swing.JSeparator;
@@ -34,7 +35,7 @@ public class VerOcupacionWindow extends JDialog {
 	private static final long serialVersionUID = 1L;
 	private JPanel pnPrincipal;
 	private JPanel pnNorth;
-	private JComboBox<Actividad> cbActividadSeleccionada;
+	private JComboBox<Instalacion> cbInstalacionSeleccionada;
 	private JButton btnMostrarOcupacion;
 	private JPanel pnCentralDias;
 	private Programa programa = null;
@@ -78,21 +79,21 @@ public class VerOcupacionWindow extends JDialog {
 			pnNorth.setBorder(null);
 			pnNorth.setBackground(Color.WHITE);
 			pnNorth.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-			pnNorth.add(getCbActividadSeleccionada());
+			pnNorth.add(getCbInstalacionSeleccionada());
 			pnNorth.add(getBtnMostrarOcupacion());
 		}
 		return pnNorth;
 	}
-	private JComboBox<Actividad> getCbActividadSeleccionada() {
-		if (cbActividadSeleccionada == null) {
-			cbActividadSeleccionada = new JComboBox<Actividad>();
-			List<Actividad> actividades = programa.getActividades();
-			Actividad[] arrayActividades = new Actividad[actividades.size()];
-			arrayActividades = actividades.toArray(arrayActividades);
-			cbActividadSeleccionada.setModel(new DefaultComboBoxModel<Actividad>(arrayActividades));
-			cbActividadSeleccionada.setSelectedIndex(0);
+	private JComboBox<Instalacion> getCbInstalacionSeleccionada() {
+		if (cbInstalacionSeleccionada == null) {
+			cbInstalacionSeleccionada = new JComboBox<Instalacion>();
+			List<Instalacion> instalaciones = programa.getInstalaciones();
+			Instalacion[] arrayInstalaciones = new Instalacion[instalaciones.size()];
+			arrayInstalaciones = instalaciones.toArray(arrayInstalaciones);
+			cbInstalacionSeleccionada.setModel(new DefaultComboBoxModel<Instalacion>(arrayInstalaciones));
+			cbInstalacionSeleccionada.setSelectedIndex(0);
 		}
-		return cbActividadSeleccionada;
+		return cbInstalacionSeleccionada;
 	}
 	private JButton getBtnMostrarOcupacion() {
 		if (btnMostrarOcupacion == null) {
@@ -141,7 +142,7 @@ public class VerOcupacionWindow extends JDialog {
 	}
 
 	private void addHorarios(JPanel panel, int col) {
-		Actividad actividad = (Actividad) cbActividadSeleccionada.getSelectedItem();
+		Instalacion instalacion = (Instalacion) cbInstalacionSeleccionada.getSelectedItem();
 		if (col == 0) {
 			for(int i = 8; i < 23; i++) {//i = hora
 				JLabel label = new JLabel();
@@ -155,8 +156,8 @@ public class VerOcupacionWindow extends JDialog {
 		else {
 			for (int hora = 8; hora < 23; hora++) {
 				JLabel label = new JLabel();
-				if (hayActividadAEsaHora(hora, actividad, col)) {
-					label.setText(nombreActividad(actividad));
+				if (hayInstalacionAEsaHora(hora, instalacion, col)) {
+					label.setText(nombreInstalacion(instalacion));
 					label.setFont(new Font("Tahoma", Font.PLAIN, 15));
 				}
 				panel.add(label);
@@ -166,20 +167,20 @@ public class VerOcupacionWindow extends JDialog {
 		}
 	}
 
-	private boolean hayActividadAEsaHora(int hora, Actividad actividad, int dia) {
+	private boolean hayInstalacionAEsaHora(int hora, Instalacion instalacion, int dia) {
 		List<ActividadPlanificada> actividades = programa.getActividadesPlanificadas();
 		for (ActividadPlanificada ap : actividades) {
-			if (ap.getHoraInicio() == hora /*&& dia == ap.getFecha().getDay()*/)
+			if (ap.getHoraInicio() == hora && ap.getCodigoInstalacion().equals(instalacion.getCodigo()) /*&& dia == ap.getFecha().getDay()*/)
 				return true;
 		}
 		return false;
 	}
 
-	private String nombreActividad(Actividad actividad) {
+	private String nombreInstalacion(Instalacion instalacion) {
 		List<ActividadPlanificada> actividades = programa.getActividadesPlanificadas();
 		for (ActividadPlanificada ap : actividades) {
-			if (ap.getCodigoActividad().equals(actividad.getCodigo()))
-				return actividad.getNombre();
+			if (ap.getCodigoInstalacion().equals(instalacion.getCodigo()))
+				return instalacion.getNombre();
 		}
 		return null;
 	}
