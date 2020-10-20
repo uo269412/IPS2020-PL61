@@ -85,10 +85,15 @@ public class MainWindow extends JFrame {
 		btnSocio.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String id_socio;
-				do {
-					id_socio = JOptionPane.showInputDialog("Por favor, introduce un id de socio válido ");
-				} while (programa.encontrarSocio(id_socio) == null);
-				openSocioWindow(programa.encontrarSocio(id_socio));
+				id_socio = JOptionPane.showInputDialog("Por favor, introduce un id de socio válido ");
+				if (id_socio != null) {
+					if(programa.encontrarSocio(id_socio) != null) {
+						openSocioWindow(programa.encontrarSocio(id_socio)); 
+					} else {
+						JOptionPane.showMessageDialog(MainWindow.this, "Por favor, introduce un id de socio válido ");
+					}
+				}
+				
 			}
 
 		});

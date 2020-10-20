@@ -43,6 +43,7 @@ public class VerHorariosSocioWindow extends JDialog{
 	 * Create the frame.
 	 */
 	public VerHorariosSocioWindow(Programa p) {
+		setTitle("Horarios de actividades");
 		this.programa = p;
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 734, 518);
@@ -145,7 +146,7 @@ public class VerHorariosSocioWindow extends JDialog{
 			if (a.getCodigo().equals(ap.getCodigoActividad())) {
 				labelText += a.getNombre() + " (" + ap.getHoraInicio() + ":00 - " + ap.getHoraFin() + ":00)";
 				if (ap.esDeLibreAcceso()) {
-					labelText += " - Límite de plazas: " + ap.getLimitePlazas();
+					labelText += " - Plazas restantes: " + ap.getLimitePlazas();
 				} else {
 					labelText += " - Actividad de libre acceso.";
 				}

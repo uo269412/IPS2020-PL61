@@ -19,26 +19,26 @@ import javax.swing.JOptionPane;
 
 import sprint1.business.clases.ActividadPlanificada;
 import sprint1.business.clases.Instalacion;
-import sprint1.business.clases.Monitor;
 import sprint1.business.clases.Programa;
 import sprint1.business.clases.Recurso;
 
 import javax.swing.JLabel;
-import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JComboBox;
 import sprint1.business.clases.Actividad;
 import javax.swing.JTextField;
-import javax.swing.JTextPane;
 import java.awt.Color;
 import java.awt.Font;
 import javax.swing.ListSelectionModel;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
+import java.awt.SystemColor;
 
 public class AsignarActividadDialog extends JDialog {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
 	private JPanel pnActividadesPlanificadas;
 	private JList<ActividadPlanificada> listActividadesPlanificadas;
@@ -58,7 +58,6 @@ public class AsignarActividadDialog extends JDialog {
 	private JPanel pnBotones;
 	private JButton btnVolver;
 
-	private CalendarioAdmin parent;
 	private Programa programa;
 	private DefaultListModel<ActividadPlanificada> modeloLista;
 	private int dia;
@@ -68,7 +67,7 @@ public class AsignarActividadDialog extends JDialog {
 
 	private List<ActividadPlanificada> aEliminar;
 	private JLabel lblInstalacion;
-	private JTextField txtInstalacion;
+	private JComboBox<Instalacion> cmbInstalaciones;
 
 //	/**
 //	 * Launch the application.
@@ -88,7 +87,6 @@ public class AsignarActividadDialog extends JDialog {
 	 */
 	public AsignarActividadDialog(CalendarioAdmin parent, Programa p, int dia, int mes, int año) {
 		setTitle("Centro de deportes: Asignar actividad " + dia + "/" + mes + "/" + año);
-		this.parent = parent;
 		this.programa = p;
 		this.dia = dia;
 		this.mes = mes;
@@ -145,7 +143,7 @@ public class AsignarActividadDialog extends JDialog {
 			pnProgramarActividad.add(getLblLimite());
 			pnProgramarActividad.add(gettxtLimitePlazasPlazas());
 			pnProgramarActividad.add(getLblInstalacion());
-			pnProgramarActividad.add(getTxtInstalacion());
+			pnProgramarActividad.add(getCmbInstalaciones());
 			pnProgramarActividad.add(getPnAñadir());
 		}
 		return pnProgramarActividad;
@@ -161,9 +159,9 @@ public class AsignarActividadDialog extends JDialog {
 	private JComboBox<Actividad> getCmbActividades() {
 		if (cmbActividades == null) {
 			cmbActividades = new JComboBox<Actividad>();
-			cmbActividades.addFocusListener(new FocusAdapter() {
+			cmbActividades.addActionListener(new ActionListener() {
 				@Override
-				public void focusLost(FocusEvent e) {
+				public void actionPerformed(ActionEvent arg0) {
 					if(cmbActividades.getSelectedItem() != null) {
 						rellenarInstalacion();
 					}
@@ -237,10 +235,11 @@ public class AsignarActividadDialog extends JDialog {
 			btnAñadir = new JButton("A\u00F1adir");
 			btnAñadir.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-
+					
 					if (checkHoraInicio() && checkHoraFin() && checkLimitePlazas()) {
 						// cuando se implemente lo de los monitores, cambiar el constructor
 						modeloLista.add(modeloLista.size(), crearPlanificada());
+						repintar();
 					}
 				}
 			});
@@ -248,6 +247,19 @@ public class AsignarActividadDialog extends JDialog {
 			btnAñadir.setBackground(new Color(60, 179, 113));
 		}
 		return btnAñadir;
+	}
+	
+	private void repintar() {
+		txtHoraInicio.setBackground(Color.WHITE);
+		txtHoraInicio.setForeground(Color.BLACK);
+		txtHoraInicio.setText("");
+		txtHoraFin.setBackground(Color.WHITE);
+		txtHoraFin.setForeground(Color.BLACK);
+		txtHoraFin.setText("");
+		txtLimitePlazas.setBackground(Color.WHITE);
+		txtLimitePlazas.setForeground(Color.BLACK);
+		txtLimitePlazas.setText("");
+		
 	}
 
 	private JButton getBtnEliminar() {
@@ -285,7 +297,7 @@ public class AsignarActividadDialog extends JDialog {
 					getMe().dispose();
 				}
 			});
-			btnVolver.setBackground(Color.LIGHT_GRAY);
+			btnVolver.setBackground(new Color(240,240,240));
 			btnVolver.setForeground(Color.BLACK);
 			btnVolver.setActionCommand("Cancel");
 		}
@@ -342,23 +354,34 @@ public class AsignarActividadDialog extends JDialog {
 	}
 
 	private boolean checkLimitePlazas() {
-		try {
-			Integer.parseInt(txtLimitePlazas.getText());
-		} catch (NumberFormatException e) {
-			txtLimitePlazas.setBackground(Color.RED);
-			txtLimitePlazas.setForeground(Color.WHITE);
-			return false;
+		if(txtLimitePlazas.getText().contentEquals("")) {
+			return true;
 		}
+		else {
+			try {
+				Integer.parseInt(txtLimitePlazas.getText());
+			} catch (NumberFormatException e) {
+				txtLimitePlazas.setBackground(Color.RED);
+				txtLimitePlazas.setForeground(Color.WHITE);
+				return false;
+			}
 
-		return true;
+			return true;
+		}
 	}
 
 	private ActividadPlanificada crearPlanificada() {
 		String codigoAAsignar = ((Actividad) cmbActividades.getSelectedItem()).getCodigo();
-		int limitePlazas = Integer.parseInt(txtLimitePlazas.getText());
+		int limitePlazas;
+		if(txtLimitePlazas.getText().equals("")){
+			limitePlazas = Integer.MAX_VALUE;
+		}
+		else {
+			limitePlazas = Integer.parseInt(txtLimitePlazas.getText());
+		}
 		int horaInicio = Integer.parseInt(txtHoraInicio.getText());
 		int horaFin = Integer.parseInt(txtHoraFin.getText());
-		String codigoInstalacion = txtInstalacion.getText().split(" ")[2];
+		String codigoInstalacion = ((Instalacion)cmbInstalaciones.getSelectedItem()).getCodigoInstalacion();
 		return new ActividadPlanificada(codigoAAsignar, dia, mes, año, limitePlazas, horaInicio, horaFin, codigoInstalacion);
 
 	}
@@ -385,7 +408,8 @@ public class AsignarActividadDialog extends JDialog {
 				}
 				
 				for (int i = 0; i < modeloLista.size(); i++) {
-					programa.añadirActividadPlanificada(modeloLista.getElementAt(i));
+					if( !programa.getActividadesPlanificadas().contains(modeloLista.getElementAt(i)))
+						programa.añadirActividadPlanificada(modeloLista.getElementAt(i));
 				}
 				
 				mostrarActividadesPlanificadasDia();
@@ -404,6 +428,8 @@ public class AsignarActividadDialog extends JDialog {
 	}
 	
 	private void rellenarInstalacion() {
+		cmbInstalaciones.setEnabled(true);
+		btnAñadir.setEnabled(true);
 		Actividad a = programa.getActividades().get(cmbActividades.getSelectedIndex());
 		if(a.requiresRecursos()) {
 			boolean todosIguales = true;
@@ -419,24 +445,27 @@ public class AsignarActividadDialog extends JDialog {
 			if(todosIguales) {
 				try {
 					Instalacion inst = programa.obtenerInstalacionPorId(a.getRecursos().get(0).getInstalacion());
-					txtInstalacion.setText(inst.toString());
+					Instalacion[] arrayInst = new Instalacion[1];
+					arrayInst[0] = inst;
+					cmbInstalaciones.setModel(new DefaultComboBoxModel<Instalacion>(arrayInst));
 				} catch(SQLException e) {
 					JOptionPane.showMessageDialog(this, "Ha habido un problema con la base de datos asignando la instalacion"
 							+ ", póngase en contacto con el desarrollador");
 				}
+			} else {
+				cmbInstalaciones.setEnabled(false);
+				cmbInstalaciones.setToolTipText("No hay ninguna instalación que tenga recursos para esta actividad");
+				btnAñadir.setEnabled(false);
 			}
 		} else {
-			txtInstalacion.setText("No hay instalaciones disponibles para la actividad");
+			cmbInstalaciones.setModel(new DefaultComboBoxModel<Instalacion>(programa.getInstalaciones().toArray(new Instalacion[programa.getInstalaciones().size()])));
 		}
-	}
-		
-	private JTextField getTxtInstalacion() {
-		if (txtInstalacion == null) {
-			txtInstalacion = new JTextField();
-			txtInstalacion.setEditable(false);
-			txtInstalacion.setColumns(10);
-		}
-		return txtInstalacion;
 	}
 	
+	private JComboBox<Instalacion> getCmbInstalaciones() {
+		if (cmbInstalaciones == null) {
+			cmbInstalaciones = new JComboBox<Instalacion>();
+		}
+		return cmbInstalaciones;
+	}
 }

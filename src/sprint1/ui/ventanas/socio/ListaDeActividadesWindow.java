@@ -122,13 +122,17 @@ public class ListaDeActividadesWindow extends JDialog {
 			btnCancelarReserva = new JButton("Cancelar reserva");
 			btnCancelarReserva.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					int yesNo = JOptionPane.showConfirmDialog(null,
-							"¿Seguro de que quiere cancelar su reserva en la actividad "
-									+ listActividades.getSelectedValue().getCodigoActividad() + " ?");
-					if (yesNo == JOptionPane.YES_OPTION) {
-						getPrograma().anularReserva(socio, listActividades.getSelectedValue());
-						JOptionPane.showMessageDialog(null, "Se ha borrado la reserva correctamente");
-						cargarActividades();
+					if (listActividades.isSelectionEmpty()) {
+						JOptionPane.showMessageDialog(null, "Por favor, selecciona una actividad");
+					} else {
+						int yesNo = JOptionPane.showConfirmDialog(null,
+								"¿Seguro de que quiere cancelar su reserva en la actividad "
+										+ listActividades.getSelectedValue().getCodigoActividad() + " ?");
+						if (yesNo == JOptionPane.YES_OPTION) {
+							getPrograma().anularReserva(socio, listActividades.getSelectedValue());
+							JOptionPane.showMessageDialog(null, "Se ha borrado la reserva correctamente");
+							cargarActividades();
+						}
 					}
 				}
 			});

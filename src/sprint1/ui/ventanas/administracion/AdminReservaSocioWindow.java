@@ -128,6 +128,10 @@ public class AdminReservaSocioWindow extends JDialog {
 			btnReservar = new JButton("Reservar");
 			btnReservar.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					if (listActividades.isSelectionEmpty()) {
+						JOptionPane.showMessageDialog(null,
+								"Por favor, selecciona tanto una actividad");
+					} else {
 					int yesNo = JOptionPane.showConfirmDialog(null, "¿Seguro de que reservar para la actividad "
 							+ listActividades.getSelectedValue().getCodigoActividad() + " ?");
 					if (yesNo == JOptionPane.YES_OPTION) {
@@ -137,7 +141,7 @@ public class AdminReservaSocioWindow extends JDialog {
 						cargarActividades();
 
 					}
-				}
+				} }
 			});
 			btnReservar.setBackground(new Color(0, 128, 0));
 			btnReservar.setForeground(new Color(255, 255, 255));

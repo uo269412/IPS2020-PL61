@@ -1,7 +1,6 @@
 package sprint1.business.clases;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.UUID;
 
 public class ActividadPlanificada {
 
@@ -23,7 +22,7 @@ public class ActividadPlanificada {
 
 	public ActividadPlanificada(int dia, int mes, int año, int limitePlazas, int horaInicio, int horaFin,
 			String codigoMonitor, String codigoActividad, String codigoInstalacion) {
-		this.codigoPlanificada = "P-" + codigoActividad + "/" + codigoMonitor;
+		this.codigoPlanificada = "P-" + codigoActividad + "/" + codigoMonitor + "-" + UUID.randomUUID().toString().substring(0,5);
 		this.dia = dia;
 		this.mes = mes;
 		this.año = año;
@@ -36,7 +35,7 @@ public class ActividadPlanificada {
 	}
 	
 	public ActividadPlanificada(String codigoActividad, int dia, int mes, int año, int limitePlazas, int horaInicio, int horaFin, String codigoInstalacion) {
-		String codigoPlanificada = "P-" + codigoActividad + "/" + codigoMonitor;
+		String codigoPlanificada = "P-" + codigoActividad + "/" + codigoMonitor + "-" + UUID.randomUUID().toString().substring(0,5);
 		
 		setCodigoPlanificada(codigoPlanificada);
 		setFecha(dia, mes, año);
@@ -186,6 +185,31 @@ public class ActividadPlanificada {
 		}
 		return "Actividad " + codigoActividad + " empieza a las " + horaInicio + " horas y acaba a las " + horaFin
 				+ " del " + dia + "/" + mes + "/" + año + monitor;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((codigoPlanificada == null) ? 0 : codigoPlanificada.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ActividadPlanificada other = (ActividadPlanificada) obj;
+		if (codigoPlanificada == null) {
+			if (other.codigoPlanificada != null)
+				return false;
+		} else if (!codigoPlanificada.equals(other.codigoPlanificada))
+			return false;
+		return true;
 	}
 
 }

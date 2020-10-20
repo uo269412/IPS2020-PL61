@@ -37,7 +37,6 @@ public class AdminWindow extends JDialog {
 	private JButton btnCrearActividad;
 	private JButton btnAsignarActividad;
 
-	private CalendarioAdmin calendarAdmin;
 	private AsignarMonitorActividadDialog asignarMonitor;
 	private AdminReservaSocioWindow adminReservaSocio;
 	private JButton btnReservaSocio;
@@ -69,6 +68,8 @@ public class AdminWindow extends JDialog {
 	private JLabel getLblBienvenida() {
 		if (lblBienvenida == null) {
 			lblBienvenida = new JLabel("Bienvenido, administrador");
+			lblBienvenida.setHorizontalAlignment(SwingConstants.CENTER);
+			lblBienvenida.setFont(new Font("Tahoma", Font.BOLD, 20));
 		}
 		return lblBienvenida;
 	}
@@ -160,6 +161,7 @@ public class AdminWindow extends JDialog {
 				public void actionPerformed(ActionEvent arg0) {
 					CrearActividadDialog dialog = new CrearActividadDialog(parent.getPrograma());
 					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+					dialog.setLocationRelativeTo(AdminWindow.this);
 					dialog.setVisible(true);
 				}
 			});
@@ -191,7 +193,7 @@ public class AdminWindow extends JDialog {
 	private AdminWindow getMe() {
 		return this;
 	}
-	
+
 	public void openAdminReservaSocioWindow(Socio socio) {
 		adminReservaSocio = new AdminReservaSocioWindow(this, socio);
 		adminReservaSocio.setModal(true);
@@ -229,24 +231,32 @@ public class AdminWindow extends JDialog {
 	private JButton getBtnReservaSocio() {
 		if (btnReservaSocio == null) {
 			btnReservaSocio = new JButton("Hacer una reserva para un socio en una actividad que se realiza hoy");
+			btnReservaSocio.setMnemonic('H');
 			btnReservaSocio.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					String id_socio;
-					do {
-						id_socio = JOptionPane.showInputDialog("Por favor, introduce un id de socio válido ");
-					} while (getParent().getPrograma().encontrarSocio(id_socio) == null);
-					Socio socio = getParent().getPrograma().encontrarSocio(id_socio);
-					if (checkIfAdminReservaSocioWindowOpens(socio)) {
-						openAdminReservaSocioWindow(socio);
-					} else {
-						JOptionPane.showMessageDialog(null, "No se puede realizar ninguna reserva para este usuario");
-					}
 
+					String id_socio;
+					id_socio = JOptionPane.showInputDialog("Por favor, introduce un id de socio válido ");
+					if (id_socio != null) {
+						if (getParent().getPrograma().encontrarSocio(id_socio) != null) {
+							Socio socio = getParent().getPrograma().encontrarSocio(id_socio);
+							if (checkIfAdminReservaSocioWindowOpens(socio)) {
+								openAdminReservaSocioWindow(socio);
+							} else {
+								JOptionPane.showMessageDialog(null,
+										"No se puede realizar ninguna reserva para este usuario");
+							}
+						} else {
+							JOptionPane.showMessageDialog(AdminWindow.this,
+									"Por favor, introduce un id de socio válido ");
+						}
+					}
 				}
 			});
 		}
 		return btnReservaSocio;
 	}
+
 	private JButton getBtnVerOcupacion() {
 		if (btnVerOcupacion == null) {
 			btnVerOcupacion = new JButton("Ver ocupaci\u00F3n");

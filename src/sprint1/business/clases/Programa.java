@@ -9,6 +9,7 @@ import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -20,6 +21,8 @@ public class Programa {
 	private List<Socio> socios;
 	private List<Reserva> reservas;
 	private List<Monitor> monitores;
+	private List<Instalacion> instalaciones;
+	private List<Recurso> recursos;
 
 	//Conexión Javi
 	//public static String URL = "jdbc:sqlite:C:\\Users\\javie\\Desktop\\master\\sprint1\\resources\\bdProject.db";
@@ -41,6 +44,8 @@ public class Programa {
 			cargarReservas();
 			cargarMonitores();
 			cargarActividadesPlanificadas();
+			cargarInstalaciones();
+			cargarRecursos();
 			printAllLists();
 		} catch (SQLException e) {
 			System.out.println("Ha surgido un error cargando la base de datos");
@@ -53,7 +58,8 @@ public class Programa {
 		printSocios();
 		printReservas();
 		printMonitores();
-
+		printInstalaciones();
+		printRecursos();
 	}
 
 //ACTIVIDADES	
@@ -62,6 +68,7 @@ public class Programa {
 		Connection con = DriverManager.getConnection(URL);
 		Statement st = con.createStatement();
 		ResultSet rs = st.executeQuery("SELECT * FROM ACTIVIDAD");
+		
 		convertirActividadesEnLista(rs);
 		rs.close();
 		st.close();
@@ -212,27 +219,24 @@ public class Programa {
 	}
 	
 	public void añadirActividadPlanificada(ActividadPlanificada a) throws SQLException {
-		if(encontrarActividadPlanificada(a.getCodigoPlanificada()) == null) {
-			Connection con = DriverManager.getConnection(URL);
-			PreparedStatement pst = con.prepareStatement("INSERT INTO actividad_planificada"
-					+ " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)");
-			pst.setString(1, a.getCodigoActividad());
-			pst.setInt(2, a.getDia());
-			pst.setInt(3, a.getMes());
-			pst.setInt(4, a.getAño());
-			pst.setInt(5, a.getLimitePlazas());
-			pst.setInt(6, a.getHoraInicio());
-			pst.setInt(7, a.getHoraFin());
-			pst.setString(8, a.getCodigoMonitor());
-			pst.setString(9, a.getCodigoPlanificada());
-			pst.setString(10, a.getCodigoInstalacion());
-			pst.executeUpdate();
-			
-			actividadesPlanificadas.add(a);
-			printActividadesPlanificadas();
-		} else {
-			updateActividadPlanificada(a);
-		}
+		Connection con = DriverManager.getConnection(URL);
+		PreparedStatement pst = con.prepareStatement("INSERT INTO actividad_planificada"
+				+ " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		pst.setString(1, a.getCodigoActividad());
+		pst.setInt(2, a.getDia());
+		pst.setInt(3, a.getMes());
+		pst.setInt(4, a.getAño());
+		pst.setInt(5, a.getLimitePlazas());
+		pst.setInt(6, a.getHoraInicio());
+		pst.setInt(7, a.getHoraFin());
+		pst.setString(8, a.getCodigoMonitor());
+		pst.setString(9, a.getCodigoPlanificada());
+		pst.setString(10, a.getCodigoInstalacion());
+		pst.executeUpdate();
+		
+		actividadesPlanificadas.add(a);
+		printActividadesPlanificadas();
+		
 	}
 	
 	public void updateActividadPlanificada(ActividadPlanificada a) throws SQLException {
@@ -249,7 +253,7 @@ public class Programa {
 		pst.setInt(6, a.getHoraInicio());
 		pst.setInt(7, a.getHoraFin());
 		pst.setString(8, a.getCodigoMonitor());
-		pst.setString(10, a.getCodigoInstalacion());
+		pst.setString(9, a.getCodigoInstalacion());
 		pst.setString(10, a.getCodigoPlanificada());
 		pst.executeUpdate();
 	}
@@ -555,32 +559,55 @@ public class Programa {
 	
 	//RECURSOS
 	
-	public boolean checkRecursosExisten(String...nombreRecursos) throws SQLException {
+	public boolean checkRecursosExisten(String[] nombreRecursos) throws SQLException {
 		Connection con = DriverManager.getConnection(URL);
 		PreparedStatement pst = con.prepareStatement("SELECT nombre_recurso FROM recurso");
-		boolean todosValidos = true;
 		ResultSet rs = pst.executeQuery();
+		List<String> nombres = new ArrayList<>();
 		while(rs.next()) {
-			for(String nombre: nombreRecursos) {
-				if(!rs.getString(1).equals(nombre)) {
-					todosValidos = false;
-				} else {
-					todosValidos = true;
+			nombres.add(rs.getString(1));
+		}
+		for (int i = 0; i < nombreRecursos.length; i++) {
+			if (!nombres.contains(nombreRecursos[i]))
+				return false;
+		}
+		
+		return true;
+	}
+	
+	public void updateRecursosFromLista(List<Recurso> listaRecursos) throws SQLException {
+		Connection con = DriverManager.getConnection(URL);
+		for(Recurso r: listaRecursos) {
+			
+			PreparedStatement pst = con.prepareStatement("UPDATE RECURSO SET codigo_actividad = ? WHERE id_recurso = ?");
+			pst.setString(1, r.getActividad());
+			pst.setString(2, r.getIdRecurso());
+			pst.execute();
+		}
+	}
+	
+	public void cargarRecursos() throws SQLException {
+		recursos = new ArrayList<>();
+		Connection con = DriverManager.getConnection(URL);
+		PreparedStatement pst = con.prepareStatement("SELECT * FROM recurso");
+		ResultSet rs = pst.executeQuery();
+		
+		while(rs.next()) {
+			String nombre = rs.getString("nombre_recurso");
+			String codigoInst = rs.getString("codigo_instalacion");
+			Recurso r = new Recurso(nombre, codigoInst);
+			recursos.add(r);
+			String codigoActividad = rs.getString("codigo_actividad");
+			if(!rs.wasNull()) {
+				for(Actividad a: actividades) {
+					if(a.getCodigo().equals(codigoActividad)) {
+						a.añadirRecurso(r);
+					}
 				}
 			}
 		}
 		
-		return todosValidos;
-	}
-	
-	public void updateRecursosFromLista(List<Recurso> listaRecursos) throws SQLException {
-		for(Recurso r: listaRecursos) {
-			Connection con = DriverManager.getConnection(URL);
-			PreparedStatement pst = con.prepareStatement("UPDATE RECURSO SET codigo_actividad = ? WHERE id_recurso = ?");
-			pst.setString(1, r.getActividad());
-			pst.setString(2, r.getIdRecurso());
-			pst.executeUpdate();
-		}
+		
 	}
 	
 	public Recurso obtenerRecursoPorNombre(String nombreRecurso) throws SQLException {
@@ -590,7 +617,18 @@ public class Programa {
 		pst.setString(1, nombreRecurso);
 		ResultSet rs = pst.executeQuery();
 		String codigo_instalacion = rs.getString(1);
+		
+		rs.close();
+		pst.close();
+		con.close();
 		return new Recurso(nombreRecurso, codigo_instalacion);
+	}
+	
+	public void printRecursos() {
+		System.out.println("Lista de recursos");
+		for (Recurso r : recursos) {
+			System.out.println(r.toString());
+		}
 	}
 	
 	//INSTALACION
@@ -600,33 +638,45 @@ public class Programa {
 		PreparedStatement pst = con.prepareStatement("SELECT codigo_instalacion, nombre_instalacion FROM instalacion WHERE codigo_instalacion = ?");
 		pst.setString(1, id);
 		ResultSet rs = pst.executeQuery();
+		String codigo_instalacion = rs.getString(1);
+		String nombre = rs.getString(2);
+		rs.close();
+		pst.close();
+		con.close();
 		
-		return new Instalacion(rs.getString(1), rs.getString(2));
-	}
-	 
-	public List<Instalacion> getInstalaciones() {
-		List<Instalacion> toRet = new ArrayList<Instalacion>();
-		try {
-			Connection con = DriverManager.getConnection(URL);
-			PreparedStatement pst = con.prepareStatement("SELECT *, nombre_instalacion FROM instalacion");
-			ResultSet rs = pst.executeQuery();
-			toRet = convertirInstalacionesEnLista(rs);
-		} catch (SQLException e) {
-			System.out.println("Error obteniendo las instalaciones");
-		}
-		return toRet;
+		return new Instalacion(codigo_instalacion, nombre);
 	}
 
 	private List<Instalacion> convertirInstalacionesEnLista(ResultSet rs) throws SQLException {
-		List<Instalacion> instalaciones = new ArrayList<Instalacion>();
+		instalaciones = new ArrayList<Instalacion>();
 		while (rs.next()) {
-			String codigo = rs.getString(0);
-			String nombre = rs.getString(1);
+			String codigo = rs.getString(1);
+			String nombre = rs.getString(2);
 			instalaciones.add(new Instalacion(codigo, nombre));
 		}
 		return instalaciones;
 	}
 
+	
+	public void cargarInstalaciones() throws SQLException {
+		Connection con = DriverManager.getConnection(URL);
+		PreparedStatement pst = con.prepareStatement("SELECT * from instalacion");
+		ResultSet rs = pst.executeQuery();
+		convertirInstalacionesEnLista(rs);
+	}
+	
+	public void printInstalaciones() {
+		System.out.println("Lista de instalaciones");
+		for (Instalacion instalacion : instalaciones) {
+			System.out.println(instalacion.toString());
+		}
+	}
+
+	public List<Instalacion> getInstalaciones() {
+		return this.instalaciones;
+	}
+	
+	
 	// UTIL
 
 	public int[] obtenerHoraDiaMesAño() {

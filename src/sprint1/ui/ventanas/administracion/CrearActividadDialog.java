@@ -2,7 +2,6 @@ package sprint1.ui.ventanas.administracion;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.FlowLayout;
 
 import javax.swing.JButton;
@@ -14,23 +13,26 @@ import sprint1.business.clases.Actividad;
 import sprint1.business.clases.Programa;
 import sprint1.business.clases.Recurso;
 
-import javax.swing.BoxLayout;
 import java.awt.GridLayout;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
-import java.util.regex.PatternSyntaxException;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextPane;
 
 public class CrearActividadDialog extends JDialog {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2207372092080235648L;
+
 	Programa p = null;
 
 	public static final int LONGITUDMAX_CODIGO_ACTIVIDAD = 26;
-	public static final int LONGITUDMAX_NOMBRE_ACTIVIDAD = 16;
+	public static final int LONGITUDMAX_NOMBRE_ACTIVIDAD = 26;
 
 	private final JPanel pnRegistrarActividad = new JPanel();
 	private JTextField txtCodigo;
@@ -186,6 +188,9 @@ public class CrearActividadDialog extends JDialog {
 		for (int i = 0; i < pnRegistrarActividad.getComponentCount(); i++) {
 			if (pnRegistrarActividad.getComponent(i) instanceof JTextField) {
 				JTextField toRestore = (JTextField) pnRegistrarActividad.getComponent(i);
+				toRestore.setText("");
+			} else if(pnRegistrarActividad.getComponent(i) instanceof JTextPane) {
+				JTextPane toRestore = (JTextPane) pnRegistrarActividad.getComponent(i);
 				toRestore.setText("");
 			}
 		}

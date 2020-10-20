@@ -22,10 +22,12 @@ import sprint1.business.clases.Programa;
 
 import javax.swing.JSeparator;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.awt.event.ActionEvent;
 import java.awt.Font;
+import javax.swing.SwingConstants;
 
 public class VerOcupacionWindow extends JDialog {
 
@@ -39,6 +41,7 @@ public class VerOcupacionWindow extends JDialog {
 	private JButton btnMostrarOcupacion;
 	private JPanel pnCentralDias;
 	private Programa programa = null;
+	private ArrayList<String> dias = new ArrayList<String>();
 
 	/**
 	 * Launch the application.
@@ -156,9 +159,16 @@ public class VerOcupacionWindow extends JDialog {
 		else {
 			for (int hora = 8; hora < 23; hora++) {
 				JLabel label = new JLabel();
-				if (hayInstalacionAEsaHora(hora, instalacion, col)) {
+				ActividadPlanificada ap = hayInstalacionAEsaHoraYEseDia(hora, instalacion, col);
+				if ( ap != null) {
 					label.setText(nombreInstalacion(instalacion));
 					label.setFont(new Font("Tahoma", Font.PLAIN, 15));
+					label.setOpaque(true);
+					label.setHorizontalAlignment(SwingConstants.CENTER);
+					if (ap.getLimitePlazas() == 0)
+						label.setBackground(Color.red);
+					else
+						label.setBackground(Color.green);
 				}
 				panel.add(label);
 				if (hora < 22) //ultima hora no necesita separador
@@ -167,22 +177,31 @@ public class VerOcupacionWindow extends JDialog {
 		}
 	}
 
-	private boolean hayInstalacionAEsaHora(int hora, Instalacion instalacion, int dia) {
+	private ActividadPlanificada hayInstalacionAEsaHoraYEseDia(int hora, Instalacion instalacion, int col) {
 		List<ActividadPlanificada> actividades = programa.getActividadesPlanificadas();
 		for (ActividadPlanificada ap : actividades) {
-			if (ap.getHoraInicio() == hora && ap.getCodigoInstalacion().equals(instalacion.getCodigo()) /*&& dia == ap.getFecha().getDay()*/)
-				return true;
+			int dia = Integer.parseInt(dias.get(col).split(" ")[1]);
+			if (ap.getHoraInicio() <= hora && ap.getHoraFin() > hora && ap.getCodigoInstalacion().equals(instalacion.getCodigo()) && dia == ap.getDia())
+				return ap;
 		}
-		return false;
+		return null;
 	}
 
 	private String nombreInstalacion(Instalacion instalacion) {
 		List<ActividadPlanificada> actividades = programa.getActividadesPlanificadas();
 		for (ActividadPlanificada ap : actividades) {
 			if (ap.getCodigoInstalacion().equals(instalacion.getCodigo()))
-				return instalacion.getNombre();
+				return nombreActividad(ap);
 		}
 		return null;
+	}
+
+	private String nombreActividad(ActividadPlanificada ap) {
+		for (Actividad a : programa.getActividades()) {
+			if(a.getCodigo().equals(ap.getCodigoActividad()))
+				return a.getNombre() + " - " + a.getIntensidad();
+		}
+		return "-";
 	}
 
 	private JSeparator crearSeparador() {
@@ -248,7 +267,8 @@ public class VerOcupacionWindow extends JDialog {
 		case 7:
 			toRet = "Domingo " + String.valueOf(primerDiaDeLaSemana + 6);
 			break;
-		}		
+		}
+		dias.add(toRet);
 		
 		return toRet;
 	}
