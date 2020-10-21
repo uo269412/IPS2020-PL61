@@ -228,28 +228,42 @@ public class AdminWindow extends JDialog {
 		return false;
 	}
 
+	private boolean checkIfHayActividadesParaHoy() {
+		int fecha[] = getParent().getPrograma().obtenerHoraDiaMesAño();
+		int dia = fecha[1];
+		int mes = fecha[2];
+		int año = fecha[3];
+		if (getParent().getPrograma().getActividadesPlanificadas(dia, mes, año).isEmpty()) {
+			return false;
+		}
+		return true;
+	}
+
 	private JButton getBtnReservaSocio() {
 		if (btnReservaSocio == null) {
 			btnReservaSocio = new JButton("Hacer una reserva para un socio en una actividad que se realiza hoy");
 			btnReservaSocio.setMnemonic('H');
 			btnReservaSocio.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-
-					String id_socio;
-					id_socio = JOptionPane.showInputDialog("Por favor, introduce un id de socio válido ");
-					if (id_socio != null) {
-						if (getParent().getPrograma().encontrarSocio(id_socio) != null) {
-							Socio socio = getParent().getPrograma().encontrarSocio(id_socio);
-							if (checkIfAdminReservaSocioWindowOpens(socio)) {
-								openAdminReservaSocioWindow(socio);
+					if (checkIfHayActividadesParaHoy()) {
+						String id_socio;
+						id_socio = JOptionPane.showInputDialog("Por favor, introduce un id de socio válido ");
+						if (id_socio != null) {
+							if (getParent().getPrograma().encontrarSocio(id_socio) != null) {
+								Socio socio = getParent().getPrograma().encontrarSocio(id_socio);
+								if (checkIfAdminReservaSocioWindowOpens(socio)) {
+									openAdminReservaSocioWindow(socio);
+								} else {
+									JOptionPane.showMessageDialog(AdminWindow.this,
+											"No se puede realizar ninguna reserva para este usuario");
+								}
 							} else {
-								JOptionPane.showMessageDialog(null,
-										"No se puede realizar ninguna reserva para este usuario");
+								JOptionPane.showMessageDialog(AdminWindow.this,
+										"Por favor, introduce un id de socio válido ");
 							}
-						} else {
-							JOptionPane.showMessageDialog(AdminWindow.this,
-									"Por favor, introduce un id de socio válido ");
 						}
+					} else {
+						JOptionPane.showMessageDialog(null, "No hay ninguna actividad planificada para hoy");
 					}
 				}
 			});
