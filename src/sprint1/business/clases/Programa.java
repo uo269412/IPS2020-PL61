@@ -10,6 +10,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -128,6 +130,7 @@ public class Programa {
 		Statement st = con.createStatement();
 		ResultSet rs = st.executeQuery("SELECT * FROM ACTIVIDAD_PLANIFICADA");
 		convertirActividadesPlanificadasEnLista(rs);
+		ordenarActividadesPorFecha();
 		rs.close();
 		st.close();
 		con.close();
@@ -200,6 +203,10 @@ public class Programa {
 						&& (actividadSeleccionada.getHoraFin() > actividad.getHoraFin()))
 				|| ((actividadSeleccionada.getHoraInicio() > actividad.getHoraInicio())
 						&& (actividadSeleccionada.getHoraFin() < actividad.getHoraFin())));
+	}
+	
+	public void ordenarActividadesPorFecha() {
+		Collections.sort(this.actividadesPlanificadas);
 	}
 
 	public void actualizarPlazasActividadPlanificada(ActividadPlanificada actividad, int incremento) {
