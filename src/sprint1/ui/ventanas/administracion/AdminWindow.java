@@ -194,38 +194,11 @@ public class AdminWindow extends JDialog {
 		return this;
 	}
 
-	public void openAdminReservaSocioWindow(Socio socio) {
-		adminReservaSocio = new AdminReservaSocioWindow(this, socio);
+	public void openAdminReservaSocioWindow() {
+		adminReservaSocio = new AdminReservaSocioWindow(this);
 		adminReservaSocio.setModal(true);
 		adminReservaSocio.setLocationRelativeTo(this);
 		adminReservaSocio.setVisible(true);
-	}
-
-	public boolean checkIfAdminReservaSocioWindowOpens(Socio socio) {
-		int fecha[] = getParent().getPrograma().obtenerHoraDiaMesAño();
-		int dia = fecha[1];
-		int mes = fecha[2];
-		int año = fecha[3];
-		List<ActividadPlanificada> actividadesYaReservadasPorSocio = new ArrayList<ActividadPlanificada>();
-		actividadesYaReservadasPorSocio = getParent().getPrograma()
-				.getActividadesPlanificadasQueHaReservadoSocioEnUnDiaEspecifico(socio, dia, mes, año);
-		for (ActividadPlanificada actividadPosible : getParent().getPrograma().getActividadesPlanificadas(dia, mes,
-				año)) {
-			if (actividadPosible.getHoraInicio() > fecha[0] && actividadPosible.getLimitePlazas() != 0) {
-				if (actividadesYaReservadasPorSocio.isEmpty()) {
-					return true;
-				} else if (!actividadesYaReservadasPorSocio.contains(actividadPosible)) {
-					for (ActividadPlanificada actividadYaReservada : actividadesYaReservadasPorSocio) {
-						if (!getParent().getPrograma().comprobarTiempoActividadesColisiona(actividadPosible,
-								actividadYaReservada)) {
-							return true;
-
-						}
-					}
-				}
-			}
-		}
-		return false;
 	}
 
 	private boolean checkIfHayActividadesParaHoy() {
@@ -246,22 +219,7 @@ public class AdminWindow extends JDialog {
 			btnReservaSocio.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					if (checkIfHayActividadesParaHoy()) {
-						String id_socio;
-						id_socio = JOptionPane.showInputDialog("Por favor, introduce un id de socio válido ");
-						if (id_socio != null) {
-							if (getParent().getPrograma().encontrarSocio(id_socio) != null) {
-								Socio socio = getParent().getPrograma().encontrarSocio(id_socio);
-								if (checkIfAdminReservaSocioWindowOpens(socio)) {
-									openAdminReservaSocioWindow(socio);
-								} else {
-									JOptionPane.showMessageDialog(AdminWindow.this,
-											"No se puede realizar ninguna reserva para este usuario");
-								}
-							} else {
-								JOptionPane.showMessageDialog(AdminWindow.this,
-										"Por favor, introduce un id de socio válido ");
-							}
-						}
+						openAdminReservaSocioWindow();
 					} else {
 						JOptionPane.showMessageDialog(null, "No hay ninguna actividad planificada para hoy");
 					}
