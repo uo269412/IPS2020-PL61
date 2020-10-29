@@ -2,8 +2,8 @@ package sprint1.business.clases;
 
 import java.util.UUID;
 
-public class Alquiler implements Comparable<Alquiler>{
-	
+public class Alquiler implements Comparable<Alquiler> {
+
 	private String id_alquiler;
 	private String id_instalacion;
 	private String id_cliente;
@@ -12,9 +12,8 @@ public class Alquiler implements Comparable<Alquiler>{
 	private int año;
 	private int horaInicio;
 	private int horaFin;
-	//DISPONIBLE O CANCELADO
+	// DISPONIBLE O CANCELADO
 	private String estado;
-	
 
 	public Alquiler(String id_alquiler, String id_instalacion, String id_cliente, int dia, int mes, int año,
 			int horaInicio, int horaFin, String estado) {
@@ -33,7 +32,7 @@ public class Alquiler implements Comparable<Alquiler>{
 			String estado) {
 		this(UUID.randomUUID().toString(), id_instalacion, id_cliente, dia, mes, año, horaInicio, horaFin, estado);
 	}
-	
+
 	public Alquiler(String id_instalacion, String id_cliente, int dia, int mes, int año, int horaInicio, int horaFin) {
 		this(id_instalacion, id_cliente, dia, mes, año, horaInicio, horaFin, "DISPONIBLE");
 	}
@@ -116,7 +115,7 @@ public class Alquiler implements Comparable<Alquiler>{
 				+ id_cliente + ", dia=" + dia + ", mes=" + mes + ", año=" + año + ", horaInicio=" + horaInicio
 				+ ", horaFin=" + horaFin + ", estado=" + estado + "]";
 	}
-	
+
 	@Override
 	public int compareTo(Alquiler arg0) {
 		if (getAño() == arg0.getAño()) {
