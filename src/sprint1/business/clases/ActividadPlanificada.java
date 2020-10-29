@@ -15,39 +15,6 @@ public class ActividadPlanificada implements Comparable<ActividadPlanificada> {
 	private int limitePlazas;
 	private String codigoInstalacion;
 
-//	public ActividadPlanificada(String codigoActividad, int dia, int mes, int año, int horaInicio, int horaFin, int limitePlazas, String codigoMonitor) {
-//		this(codigoActividad + "_" + codigoMonitor, codigoActividad, dia, mes, año, horaInicio, horaFin, limitePlazas, codigoMonitor);
-//	}
-
-	public ActividadPlanificada(int dia, int mes, int año, int limitePlazas, int horaInicio, int horaFin,
-			String codigoMonitor, String codigoActividad, String codigoInstalacion) {
-		this.codigoPlanificada = "P-" + codigoActividad + "/" + codigoMonitor + "-"
-				+ UUID.randomUUID().toString().substring(0, 5);
-		this.dia = dia;
-		this.mes = mes;
-		this.año = año;
-		this.limitePlazas = limitePlazas;
-		this.horaInicio = horaInicio;
-		this.horaFin = horaFin;
-		this.codigoMonitor = codigoMonitor;
-		this.codigoActividad = codigoActividad;
-		this.codigoInstalacion = codigoInstalacion;
-	}
-
-	public ActividadPlanificada(String codigoActividad, int dia, int mes, int año, int limitePlazas, int horaInicio,
-			int horaFin, String codigoInstalacion) {
-		String codigoPlanificada = "P-" + codigoActividad + "/" + codigoMonitor + "-"
-				+ UUID.randomUUID().toString().substring(0, 5);
-
-		setCodigoPlanificada(codigoPlanificada);
-		setFecha(dia, mes, año);
-		setLimitePlazas(limitePlazas);
-		setHoraInicio(horaInicio);
-		setHoraFin(horaFin);
-		setCodigoActividad(codigoActividad);
-		setCodigoInstalacion(codigoInstalacion);
-	}
-
 	public ActividadPlanificada(String codigoActividad, int dia, int mes, int año, int limitePlazas, int horaInicio,
 			int horaFin, String codigoMonitor, String codigoPlanificada, String codigoInstalacion) {
 		this.codigoPlanificada = codigoPlanificada;
@@ -62,29 +29,26 @@ public class ActividadPlanificada implements Comparable<ActividadPlanificada> {
 		this.codigoInstalacion = codigoInstalacion;
 	}
 
+	public ActividadPlanificada(int dia, int mes, int año, int limitePlazas, int horaInicio, int horaFin,
+			String codigoMonitor, String codigoActividad, String codigoInstalacion) {
+		this(codigoActividad, dia, mes, año, limitePlazas, horaInicio, horaFin, codigoMonitor,
+				UUID.randomUUID().toString(), codigoInstalacion);
+	}
+
+	public ActividadPlanificada(String codigoActividad, int dia, int mes, int año, int limitePlazas, int horaInicio,
+			int horaFin, String codigoInstalacion) {
+		this(dia, mes, año, limitePlazas, horaInicio, horaFin, null, codigoActividad, codigoInstalacion);
+	}
+
 	public ActividadPlanificada(String codigoPlanificada, String codigoActividad, int dia, int mes, int año,
 			int horaInicio, int horaFin, int limitePlazas, String codigoMonitor, String codigoInstalacion) {
-
-		setCodigoPlanificada(codigoPlanificada);
-		setFecha(dia, mes, año);
-		setLimitePlazas(limitePlazas);
-		setHoraInicio(horaInicio);
-		setHoraFin(horaFin);
-		setCodigoMonitor(codigoMonitor);
-		setCodigoActividad(codigoActividad);
-		setCodigoInstalacion(codigoInstalacion);
+		this(codigoActividad, dia, mes, año, limitePlazas, horaInicio, horaFin, codigoMonitor, codigoPlanificada,
+				codigoInstalacion);
 	}
 
 	public ActividadPlanificada(String codigoPlanificada, String codigoActividad, int dia, int mes, int año,
 			int horaInicio, int horaFin, int limitePlazas, String codigoInstalacion) {
-
-		setCodigoPlanificada(codigoPlanificada);
-		setFecha(dia, mes, año);
-		setLimitePlazas(limitePlazas);
-		setHoraInicio(horaInicio);
-		setHoraFin(horaFin);
-		setCodigoActividad(codigoActividad);
-		setCodigoInstalacion(codigoInstalacion);
+		this(dia, mes, año, limitePlazas, horaInicio, horaFin, null, codigoActividad, codigoInstalacion);
 	}
 
 	public String getCodigoPlanificada() {
