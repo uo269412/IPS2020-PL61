@@ -2,8 +2,9 @@ package sprint1.business.clases;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
-public class Actividad {
+public class Actividad implements Comparable<Actividad> {
 
 	public static final int INTENSIDAD_BAJA = 0;
 	public static final int INTENSIDAD_MODERADA = 1;
@@ -15,7 +16,6 @@ public class Actividad {
 	private int intensidad;
 	private List<Recurso> recursosRequeridos;
 
-	
 	public Actividad(String codigo, String nombre, int intensidad) {
 		setCodigo(codigo);
 		setNombre(nombre);
@@ -23,12 +23,9 @@ public class Actividad {
 		recursosRequeridos = new LinkedList<>();
 	}
 
-//	public Actividad(String nombre, int intensidad) {
-//		setCodigo(nombre.substring(0, 3).toUpperCase() + "_" + intensidad);
-//		setNombre(nombre);
-//		setIntensidad(intensidad);
-//		recursosRequeridos = new LinkedList<>();
-//	}
+	public Actividad(String nombre, int intensidad) {
+		this(UUID.randomUUID().toString(), nombre, intensidad);
+	}
 
 	private void setIntensidad(int intensidad) {
 		if (intensidad != INTENSIDAD_BAJA && intensidad != INTENSIDAD_MODERADA && intensidad != INTENSIDAD_ALTA)
@@ -55,7 +52,7 @@ public class Actividad {
 
 	@Override
 	public String toString() { // conviene imprimir tambi�n los recursos necesarios
-		return "Actividad [codigo=" + codigo + ", nombre=" + nombre + ", " + "intensidad=" + intensidad	+ "]";
+		return "Actividad [codigo=" + codigo + ", nombre=" + nombre + ", " + "intensidad=" + intensidad + "]";
 	}
 
 	@Override
@@ -76,27 +73,39 @@ public class Actividad {
 		return true;
 	}
 
-
-
 	public int getIntensidad() {
 		return this.intensidad;
 	}
-	
-	public boolean añadirRecurso(Recurso r)  {
-		if(r.getActividad() == null) {
+
+	public boolean añadirRecurso(Recurso r) {
+		if (r.getActividad() == null) {
 			r.setActividad(getCodigo());
 			recursosRequeridos.add(r);
 			return true;
 		}
 		return false;
 	}
-	
+
 	public List<Recurso> getRecursos() {
 		return this.recursosRequeridos;
 	}
-	
-	public boolean requiresRecursos()  {
+
+	public boolean requiresRecursos() {
 		return recursosRequeridos.size() > 0;
+	}
+
+	@Override
+	public int compareTo(Actividad arg0) {
+		if (getNombre().compareTo(arg0.getNombre()) == 0) {
+			if (getIntensidad() < arg0.getIntensidad()) {
+				return -1;
+			} else if (getIntensidad() == arg0.getIntensidad()) {
+				return 0;
+			} else {
+				return 1;
+			}
+		}
+		return getNombre().compareTo(arg0.getNombre());
 	}
 
 }

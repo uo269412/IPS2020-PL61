@@ -25,9 +25,11 @@ public class Programa {
 	private List<Instalacion> instalaciones;
 	private List<Recurso> recursos;
 	private List<Tercero> terceros;
+	private List<Alquiler> alquileres;
+	private List<Registro> registros;
 
 	// Conexión Javi
-	public static String URL = "jdbc:sqlite:C:\\Users\\javie\\Desktop\\master\\sprint1\\resources\\bdProject.db";
+	public static String URL = "jdbc:sqlite:C:\\Users\\javie\\git\\IPS2020-PL61\\resources\\bdProject.db";
 
 	// Conexión Dani
 	// public static String URL =
@@ -48,9 +50,11 @@ public class Programa {
 			cargarReservas();
 			cargarMonitores();
 			cargarActividadesPlanificadas();
-	//		cargarInstalaciones();
+			cargarInstalaciones();
 			cargarRecursos();
-		//	cargarTerceros();
+			cargarTerceros();
+			cargarAlquileres();
+			cargarRegistros();
 			printAllLists();
 		} catch (SQLException e) {
 			System.out.println("Ha surgido un error cargando la base de datos");
@@ -60,12 +64,14 @@ public class Programa {
 	private void printAllLists() {
 		printActividades();
 		printActividadesPlanificadas();
-	//	printSocios();
+		printSocios();
 		printReservas();
 		printMonitores();
-	//	printInstalaciones();
+		printInstalaciones();
 		printRecursos();
-	//	printTerceros();
+		printTerceros();
+		printAlquileres();
+		printRegistros();
 	}
 
 //ACTIVIDADES	
@@ -76,6 +82,7 @@ public class Programa {
 		ResultSet rs = st.executeQuery("SELECT * FROM ACTIVIDAD");
 
 		convertirActividadesEnLista(rs);
+		ordenarActividades();
 		rs.close();
 		st.close();
 		con.close();
@@ -128,6 +135,10 @@ public class Programa {
 		}
 	}
 
+	public void ordenarActividades() {
+		Collections.sort(this.actividades);
+	}
+
 //ACTIVIDADES PLANIFICADAS	
 
 	private void cargarActividadesPlanificadas() throws SQLException {
@@ -135,7 +146,7 @@ public class Programa {
 		Statement st = con.createStatement();
 		ResultSet rs = st.executeQuery("SELECT * FROM ACTIVIDAD_PLANIFICADA");
 		convertirActividadesPlanificadasEnLista(rs);
-		ordenarActividadesPorFecha();
+		ordenarActividadesPlanificadasPorFecha();
 		rs.close();
 		st.close();
 		con.close();
@@ -210,7 +221,7 @@ public class Programa {
 						&& (actividadSeleccionada.getHoraFin() < actividad.getHoraFin())));
 	}
 
-	public void ordenarActividadesPorFecha() {
+	public void ordenarActividadesPlanificadasPorFecha() {
 		Collections.sort(this.actividadesPlanificadas);
 	}
 
@@ -298,11 +309,6 @@ public class Programa {
 
 	}
 
-//	private boolean validarHora(ActividadPlanificada actividad, int hora, int dia, int mes, int año) {
-////		return hora < actividad.getHoraInicio();
-//		return true;
-//	}
-
 //SOCIOS	
 
 	private void cargarSocios() throws SQLException {
@@ -310,6 +316,7 @@ public class Programa {
 		Statement st = con.createStatement();
 		ResultSet rs = st.executeQuery("SELECT * FROM SOCIO");
 		convertirSociosEnLista(rs);
+		ordenarSocios();
 		rs.close();
 		st.close();
 		con.close();
@@ -325,9 +332,7 @@ public class Programa {
 
 	private Socio convertirSocio(ResultSet rs) throws SQLException {
 		String id_cliente = rs.getString(1);
-		System.out.println(rs.getString(2));
 		String nombre = rs.getString(2);
-		System.out.println("hey");
 		String apellido = rs.getString(3);
 		return new Socio(id_cliente, nombre, apellido);
 	}
@@ -394,6 +399,11 @@ public class Programa {
 		}
 		return listaSort;
 	}
+	
+	public void ordenarSocios() {
+		Collections.sort(this.socios);
+	}
+	
 
 //TERCEROS
 
@@ -402,6 +412,7 @@ public class Programa {
 		Statement st = con.createStatement();
 		ResultSet rs = st.executeQuery("SELECT * FROM TERCEROS");
 		convertirTercerosEnLista(rs);
+		ordenarTerceros();
 		rs.close();
 		st.close();
 		con.close();
@@ -439,6 +450,9 @@ public class Programa {
 		for (Tercero tercero : terceros) {
 			System.out.println(tercero.toString());
 		}
+	}
+	public void ordenarTerceros() {
+		Collections.sort(this.terceros);
 	}
 
 //RESERVAS	
@@ -549,6 +563,111 @@ public class Programa {
 			System.out.println("Error borrando la reserva");
 		}
 	}
+	
+
+//ALQUILERES
+
+	private void cargarAlquileres() throws SQLException {
+		Connection con = DriverManager.getConnection(URL);
+		Statement st = con.createStatement();
+		ResultSet rs = st.executeQuery("SELECT * FROM ALQUILER");
+		convertirAlquileresEnLista(rs);
+		ordenarAlquileres();
+		rs.close();
+		st.close();
+		con.close();
+	}
+
+	private void convertirAlquileresEnLista(ResultSet rs) throws SQLException {
+		this.alquileres = new ArrayList<>();
+		while (rs.next()) {
+			alquileres.add(convertirAlquiler(rs));
+		}
+
+	}
+
+	private Alquiler convertirAlquiler(ResultSet rs) throws SQLException {
+		String id_alquiler = rs.getString(1);
+		String id_instalacion = rs.getString(2);
+		String id_cliente = rs.getString(3);
+		int dia = rs.getInt(4);
+		int mes = rs.getInt(5);
+		int año = rs.getInt(6);
+		int horaInicio = rs.getInt(7);
+		int horaFin = rs.getInt(8);
+		String estado = rs.getString(9);
+		return new Alquiler(id_alquiler, id_instalacion, id_cliente, dia, mes, año, horaInicio, horaFin, estado);
+	}
+
+	public List<Alquiler> getAlquileres() {
+		return alquileres;
+	}
+
+	public Alquiler encontrarAlquileres(String id_alquiler) {
+		for (Alquiler alquiler : alquileres) {
+			if (alquiler.getId_alquiler().equals(id_alquiler)) {
+				return alquiler;
+			}
+		}
+		return null;
+	}
+
+	public void printAlquileres() {
+		System.out.println("Lista de alquileres");
+		for (Alquiler alquiler : alquileres) {
+			System.out.println(alquiler.toString());
+		}
+	}
+	public void ordenarAlquileres() {
+		Collections.sort(this.alquileres);
+	}
+
+//REGISTROS
+
+	public void cargarRegistros() throws SQLException {
+		Connection con = DriverManager.getConnection(URL);
+		Statement st = con.createStatement();
+		ResultSet rs = st.executeQuery("SELECT * FROM REGISTRO");
+		convertirRegistrosEnLista(rs);
+		ordenarRegistros();
+		rs.close();
+		st.close();
+		con.close();
+
+	}
+
+	private void convertirRegistrosEnLista(ResultSet rs) throws SQLException {
+		this.registros = new ArrayList<>();
+		while (rs.next()) {
+			registros.add(convertirRegistro(rs));
+		}
+
+	}
+
+	private Registro convertirRegistro(ResultSet rs) throws SQLException {
+		String id_registro = rs.getString(1);
+		String id_alquiler = rs.getString(2);
+		int hora_entrada = rs.getInt(3);
+		int hora_salida = rs.getInt(4);
+		boolean alquilerPagado = rs.getBoolean(5);
+		boolean socioPresentado = rs.getBoolean(6);
+		return new Registro(id_registro, id_alquiler, hora_entrada, hora_salida, alquilerPagado, socioPresentado);
+	}
+
+	public List<Registro> getRegistros() {
+		return registros;
+	}
+
+	private void printRegistros() {
+		System.out.println("Lista de registros");
+		for (Registro registro : registros) {
+			System.out.println(registro.toString());
+		}
+	}
+	
+	public void ordenarRegistros() {
+		Collections.sort(this.registros);
+	}
 
 //MONITORES
 
@@ -557,6 +676,7 @@ public class Programa {
 		Statement st = con.createStatement();
 		ResultSet rs = st.executeQuery("SELECT * FROM MONITOR");
 		convertirMonitoresEnLista(rs);
+		ordenarMonitores();
 		rs.close();
 		st.close();
 		con.close();
@@ -594,6 +714,10 @@ public class Programa {
 			}
 		}
 		return null;
+	}
+	
+	public void ordenarMonitores() {
+		Collections.sort(this.monitores);
 	}
 
 //ADMINISTRACIÓN
@@ -650,7 +774,7 @@ public class Programa {
 	public void cargarRecursos() throws SQLException {
 		recursos = new ArrayList<>();
 		Connection con = DriverManager.getConnection(URL);
-		PreparedStatement pst = con.prepareStatement("SELECT * FROM recurso");
+		PreparedStatement pst = con.prepareStatement("SELECT * FROM recursos");
 		ResultSet rs = pst.executeQuery();
 
 		while (rs.next()) {
@@ -715,7 +839,8 @@ public class Programa {
 		while (rs.next()) {
 			String codigo = rs.getString(1);
 			String nombre = rs.getString(2);
-			instalaciones.add(new Instalacion(codigo, nombre));
+			Double precio = rs.getDouble(3);
+			instalaciones.add(new Instalacion(codigo, nombre, precio));
 		}
 		return instalaciones;
 	}
@@ -725,6 +850,7 @@ public class Programa {
 		PreparedStatement pst = con.prepareStatement("SELECT * from instalacion");
 		ResultSet rs = pst.executeQuery();
 		convertirInstalacionesEnLista(rs);
+		ordenarInstalaciones();
 	}
 
 	public void printInstalaciones() {
@@ -736,6 +862,10 @@ public class Programa {
 
 	public List<Instalacion> getInstalaciones() {
 		return this.instalaciones;
+	}
+	
+	public void ordenarInstalaciones() {
+		Collections.sort(this.instalaciones);
 	}
 
 	// UTIL

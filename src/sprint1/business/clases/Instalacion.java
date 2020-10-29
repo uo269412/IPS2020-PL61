@@ -1,6 +1,8 @@
 package sprint1.business.clases;
 
-public class Instalacion {
+import java.util.UUID;
+
+public class Instalacion implements Comparable<Instalacion> {
 	private String codigo_instalacion;
 	private String nombre;
 	private double precioHora;
@@ -15,6 +17,10 @@ public class Instalacion {
 		this.precioHora = precioHora;
 	}
 
+	public Instalacion(String nombre, double precioHora) {
+		this(UUID.randomUUID().toString(), nombre, precioHora);
+	}
+
 	public String getCodigo() {
 		return codigo_instalacion;
 	}
@@ -22,18 +28,24 @@ public class Instalacion {
 	public String getNombre() {
 		return nombre;
 	}
-	
+
 	public double getPrecioHora() {
 		return precioHora;
 	}
 
-	@Override
-	public String toString() {
-		return nombre + ", id: " + codigo_instalacion;
-	}
-
 	public String getCodigoInstalacion() {
 		return codigo_instalacion;
+	}
+
+	@Override
+	public String toString() {
+		return "Instalacion [codigo_instalacion=" + codigo_instalacion + ", nombre=" + nombre + ", precioHora="
+				+ precioHora + "]";
+	}
+
+	@Override
+	public int compareTo(Instalacion arg0) {
+		return getNombre().compareTo(arg0.getNombre());
 	}
 
 }

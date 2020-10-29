@@ -1,6 +1,8 @@
 package sprint1.business.clases;
 
-public class Monitor {
+import java.util.UUID;
+
+public class Monitor implements Comparable<Monitor> {
 	String codigoMonitor;
 	String nombre;
 	String apellido;
@@ -10,11 +12,9 @@ public class Monitor {
 		this.nombre = nombre;
 		this.apellido = apellido;
 	}
-	
+
 	public Monitor(String nombre, String apellido) {
-		this.codigoMonitor = ("M-" + nombre + "_" + apellido.substring(0, 3));
-		this.nombre = nombre;
-		this.apellido = apellido;
+		this(UUID.randomUUID().toString(), nombre, apellido);
 	}
 
 	public String getCodigoMonitor() {
@@ -44,5 +44,13 @@ public class Monitor {
 	@Override
 	public String toString() {
 		return nombre + " " + apellido + " con código de monitor: " + codigoMonitor;
+	}
+
+	@Override
+	public int compareTo(Monitor arg0) {
+		if (getNombre().compareTo(arg0.getNombre()) == 0) {
+			return getApellido().compareTo(arg0.getApellido());
+		}
+		return getNombre().compareTo(arg0.getNombre());
 	}
 }

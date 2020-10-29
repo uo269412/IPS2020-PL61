@@ -1,12 +1,20 @@
 package sprint1.business.clases;
 
-public class Socio extends Cliente {
+import java.util.UUID;
+
+public class Socio extends Cliente implements Comparable<Socio> {
 
 	private String nombre;
 	private String apellido;
 
 	public Socio(String id_cliente, String nombre, String apellido) {
 		super(id_cliente);
+		this.nombre = nombre;
+		this.apellido = apellido;
+	}
+
+	public Socio(String nombre, String apellido) {
+		this.id_cliente = UUID.randomUUID().toString();
 		this.nombre = nombre;
 		this.apellido = apellido;
 	}
@@ -30,6 +38,14 @@ public class Socio extends Cliente {
 	@Override
 	public String toString() {
 		return ("Socio " + nombre + " " + apellido);
+	}
+
+	@Override
+	public int compareTo(Socio arg0) {
+		if (getNombre().compareTo(arg0.getNombre()) == 0) {
+			return getApellido().compareTo(arg0.getApellido());
+		}
+		return getNombre().compareTo(arg0.getNombre());
 	}
 
 }
