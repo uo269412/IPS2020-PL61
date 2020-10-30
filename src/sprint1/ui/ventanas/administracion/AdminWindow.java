@@ -39,8 +39,10 @@ public class AdminWindow extends JDialog {
 
 	private AsignarMonitorActividadDialog asignarMonitor;
 	private AdminReservaSocioWindow adminReservaSocio;
+	private AlquilarSocioMomentoWindow alquilarSocioMomento;
 	private JButton btnReservaSocio;
 	private JButton btnVerOcupacion;
+	private JButton btnAlquilarSocioMomento;
 
 	/**
 	 * Create the dialog.
@@ -114,6 +116,7 @@ public class AdminWindow extends JDialog {
 			pnAcciones.add(getBtnAsignarActividad());
 			pnAcciones.add(getBtnReservaSocio());
 			pnAcciones.add(getBtnVerOcupacion());
+			pnAcciones.add(getBtnAlquilarSocioMomento());
 		}
 		return pnAcciones;
 	}
@@ -201,24 +204,13 @@ public class AdminWindow extends JDialog {
 		adminReservaSocio.setVisible(true);
 	}
 
-	private boolean checkIfHayActividadesParaHoy() {
-		int fecha[] = getParent().getPrograma().obtenerHoraDiaMesAño();
-		int dia = fecha[1];
-		int mes = fecha[2];
-		int año = fecha[3];
-		if (getParent().getPrograma().getActividadesPlanificadas(dia, mes, año).isEmpty()) {
-			return false;
-		}
-		return true;
-	}
-
 	private JButton getBtnReservaSocio() {
 		if (btnReservaSocio == null) {
 			btnReservaSocio = new JButton("Hacer una reserva para un socio en una actividad que se realiza hoy");
 			btnReservaSocio.setMnemonic('H');
 			btnReservaSocio.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					if (checkIfHayActividadesParaHoy()) {
+					if (getParent().getPrograma().checkIfHayActividadesParaHoy()) {
 						openAdminReservaSocioWindow();
 					} else {
 						JOptionPane.showMessageDialog(null, "No hay ninguna actividad planificada para hoy");
@@ -243,5 +235,25 @@ public class AdminWindow extends JDialog {
 			btnVerOcupacion.setMnemonic('V');
 		}
 		return btnVerOcupacion;
+	}
+
+	private JButton getBtnAlquilarSocioMomento() {
+		if (btnAlquilarSocioMomento == null) {
+			btnAlquilarSocioMomento = new JButton("Alquilarle una instalación en el momento a un socio");
+			if (getParent().getPrograma().checkIfHayInstalacionesLibresParaAhora()) {
+				openAlquilarSocioMomentoWindow();
+			} else {
+				JOptionPane.showMessageDialog(null, "No hay ninguna instalación libre para hoy");
+			}
+		}
+		return btnAlquilarSocioMomento;
+	}
+
+	private void openAlquilarSocioMomentoWindow() {
+		alquilarSocioMomento = new AlquilarSocioMomentoWindow(this);
+		alquilarSocioMomento.setModal(true);
+		alquilarSocioMomento.setLocationRelativeTo(this);
+		alquilarSocioMomento.setVisible(true);
+		
 	}
 }
