@@ -338,16 +338,14 @@ public class CalendarioAlquilerAdmin extends JFrame {
 		pnDiasMes.validate();
 	}
 
-	private void prepararBotones() {
+	private void prepararBotones(String mes) {
 		int diaParse = 0;
 		String mesParse;
-		int añoParse = 0;
 		for (Component c : pnDiasMes.getComponents()) {
 			JButton b = (JButton) c;
 			if (b.isEnabled()) {
 				diaParse = Integer.parseInt(b.getText());
 				mesParse = (String) cbMeses.getSelectedItem();
-				añoParse = (Integer) cbAños.getSelectedItem();
 				if (mesParse.equals(mes)) {
 					if (diaParse < dia) {
 						b.setEnabled(false);
