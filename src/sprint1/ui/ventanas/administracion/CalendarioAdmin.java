@@ -62,8 +62,7 @@ public class CalendarioAdmin extends Calendario {
 	}
 	
 	@Override
-	public void iniciarMes(String mes, int año) {
-		
+	public void iniciarMes(String mes, int año) {	
 		super.iniciarMes(mes, año);
 		prepararBotones();
 	}

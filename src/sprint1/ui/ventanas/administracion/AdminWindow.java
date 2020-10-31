@@ -40,9 +40,11 @@ public class AdminWindow extends JDialog {
 	private AsignarMonitorActividadDialog asignarMonitor;
 	private AdminReservaSocioWindow adminReservaSocio;
 	private AlquilarSocioMomentoWindow alquilarSocioMomento;
+	private CalendarioAlquilerAdmin calendarioAlquilerAdmin;
 	private JButton btnReservaSocio;
 	private JButton btnVerOcupacion;
 	private JButton btnAlquilarSocioMomento;
+	private JButton btnAlquilarSocio;
 
 	/**
 	 * Create the dialog.
@@ -117,6 +119,7 @@ public class AdminWindow extends JDialog {
 			pnAcciones.add(getBtnReservaSocio());
 			pnAcciones.add(getBtnVerOcupacion());
 			pnAcciones.add(getBtnAlquilarSocioMomento());
+			pnAcciones.add(getBtnAlquilarSocio());
 		}
 		return pnAcciones;
 	}
@@ -240,11 +243,15 @@ public class AdminWindow extends JDialog {
 	private JButton getBtnAlquilarSocioMomento() {
 		if (btnAlquilarSocioMomento == null) {
 			btnAlquilarSocioMomento = new JButton("Alquilarle una instalación en el momento a un socio");
-			if (getParent().getPrograma().checkIfHayInstalacionesLibresParaAhora()) {
-				openAlquilarSocioMomentoWindow();
-			} else {
-				JOptionPane.showMessageDialog(null, "No hay ninguna instalación libre para hoy");
-			}
+			btnAlquilarSocioMomento.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					if (getParent().getPrograma().checkIfHayInstalacionesLibresParaAhora()) {
+						openAlquilarSocioMomentoWindow();
+					} else {
+						JOptionPane.showMessageDialog(null, "No hay ninguna instalación libre para hoy");
+					}
+				}
+			});
 		}
 		return btnAlquilarSocioMomento;
 	}
@@ -254,6 +261,26 @@ public class AdminWindow extends JDialog {
 		alquilarSocioMomento.setModal(true);
 		alquilarSocioMomento.setLocationRelativeTo(this);
 		alquilarSocioMomento.setVisible(true);
-		
+
 	}
+
+	private JButton getBtnAlquilarSocio() {
+		if (btnAlquilarSocio == null) {
+			btnAlquilarSocio = new JButton("Alquilarle una instalaci\u00F3n a un socio");
+			btnAlquilarSocio.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					openAlquilarSocioWindow();
+				}
+			});
+		}
+		return btnAlquilarSocio;
+	}
+
+	private void openAlquilarSocioWindow() {
+		calendarioAlquilerAdmin = new CalendarioAlquilerAdmin();
+		calendarioAlquilerAdmin.setLocationRelativeTo(this);
+		calendarioAlquilerAdmin.setVisible(true);
+
+	}
+
 }

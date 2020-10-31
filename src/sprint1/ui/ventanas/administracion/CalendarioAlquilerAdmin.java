@@ -1,13 +1,17 @@
-package sprint1.ui.ventanas.socio;
+package sprint1.ui.ventanas.administracion;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+
+import sprint1.business.clases.ActividadPlanificada;
+import sprint1.ui.Calendario;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -15,15 +19,18 @@ import javax.swing.JOptionPane;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.awt.event.ActionEvent;
 import javax.swing.JComboBox;
-import javax.swing.JDialog;
 
-public class Calendario extends JDialog {
+public class CalendarioAlquilerAdmin extends JFrame {
 
 	/**
 	 * 
@@ -40,16 +47,22 @@ public class Calendario extends JDialog {
 	private JLabel lblViernes;
 	private JLabel lblSabado;
 	private JLabel lblDomingo;
-	protected JPanel pnDiasMes;
+	private JPanel pnDiasMes;
 	private ArrayList<String> meses;
+	private ArrayList<String> todosLosMeses;
 	private ArrayList<Integer> años;
 	private JPanel pnNextMonth;
 	private JButton btnNextMonth;
 	private JPanel pnPreviousMonth;
 	private JButton btnPreviousMonth;
-	protected JComboBox<String> cbMeses;
-	protected JComboBox<Integer> cbAños;
+	private JComboBox<String> cbMeses;
+	private JComboBox<Integer> cbAños;
 
+	private int dia;
+	private String mes;
+	private int año;
+	private int contadorDias = 14;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -57,7 +70,7 @@ public class Calendario extends JDialog {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Calendario frame = new Calendario();
+					CalendarioAlquilerAdmin frame = new CalendarioAlquilerAdmin();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -69,9 +82,15 @@ public class Calendario extends JDialog {
 	/**
 	 * Create the frame.
 	 */
-	public Calendario() {
-		llenarMeses();
-		llenarAños();
+	public CalendarioAlquilerAdmin() {
+		Calendar calendar = Calendar.getInstance();
+		dia = calendar.get(Calendar.DAY_OF_MONTH);
+		mes = calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault());
+		mes = mes.substring(0, 1).toUpperCase() + mes.substring(1);
+		año = calendar.get(Calendar.YEAR);
+		llenarMesAux();
+		llenarCombos();
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 629, 343);
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.WHITE);
@@ -82,15 +101,19 @@ public class Calendario extends JDialog {
 		contentPane.add(getPanel_1(), BorderLayout.CENTER);
 		contentPane.add(getPnNextMonth(), BorderLayout.EAST);
 		contentPane.add(getPnPreviousMonth(), BorderLayout.WEST);
-		// iniciarMes("Octubre", 2020);
+		if (meses.size() == 1) {
+			btnNextMonth.setEnabled(false);
+			btnPreviousMonth.setEnabled(false);
+		}
+		iniciarMes(mes, 2020);
 	}
 
-	public Calendario(String mes, int año) {
+	public CalendarioAlquilerAdmin(String mes, int año) {
 		this();
 		iniciarMes(mes, año);
 	}
 
-	protected void iniciarMes(String mes, int año) {
+	private void iniciarMes(String mes, int año) {
 		if (año < 2020) {
 			JOptionPane.showMessageDialog(this, "No puedes escoger un año previo a 2020", "Error en el calendario",
 					JOptionPane.ERROR_MESSAGE);
@@ -107,11 +130,11 @@ public class Calendario extends JDialog {
 		}
 		diasDelMes = calcularDias(mes, año);
 
-		for (int i = 0; i < Integer.MAX_VALUE; i++) {
-			if (mes == meses.get(i))
+		for (int i = 0; i < 12; i++) {
+			if (mes == todosLosMeses.get(i))
 				break;
 			else {
-				switch (calcularDias(meses.get(i), año)) {
+				switch (calcularDias(todosLosMeses.get(i), año)) {
 				case 31:
 					primerDiaDelMes = primerDiaDelMes + 3;
 					break;
@@ -130,6 +153,7 @@ public class Calendario extends JDialog {
 		generateButtons(primerDiaDelMes, diasDelMes);
 		cbMeses.setSelectedItem(mes);
 		cbAños.setSelectedItem(año);
+		prepararBotones();
 	}
 
 	private int calcularDias(String mes, int año) {
@@ -157,27 +181,35 @@ public class Calendario extends JDialog {
 		}
 	}
 
-	private void llenarMeses() {
+	private void llenarCombos() {
 		meses = new ArrayList<String>();
-		meses.add("Enero");
-		meses.add("Febrero");
-		meses.add("Marzo");
-		meses.add("Abril");
-		meses.add("Mayo");
-		meses.add("Junio");
-		meses.add("Julio");
-		meses.add("Agosto");
-		meses.add("Septiembre");
-		meses.add("Octubre");
-		meses.add("Noviembre");
-		meses.add("Diciembre");
+		años = new ArrayList<Integer>();
+		meses.add(mes);
+		años.add(año);
+		if (!(calcularDias(mes, año) - dia >= 14)) {
+			if (!mes.equals("Diciembre")) {
+				meses.add(todosLosMeses.get(todosLosMeses.indexOf(mes) + 1));
+			} else {
+				meses.add(todosLosMeses.get(0));
+				años.add(año + 1);
+			}
+		}
 	}
 
-	private void llenarAños() {
-		años = new ArrayList<Integer>();
-		for (int i = 0; i < 100; i++) {
-			años.add(i + 2020);
-		}
+	private void llenarMesAux() {
+		todosLosMeses = new ArrayList<String>();
+		todosLosMeses.add("Enero");
+		todosLosMeses.add("Febrero");
+		todosLosMeses.add("Marzo");
+		todosLosMeses.add("Abril");
+		todosLosMeses.add("Mayo");
+		todosLosMeses.add("Junio");
+		todosLosMeses.add("Julio");
+		todosLosMeses.add("Agosto");
+		todosLosMeses.add("Septiembre");
+		todosLosMeses.add("Octubre");
+		todosLosMeses.add("Noviembre");
+		todosLosMeses.add("Diciembre");
 	}
 
 	private JPanel getPnNorth() {
@@ -306,6 +338,39 @@ public class Calendario extends JDialog {
 		pnDiasMes.validate();
 	}
 
+	private void prepararBotones() {
+		int diaParse = 0;
+		String mesParse;
+		int añoParse = 0;
+		for (Component c : pnDiasMes.getComponents()) {
+			JButton b = (JButton) c;
+			if (b.isEnabled()) {
+				diaParse = Integer.parseInt(b.getText());
+				mesParse = (String) cbMeses.getSelectedItem();
+				añoParse = (Integer) cbAños.getSelectedItem();
+				if (mesParse.equals(mes)) {
+					if (diaParse < dia) {
+						b.setEnabled(false);
+					} else if (contadorDias > 0) {
+						b.setEnabled(true);
+						contadorDias--;
+						System.out.println(contadorDias);
+					}
+				} else {					
+					if (contadorDias > 0) {
+						b.setEnabled(true);
+						System.out.println("hola");
+						contadorDias--;
+						System.out.println(contadorDias);
+					} else {
+						b.setEnabled(false);
+					}
+				}
+			}
+			repaint();
+		}
+	}
+
 	private Component paintDia(int numeroDia) {
 		JButton dia = new JButton();
 		dia.setBorder(new LineBorder(Color.BLACK, 1));
@@ -333,6 +398,12 @@ public class Calendario extends JDialog {
 			btnNextMonth.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					siguienteMes();
+					if (cbMeses.getSelectedIndex() < meses.size() - 1) {
+						btnNextMonth.setEnabled(true);
+					} else {
+						btnNextMonth.setEnabled(false);
+						btnPreviousMonth.setEnabled(true);
+					}
 				}
 			});
 		}
@@ -370,9 +441,16 @@ public class Calendario extends JDialog {
 		if (btnPreviousMonth == null) {
 			btnPreviousMonth = new JButton("\u25C4");
 			btnPreviousMonth.setFont(new Font("Tahoma", Font.PLAIN, 16));
+			btnPreviousMonth.setEnabled(false);
 			btnPreviousMonth.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					anteriorMes();
+					if (cbMeses.getSelectedIndex() > 0) {
+						btnPreviousMonth.setEnabled(true);
+					} else {
+						btnPreviousMonth.setEnabled(false);
+						btnNextMonth.setEnabled(true);
+					}
 				}
 			});
 		}
@@ -420,13 +498,5 @@ public class Calendario extends JDialog {
 			cbAños.setModel(new DefaultComboBoxModel<Integer>(años.toArray(new Integer[0])));
 		}
 		return cbAños;
-	}
-
-	protected ArrayList<String> getMeses() {
-		return this.meses;
-	}
-	
-	protected ArrayList<Integer> getAños() {
-		return this.años;
 	}
 }
