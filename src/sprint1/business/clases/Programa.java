@@ -13,6 +13,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Programa {
@@ -29,11 +30,11 @@ public class Programa {
 	private List<Registro> registros;
 
 	// Conexión Javi
-	public static String URL = "jdbc:sqlite:C:\\Users\\javie\\git\\IPS2020-PL61\\resources\\bdProject.db";
+	//public static String URL = "jdbc:sqlite:C:\\Users\\javie\\git\\IPS2020-PL61\\resources\\bdProject.db";
 
 	// Conexión Dani
-	// public static String URL =
-	// "jdbc:sqlite:C:\\Users\\Dani\\git\\IPS2020-PL61\\resources\\bdProject.db";
+	 public static String URL =
+	 "jdbc:sqlite:C:\\Users\\Dani\\git\\IPS2020-PL61_sprint2\\resources\\bdProject.db";
 
 	// Conexión Juan.elo
 	// public static String URL =
@@ -139,6 +140,28 @@ public class Programa {
 		Collections.sort(this.actividades);
 	}
 
+	public List<Actividad> actividadesPorInstalacion(String codigo_instalacion) {
+		List<Actividad> listaActividades = new LinkedList<>();
+		for(Actividad a: getActividades()) {
+			if(!a.requiresRecursos()) {
+				listaActividades.add(a);
+			} else {
+				boolean contieneTodos = true;
+				for(Recurso r: a.getRecursos()) {
+					if(r.getInstalacion().equals(codigo_instalacion)) {
+						contieneTodos = contieneTodos && true;
+					} else {
+						contieneTodos = contieneTodos && false;
+					}
+				}
+				if(contieneTodos) {
+					listaActividades.add(a);
+				}
+			}
+		}
+		
+		return listaActividades;
+	}
 //ACTIVIDADES PLANIFICADAS	
 
 	private void cargarActividadesPlanificadas() throws SQLException {
@@ -179,6 +202,18 @@ public class Programa {
 		return actividadesPlanificadas;
 	}
 
+	public List<ActividadPlanificada> getActividadesPlanificadasInstalacionDia(String idInstalacion, int dia, int mes, int año) {
+		List<ActividadPlanificada> planificadasSinFiltrar = getActividadesPlanificadas(dia, mes, año);
+		List<ActividadPlanificada> toRet = new LinkedList<>();
+		for(ActividadPlanificada a: planificadasSinFiltrar) {
+			if(a.getCodigoInstalacion().equals(idInstalacion)) {
+				toRet.add(a);
+			}
+		}
+		
+		return toRet;
+	}
+	
 	public ActividadPlanificada encontrarActividadPlanificada(String codigo) {
 		for (ActividadPlanificada actividad : actividadesPlanificadas) {
 			if (actividad.getCodigoPlanificada().equals(codigo)) {
@@ -305,6 +340,7 @@ public class Programa {
 					.prepareStatement("DELETE FROM actividad_planificada WHERE codigoPlanificada = ?");
 			pst.setString(1, a.getCodigoPlanificada());
 			pst.execute();
+			actividadesPlanificadas.remove(a);
 		}
 
 	}

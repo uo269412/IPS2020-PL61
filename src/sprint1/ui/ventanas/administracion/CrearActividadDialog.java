@@ -35,7 +35,6 @@ public class CrearActividadDialog extends JDialog {
 	public static final int LONGITUDMAX_NOMBRE_ACTIVIDAD = 26;
 
 	private final JPanel pnRegistrarActividad = new JPanel();
-	private JTextField txtCodigo;
 	private JTextField txtNombre;
 	private JTextField txtIntensidad;
 	private JTextPane txtRecursos;
@@ -52,15 +51,6 @@ public class CrearActividadDialog extends JDialog {
 		pnRegistrarActividad.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(pnRegistrarActividad, BorderLayout.CENTER);
 		pnRegistrarActividad.setLayout(new GridLayout(0, 1, 0, 0));
-		{
-			JLabel lblCodigo = new JLabel("C\u00F3digo de la actividad:");
-			pnRegistrarActividad.add(lblCodigo);
-		}
-		{
-			txtCodigo = new JTextField();
-			pnRegistrarActividad.add(txtCodigo);
-			txtCodigo.setColumns(1);
-		}
 		{
 			JLabel lblNombre = new JLabel("Nombre de la actividad:");
 			pnRegistrarActividad.add(lblNombre);
@@ -100,13 +90,12 @@ public class CrearActividadDialog extends JDialog {
 							JOptionPane.showMessageDialog(getCrearActividadDialog(),
 									"Error creando la actividad. Por favor revise los campos resaltados.");
 						} else {
-							String codigoActividad = txtCodigo.getText();
 							String nombreActividad = txtNombre.getText();
 							int intensidad = Integer.parseInt(txtIntensidad.getText());
 							String recursos = txtRecursos.getText();
 							
 							boolean creacionActividadSatisfactoria = true;
-							Actividad a = crearActividad(codigoActividad, nombreActividad, intensidad, recursos);
+							Actividad a = crearActividad(nombreActividad, intensidad, recursos);
 							if (p.encontrarActividad(a.getCodigo()) != null) {
 								JOptionPane.showMessageDialog(getCrearActividadDialog(),
 										"Error: una actividad con este codigo ya se encuentra en la base de datos");
@@ -147,13 +136,13 @@ public class CrearActividadDialog extends JDialog {
 			}
 		}
 	}
-
-	private Actividad crearActividad(String codigoActividad, String nombreActividad, int intensidad, String recursos) {
+	
+	private Actividad crearActividad(String nombreActividad, int intensidad, String recursos) {
 		if(recursos.equals("")) {
-			return new Actividad(codigoActividad, nombreActividad, intensidad);
+			return new Actividad(nombreActividad, intensidad);
 		} else {
 			try {
-				Actividad a = new Actividad(codigoActividad, nombreActividad, intensidad);
+				Actividad a = new Actividad(nombreActividad, intensidad);
 				String[] nombreRecursosArray = recursos.split(", ");
 				for(String nombreRecurso: nombreRecursosArray) {
 					Recurso r = p.obtenerRecursoPorNombre(nombreRecurso);
@@ -164,11 +153,12 @@ public class CrearActividadDialog extends JDialog {
 			} catch(SQLException e) {
 				JOptionPane.showMessageDialog(this,
 						"Ha habido un problema con la base de datos comprobando los recursos, por favor contacte con el desarrollador");
-				return new Actividad(codigoActividad, nombreActividad, intensidad);
+				return new Actividad(nombreActividad, intensidad);
 			}
 			
 		}
 	}
+	
 	
 	public CrearActividadDialog getCrearActividadDialog() {
 		return this;
@@ -197,18 +187,8 @@ public class CrearActividadDialog extends JDialog {
 	}
 
 	private boolean checkEverything() {
-		return checkCodigo() && checkNombre() //&& checkHoraInicio() && checkHoraFin() && checkLimitePlazas()
+		return checkNombre() //&& checkHoraInicio() && checkHoraFin() && checkLimitePlazas()
 				&& checkIntensidad() && checkRecursos();
-	}
-
-	private boolean checkCodigo() { // restricciones del codigo de la actividad
-		if (txtCodigo.getText().length() > LONGITUDMAX_CODIGO_ACTIVIDAD) {
-			txtCodigo.setBackground(Color.RED);
-			txtCodigo.setForeground(Color.WHITE);
-			return false;
-		}
-
-		return true;
 	}
 
 	private boolean checkNombre() { // restricciones del nombre de la actividad
