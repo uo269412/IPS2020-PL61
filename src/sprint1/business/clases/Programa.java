@@ -205,6 +205,18 @@ public class Programa {
 		return listaSort;
 	}
 
+	public List<ActividadPlanificada> getActividadesPlanificadas(int hora, int dia, int mes, int año) {
+		List<ActividadPlanificada> listaSort = new ArrayList<ActividadPlanificada>();
+		for (ActividadPlanificada ap : getActividadesPlanificadas()) {
+			if (ap.getDia() == dia && ap.getMes() == mes && ap.getAño() == año) {
+				if (hora == ap.getHoraInicio() || (hora > ap.getHoraInicio() && hora < ap.getHoraFin())) {
+					listaSort.add(ap);
+				}
+			}
+		}
+		return listaSort;
+	}
+
 	public boolean comprobarTiempoActividadesColisiona(ActividadPlanificada actividadSeleccionada,
 			ActividadPlanificada actividad) {
 		return ((actividadSeleccionada.getHoraInicio() == actividad.getHoraInicio())
@@ -575,6 +587,18 @@ public class Programa {
 		}
 	}
 
+	public List<Reserva> getReservas(int hora, int dia, int mes, int año) {
+		List<Reserva> listaSort = new ArrayList<Reserva>();
+		for (Reserva reserva : getReservas()) {
+			for (ActividadPlanificada ap : getActividadesPlanificadas(hora, dia, mes, año)) {
+				if (ap.getCodigoPlanificada().equals(reserva.getCodigo_actividad())) {
+					listaSort.add(reserva);
+				}
+			}
+		}
+		return listaSort;
+	}
+
 //ALQUILERES
 
 	private void cargarAlquileres() throws SQLException {
@@ -623,16 +647,6 @@ public class Programa {
 		return listaSort;
 	}
 
-	public List<Alquiler> getAlquileres(int horaInicio, int dia, int mes, int año) {
-		List<Alquiler> listaSort = new ArrayList<Alquiler>();
-		for (Alquiler a : getAlquileres()) {
-			if (a.getDia() == dia && a.getMes() == mes && a.getAño() == año && a.getHoraInicio() == horaInicio) {
-				listaSort.add(a);
-			}
-		}
-		return listaSort;
-	}
-
 	public Alquiler encontrarAlquileres(String id_alquiler) {
 		for (Alquiler alquiler : alquileres) {
 			if (alquiler.getId_alquiler().equals(id_alquiler)) {
@@ -662,12 +676,11 @@ public class Programa {
 			System.out.println("Fallo al cargar alquileres");
 		}
 	}
-	
+
 	private void cancelarAlquiler(String id_alquiler) {
 		try {
 			Connection con = DriverManager.getConnection(Programa.URL);
-			PreparedStatement pst = con
-					.prepareStatement("DELETE FROM ALQUILER WHERE id_alquiler = ?");
+			PreparedStatement pst = con.prepareStatement("DELETE FROM ALQUILER WHERE id_alquiler = ?");
 			pst.setString(1, id_alquiler);
 			pst.execute();
 			pst.close();
@@ -676,12 +689,11 @@ public class Programa {
 			System.out.println("Error borrando el alquiler");
 		}
 	}
-	
+
 	private void anularRegistroAsociado(String id_alquiler) {
 		try {
 			Connection con = DriverManager.getConnection(Programa.URL);
-			PreparedStatement pst = con
-					.prepareStatement("DELETE FROM REGISTRO WHERE id_alquiler = ?");
+			PreparedStatement pst = con.prepareStatement("DELETE FROM REGISTRO WHERE id_alquiler = ?");
 			pst.setString(1, id_alquiler);
 			pst.execute();
 			pst.close();
@@ -689,6 +701,56 @@ public class Programa {
 		} catch (SQLException e) {
 			System.out.println("Error borrando el registro del alquiler");
 		}
+	}
+
+	public List<Alquiler> getAlquileresSocioEnUnDiaEspecifico(Cliente cliente, int dia, int mes, int año) {
+		List<Alquiler> alquileresQueYaTieneAlquiladassElSocio = new ArrayList<Alquiler>();
+		for (Alquiler alquiler : getAlquileres()) {
+			if (alquiler.getId_cliente().equals(cliente.getId_cliente())) {
+				if (alquiler.getDia() == dia && alquiler.getMes() == mes && alquiler.getAño() == año) {
+					alquileresQueYaTieneAlquiladassElSocio.add(alquiler);
+				}
+			}
+		}
+		return alquileresQueYaTieneAlquiladassElSocio;
+	}
+
+	public List<Alquiler> getAlquileres(int hora, int dia, int mes, int año) {
+		List<Alquiler> listaSort = new ArrayList<Alquiler>();
+		for (Alquiler ap : getAlquileres()) {
+			if (ap.getDia() == dia && ap.getMes() == mes && ap.getAño() == año) {
+				if (hora == ap.getHoraInicio() || (hora > ap.getHoraInicio() && hora < ap.getHoraFin())) {
+					listaSort.add(ap);
+				}
+			}
+		}
+		return listaSort;
+	}
+
+	public void añadirAlquiler(Cliente socio, Instalacion instalacion, int horaInicio, int horaFin) {
+		int[] fecha = obtenerHoraDiaMesAño();
+		Alquiler alquiler = new Alquiler(instalacion.getCodigoInstalacion(), socio.getId_cliente(), fecha[1], fecha[2],
+				fecha[3], horaInicio, horaFin);
+		try {
+			Connection con = DriverManager.getConnection(Programa.URL);
+			PreparedStatement pst = con
+					.prepareStatement("INSERT INTO ALQUILER (id_alquiler, id_instalacion, id_cliente, dia, mes, año, horaInicio, horaFin, estado) VALUES(?,?,?,?,?,?,?,?,?)");
+			pst.setString(1, alquiler.getId_alquiler());
+			pst.setString(2, alquiler.getId_instalacion());
+			pst.setString(3, alquiler.getId_cliente());
+			pst.setInt(4, alquiler.getDia());
+			pst.setInt(5, alquiler.getMes());
+			pst.setInt(6, alquiler.getAño());
+			pst.setInt(7, alquiler.getHoraInicio());
+			pst.setInt(8, alquiler.getHoraFin());
+			pst.setString(9, alquiler.getEstado());
+			pst.execute();
+			pst.close();
+			con.close();
+			cargarAlquileres();
+		} catch (SQLException e) {
+			System.out.println("Error añadiendo el alquier");
+		}	
 	}
 
 //REGISTROS
@@ -736,6 +798,22 @@ public class Programa {
 
 	public void ordenarRegistros() {
 		Collections.sort(this.registros);
+	}
+	public void añadirRegistro(String id_alquiler) {
+		Registro registro = new Registro(id_alquiler);
+		try {
+			Connection con = DriverManager.getConnection(Programa.URL);
+			PreparedStatement pst = con
+					.prepareStatement("INSERT INTO REGISTRO (id_registro, id_alquiler) VALUES(?,?)");
+			pst.setString(1, registro.getId_registro());
+			pst.setString(2, registro.getId_alquiler());
+			pst.execute();
+			pst.close();
+			con.close();
+			cargarRegistros();
+		} catch (SQLException e) {
+			System.out.println("Error añadiendo el registro");
+		}	
 	}
 
 //MONITORES

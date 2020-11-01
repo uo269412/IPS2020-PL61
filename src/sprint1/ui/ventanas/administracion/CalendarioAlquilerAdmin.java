@@ -338,7 +338,7 @@ public class CalendarioAlquilerAdmin extends JFrame {
 		pnDiasMes.validate();
 	}
 
-	private void prepararBotones(String mes) {
+	private void prepararBotones() {
 		int diaParse = 0;
 		String mesParse;
 		for (Component c : pnDiasMes.getComponents()) {
@@ -353,15 +353,15 @@ public class CalendarioAlquilerAdmin extends JFrame {
 						b.setEnabled(true);
 						contadorDias--;
 						System.out.println(contadorDias);
+					} else {
+						System.out.println("error");
 					}
 				} else {					
 					if (contadorDias > 0) {
 						b.setEnabled(true);
-						System.out.println("hola");
 						contadorDias--;
 						System.out.println(contadorDias);
 					} else {
-						b.setEnabled(false);
 					}
 				}
 			}

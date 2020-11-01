@@ -27,6 +27,11 @@ public class Registro implements Comparable<Registro> {
 		this(UUID.randomUUID().toString(), id_alquiler, hora_entrada, hora_salida, alquilerPagado, socioPresentado);
 	}
 
+	public Registro(String id_alquiler) {
+		this.id_registro = UUID.randomUUID().toString();
+		this.id_alquiler = id_alquiler;
+	}
+
 	public String getId_registro() {
 		return id_registro;
 	}
