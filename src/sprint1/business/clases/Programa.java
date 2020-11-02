@@ -217,6 +217,21 @@ public class Programa {
 		return listaSort;
 	}
 
+	public List<ActividadPlanificada> getActividadesPlanificadas(String codigoInstalacion, int hora, int dia, int mes,
+			int año) {
+		List<ActividadPlanificada> listaSort = new ArrayList<ActividadPlanificada>();
+		for (ActividadPlanificada ap : getActividadesPlanificadas()) {
+			if (ap.getDia() == dia && ap.getMes() == mes && ap.getAño() == año) {
+				if ((hora == ap.getHoraInicio()) || (hora > ap.getHoraInicio() && hora < ap.getHoraFin())) {
+					if (ap.getCodigoInstalacion().equals(codigoInstalacion)) {
+						listaSort.add(ap);
+					}
+				}
+			}
+		}
+		return listaSort;
+	}
+
 	public boolean comprobarTiempoActividadesColisiona(ActividadPlanificada actividadSeleccionada,
 			ActividadPlanificada actividad) {
 		return ((actividadSeleccionada.getHoraInicio() == actividad.getHoraInicio())
@@ -599,6 +614,19 @@ public class Programa {
 		return listaSort;
 	}
 
+	public List<Reserva> getReservas(String codigo_instalacion, int hora, int dia, int mes, int año) {
+		List<Reserva> listaSort = new ArrayList<Reserva>();
+		for (Reserva reserva : getReservas()) {
+			for (ActividadPlanificada ap : getActividadesPlanificadas(codigo_instalacion, hora, dia, mes, año)) {
+				if (ap.getCodigoPlanificada().equals(reserva.getCodigo_actividad())) {
+					listaSort.add(reserva);
+				}
+			}
+		}
+		return listaSort;
+
+	}
+
 //ALQUILERES
 
 	private void cargarAlquileres() throws SQLException {
@@ -727,14 +755,28 @@ public class Programa {
 		return listaSort;
 	}
 
+	public List<Alquiler> getAlquileres(String codigo_instalacion, int hora, int dia, int mes, int año) {
+		List<Alquiler> listaSort = new ArrayList<Alquiler>();
+		for (Alquiler ap : getAlquileres()) {
+			if (ap.getDia() == dia && ap.getMes() == mes && ap.getAño() == año) {
+				if ((hora == ap.getHoraInicio()) || (hora > ap.getHoraInicio() && hora < ap.getHoraFin())) {
+					if (codigo_instalacion.equals(ap.getId_instalacion())) {
+						listaSort.add(ap);
+					}
+				}
+			}
+		}
+		return listaSort;
+	}
+
 	public void añadirAlquiler(Cliente socio, Instalacion instalacion, int horaInicio, int horaFin) {
 		int[] fecha = obtenerHoraDiaMesAño();
 		Alquiler alquiler = new Alquiler(instalacion.getCodigoInstalacion(), socio.getId_cliente(), fecha[1], fecha[2],
 				fecha[3], horaInicio, horaFin);
 		try {
 			Connection con = DriverManager.getConnection(Programa.URL);
-			PreparedStatement pst = con
-					.prepareStatement("INSERT INTO ALQUILER (id_alquiler, id_instalacion, id_cliente, dia, mes, año, horaInicio, horaFin, estado) VALUES(?,?,?,?,?,?,?,?,?)");
+			PreparedStatement pst = con.prepareStatement(
+					"INSERT INTO ALQUILER (id_alquiler, id_instalacion, id_cliente, dia, mes, año, horaInicio, horaFin, estado) VALUES(?,?,?,?,?,?,?,?,?)");
 			pst.setString(1, alquiler.getId_alquiler());
 			pst.setString(2, alquiler.getId_instalacion());
 			pst.setString(3, alquiler.getId_cliente());
@@ -750,7 +792,7 @@ public class Programa {
 			cargarAlquileres();
 		} catch (SQLException e) {
 			System.out.println("Error añadiendo el alquier");
-		}	
+		}
 	}
 
 //REGISTROS
@@ -799,12 +841,12 @@ public class Programa {
 	public void ordenarRegistros() {
 		Collections.sort(this.registros);
 	}
+
 	public void añadirRegistro(String id_alquiler) {
 		Registro registro = new Registro(id_alquiler);
 		try {
 			Connection con = DriverManager.getConnection(Programa.URL);
-			PreparedStatement pst = con
-					.prepareStatement("INSERT INTO REGISTRO (id_registro, id_alquiler) VALUES(?,?)");
+			PreparedStatement pst = con.prepareStatement("INSERT INTO REGISTRO (id_registro, id_alquiler) VALUES(?,?)");
 			pst.setString(1, registro.getId_registro());
 			pst.setString(2, registro.getId_alquiler());
 			pst.execute();
@@ -813,7 +855,7 @@ public class Programa {
 			cargarRegistros();
 		} catch (SQLException e) {
 			System.out.println("Error añadiendo el registro");
-		}	
+		}
 	}
 
 //MONITORES
@@ -1021,9 +1063,13 @@ public class Programa {
 		int dia = fecha[1];
 		int mes = fecha[2];
 		int año = fecha[3];
-		if (getAlquileres(hora, dia, mes, año).isEmpty()) {
-			return true;
+		for (Instalacion instalacion : instalaciones) {
+			if (getAlquileres(instalacion.getCodigoInstalacion(), hora, dia, mes, año).isEmpty()
+					&& getReservas(instalacion.getCodigoInstalacion(), hora, dia, mes, año).isEmpty()) {
+				return true;
+			}
 		}
+
 		return false;
 	}
 

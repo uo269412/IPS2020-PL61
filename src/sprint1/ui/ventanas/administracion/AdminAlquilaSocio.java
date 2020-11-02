@@ -58,8 +58,8 @@ public class AdminAlquilaSocio extends JDialog {
 	private JLabel lblInstalacion;
 	private JComboBox<Instalacion> cmbInstalaciones;
 
-	private DefaultComboBoxModel<Instalacion> modeloInstalaciones = null;
-	private DefaultComboBoxModel<Socio> modeloSocios = null;
+	private DefaultComboBoxModel<Instalacion> modeloInstalaciones = new DefaultComboBoxModel<>();
+	private DefaultComboBoxModel<Socio> modeloSocios = new DefaultComboBoxModel<>();
 
 	/**
 	 * Create the dialog.
@@ -70,7 +70,7 @@ public class AdminAlquilaSocio extends JDialog {
 		this.mes = mes;
 		this.año = año;
 		this.parent = parent;
-		setBounds(100, 100, 394, 341);
+		setBounds(100, 100, 707, 342);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
@@ -88,8 +88,8 @@ public class AdminAlquilaSocio extends JDialog {
 	}
 
 	private void cargarSocios() {
-		for (Instalacion instalacion : getPrograma().getInstalaciones()) {
-			modeloInstalaciones.addElement(instalacion);
+		for (Socio socio : getPrograma().getSocios()) {
+			modeloSocios.addElement(socio);
 		}
 	}
 
@@ -281,8 +281,8 @@ public class AdminAlquilaSocio extends JDialog {
 					dispose();
 				}
 			});
-			btnVolver.setBackground(new Color(240, 240, 240));
-			btnVolver.setForeground(Color.BLACK);
+			btnVolver.setBackground(new Color(30, 144, 255));
+			btnVolver.setForeground(Color.WHITE);
 			btnVolver.setActionCommand("Cancel");
 		}
 		return btnVolver;
@@ -297,12 +297,12 @@ public class AdminAlquilaSocio extends JDialog {
 
 	private JComboBox<Instalacion> getCmbInstalaciones() {
 		if (cmbInstalaciones == null) {
-			cmbInstalaciones = new JComboBox<Instalacion>();
+			cmbInstalaciones = new JComboBox<Instalacion>(modeloInstalaciones);
 		}
 		return cmbInstalaciones;
 	}
 
 	private Programa getPrograma() {
-		return parent.getPrograma();
+		return parent.getParent().getParent().getPrograma();
 	}
 }

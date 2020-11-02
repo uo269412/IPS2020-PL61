@@ -277,10 +277,9 @@ public class AdminWindow extends JDialog {
 	}
 
 	private void openAlquilarSocioWindow() {
-		calendarioAlquilerAdmin = new CalendarioAlquilerAdmin();
+		calendarioAlquilerAdmin = new CalendarioAlquilerAdmin(this);
+		calendarioAlquilerAdmin.setModal(true);
 		calendarioAlquilerAdmin.setLocationRelativeTo(this);
 		calendarioAlquilerAdmin.setVisible(true);
-
 	}
-
 }
