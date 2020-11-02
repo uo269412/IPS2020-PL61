@@ -3,16 +3,13 @@ package sprint1.ui.ventanas.administracion;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.SQLException;
-import java.util.LinkedList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -22,12 +19,10 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import sprint1.business.clases.Actividad;
 import sprint1.business.clases.ActividadPlanificada;
 import sprint1.business.clases.Alquiler;
 import sprint1.business.clases.Instalacion;
 import sprint1.business.clases.Programa;
-import sprint1.business.clases.Recurso;
 import sprint1.business.clases.Reserva;
 import sprint1.business.clases.Socio;
 
@@ -68,6 +63,7 @@ public class AdminAlquilaSocio extends JDialog {
 		setTitle("Centro de deportes: Alquilar para socio");
 		this.dia = dia;
 		this.mes = mes;
+		System.out.println(mes);
 		this.año = año;
 		this.parent = parent;
 		setBounds(100, 100, 707, 342);
@@ -106,6 +102,12 @@ public class AdminAlquilaSocio extends JDialog {
 		} else if (!checkInstalacionLibre()) {
 			JOptionPane.showMessageDialog(this,
 					"La instalación está ocupada a la hora a la que se quiere realizar el alquiler");
+			return false;
+		} else if (!checkHoraInicioMayorHoraActual()) {
+			JOptionPane.showMessageDialog(this, "No puede alquilarse una instalación en el pasado");
+			return false;
+		} else if (!checkHoraInicioMenorHoraFin()) {
+			JOptionPane.showMessageDialog(this, "La hora de fin tiene que ser mayor que la hora de inicio");
 			return false;
 		} else if (!checkHorasNoSuperan2()) {
 			JOptionPane.showMessageDialog(this, "No se puede alquilar por más de dos horas");
@@ -175,6 +177,19 @@ public class AdminAlquilaSocio extends JDialog {
 		int horaInicio = Integer.parseInt(txtHoraInicio.getText());
 		int horaFin = Integer.parseInt(txtHoraFin.getText());
 		return (horaFin - horaInicio) <= 2;
+	}
+
+	private boolean checkHoraInicioMenorHoraFin() {
+		int horaInicio = Integer.parseInt(txtHoraInicio.getText());
+		int horaFin = Integer.parseInt(txtHoraFin.getText());
+		return horaFin > horaInicio;
+	}
+
+	private boolean checkHoraInicioMayorHoraActual() {
+		int horaInicio = Integer.parseInt(txtHoraInicio.getText());
+		Calendar calendar = Calendar.getInstance();
+		int hora = calendar.get(Calendar.HOUR_OF_DAY);
+		return horaInicio >= hora;
 	}
 
 	private void crearAlquiler() {
@@ -253,14 +268,18 @@ public class AdminAlquilaSocio extends JDialog {
 				public void actionPerformed(ActionEvent arg0) {
 					if (comprobacionesAlquiler()) {
 						crearAlquiler();
+						JOptionPane.showMessageDialog(getMe(), "Se ha añadido el alquiler correctamente");
 					}
 				}
-
 			});
 			btnAñadir.setForeground(Color.WHITE);
 			btnAñadir.setBackground(new Color(60, 179, 113));
 		}
 		return btnAñadir;
+	}
+
+	public AdminAlquilaSocio getMe() {
+		return this;
 	}
 
 	private JPanel getPnBotones() {

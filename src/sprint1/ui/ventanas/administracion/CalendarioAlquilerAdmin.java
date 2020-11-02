@@ -9,6 +9,8 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -61,7 +63,7 @@ public class CalendarioAlquilerAdmin extends JDialog {
 	private boolean mesSiguiente = false;
 	private AdminWindow parent;
 	private ActionListener aa;
-	
+
 	private AdminAlquilaSocio adminAlquilaWindow;
 
 //	/**
@@ -84,6 +86,7 @@ public class CalendarioAlquilerAdmin extends JDialog {
 	 * Create the frame.
 	 */
 	public CalendarioAlquilerAdmin(AdminWindow parent) {
+		setTitle("Administraci\u00F3n: Calendario para alquilarle instalaciones a socio");
 		aa = new AlquilarSocio();
 		this.parent = parent;
 		Calendar calendar = Calendar.getInstance();
@@ -516,7 +519,7 @@ public class CalendarioAlquilerAdmin extends JDialog {
 	private CalendarioAlquilerAdmin getMe() {
 		return this;
 	}
-	
+
 	private void openAdminAlquilaSocioWindow(CalendarioAlquilerAdmin parent, int dia, int mes, int año) {
 		adminAlquilaWindow = new AdminAlquilaSocio(parent, dia, mes, año);
 		adminAlquilaWindow.setModal(true);
@@ -527,7 +530,13 @@ public class CalendarioAlquilerAdmin extends JDialog {
 	private int[] parseFecha(JButton b) {
 		int[] fecha = new int[3];
 		fecha[0] = Integer.parseInt(b.getText());
-		fecha[1] = Calendar.MONTH+1;
+		Calendar cal = Calendar.getInstance();
+		try {
+			cal.setTime(new SimpleDateFormat("MMM").parse(mes));
+		} catch (ParseException e) {
+			System.out.println("Error parseando el mes");
+		}
+		fecha[1] = cal.get(Calendar.MONTH) + 1;
 		fecha[2] = año;
 
 		return fecha;

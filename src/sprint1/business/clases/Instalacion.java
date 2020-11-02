@@ -39,8 +39,7 @@ public class Instalacion implements Comparable<Instalacion> {
 
 	@Override
 	public String toString() {
-		return "Instalacion [codigo_instalacion=" + codigo_instalacion + ", nombre=" + nombre + ", precioHora="
-				+ precioHora + "]";
+		return nombre + " (Precio por hora " + getPrecioHora() + " €)";
 	}
 
 	@Override
