@@ -768,6 +768,8 @@ public class Programa {
 		}
 		return listaSort;
 	}
+	
+	//Checkear instalaciones abiertas cerradas
 
 	public void añadirAlquiler(Cliente socio, Instalacion instalacion, int horaInicio, int horaFin) {
 		int[] fecha = obtenerHoraDiaMesAño();
