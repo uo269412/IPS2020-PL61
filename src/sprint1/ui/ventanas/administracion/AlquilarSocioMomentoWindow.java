@@ -78,19 +78,21 @@ public class AlquilarSocioMomentoWindow extends JDialog {
 		List<Alquiler> alquileresQueOcurrenAhoraEnInstalacion = new ArrayList<>();
 		boolean instalacionOcupada;
 		for (Instalacion instalacion : getPrograma().getInstalaciones()) {
-			instalacionOcupada = false;
-			actividadesQueOcurrenAhoraEnInstalacion = getPrograma()
-					.getActividadesPlanificadas(instalacion.getCodigoInstalacion(), hora, dia, mes, año);
-			alquileresQueOcurrenAhoraEnInstalacion = getPrograma().getAlquileres(instalacion.getCodigoInstalacion(),
-					hora, dia, mes, año);
-			if (!actividadesQueOcurrenAhoraEnInstalacion.isEmpty()) {
-				instalacionOcupada = true;
-			}
-			if (!alquileresQueOcurrenAhoraEnInstalacion.isEmpty()) {
-				instalacionOcupada = true;
-			}
-			if (!instalacionOcupada) {
-				modeloInstalaciones.addElement(instalacion);
+			if (instalacion.getEstado()) {
+				instalacionOcupada = false;
+				actividadesQueOcurrenAhoraEnInstalacion = getPrograma()
+						.getActividadesPlanificadas(instalacion.getCodigoInstalacion(), hora, dia, mes, año);
+				alquileresQueOcurrenAhoraEnInstalacion = getPrograma().getAlquileres(instalacion.getCodigoInstalacion(),
+						hora, dia, mes, año);
+				if (!actividadesQueOcurrenAhoraEnInstalacion.isEmpty()) {
+					instalacionOcupada = true;
+				}
+				if (!alquileresQueOcurrenAhoraEnInstalacion.isEmpty()) {
+					instalacionOcupada = true;
+				}
+				if (!instalacionOcupada) {
+					modeloInstalaciones.addElement(instalacion);
+				}
 			}
 		}
 		if (modeloInstalaciones.isEmpty()) {

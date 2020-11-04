@@ -79,7 +79,9 @@ public class AdminAlquilaSocio extends JDialog {
 
 	private void cargarInstalaciones() {
 		for (Instalacion instalacion : getPrograma().getInstalaciones()) {
-			modeloInstalaciones.addElement(instalacion);
+			if (instalacion.getEstado()) {
+				modeloInstalaciones.addElement(instalacion);
+			}
 		}
 	}
 

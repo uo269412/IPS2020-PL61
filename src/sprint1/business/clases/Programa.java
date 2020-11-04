@@ -657,8 +657,7 @@ public class Programa {
 		int año = rs.getInt(6);
 		int horaInicio = rs.getInt(7);
 		int horaFin = rs.getInt(8);
-		String estado = rs.getString(9);
-		return new Alquiler(id_alquiler, id_instalacion, id_cliente, dia, mes, año, horaInicio, horaFin, estado);
+		return new Alquiler(id_alquiler, id_instalacion, id_cliente, dia, mes, año, horaInicio, horaFin);
 	}
 
 	public List<Alquiler> getAlquileres() {
@@ -768,8 +767,8 @@ public class Programa {
 		}
 		return listaSort;
 	}
-	
-	//Checkear instalaciones abiertas cerradas
+
+	// Checkear instalaciones abiertas cerradas
 
 	public void añadirAlquiler(Cliente socio, Instalacion instalacion, int horaInicio, int horaFin) {
 		int[] fecha = obtenerHoraDiaMesAño();
@@ -778,7 +777,7 @@ public class Programa {
 		try {
 			Connection con = DriverManager.getConnection(Programa.URL);
 			PreparedStatement pst = con.prepareStatement(
-					"INSERT INTO ALQUILER (id_alquiler, id_instalacion, id_cliente, dia, mes, año, horaInicio, horaFin, estado) VALUES(?,?,?,?,?,?,?,?,?)");
+					"INSERT INTO ALQUILER (id_alquiler, id_instalacion, id_cliente, dia, mes, año, horaInicio, horaFin) VALUES(?,?,?,?,?,?,?,?)");
 			pst.setString(1, alquiler.getId_alquiler());
 			pst.setString(2, alquiler.getId_instalacion());
 			pst.setString(3, alquiler.getId_cliente());
@@ -787,7 +786,6 @@ public class Programa {
 			pst.setInt(6, alquiler.getAño());
 			pst.setInt(7, alquiler.getHoraInicio());
 			pst.setInt(8, alquiler.getHoraFin());
-			pst.setString(9, alquiler.getEstado());
 			pst.execute();
 			pst.close();
 			con.close();
@@ -1018,11 +1016,12 @@ public class Programa {
 		String codigo_instalacion = rs.getString(1);
 		String nombre = rs.getString(2);
 		double precio = rs.getDouble(3);
+		boolean estado = rs.getBoolean(4);
 		rs.close();
 		pst.close();
 		con.close();
 
-		return new Instalacion(codigo_instalacion, nombre, precio);
+		return new Instalacion(codigo_instalacion, nombre, precio, estado);
 	}
 
 	private List<Instalacion> convertirInstalacionesEnLista(ResultSet rs) throws SQLException {
@@ -1031,7 +1030,8 @@ public class Programa {
 			String codigo = rs.getString(1);
 			String nombre = rs.getString(2);
 			Double precio = rs.getDouble(3);
-			instalaciones.add(new Instalacion(codigo, nombre, precio));
+			Boolean estado = rs.getBoolean(4);
+			instalaciones.add(new Instalacion(codigo, nombre, precio, estado));
 		}
 		return instalaciones;
 	}
@@ -1066,13 +1066,16 @@ public class Programa {
 		int mes = fecha[2];
 		int año = fecha[3];
 		for (Instalacion instalacion : instalaciones) {
-			if (getAlquileres(instalacion.getCodigoInstalacion(), hora, dia, mes, año).isEmpty()
-					&& getReservas(instalacion.getCodigoInstalacion(), hora, dia, mes, año).isEmpty()) {
-				return true;
+			if (instalacion.getEstado()) {
+				if (getAlquileres(instalacion.getCodigoInstalacion(), hora, dia, mes, año).isEmpty()
+						&& getReservas(instalacion.getCodigoInstalacion(), hora, dia, mes, año).isEmpty()) {
+					return true;
+				}
 			}
 		}
 
 		return false;
+
 	}
 
 	// UTIL

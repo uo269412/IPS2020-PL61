@@ -12,11 +12,9 @@ public class Alquiler implements Comparable<Alquiler> {
 	private int año;
 	private int horaInicio;
 	private int horaFin;
-	// DISPONIBLE O CANCELADO
-	private String estado;
 
 	public Alquiler(String id_alquiler, String id_instalacion, String id_cliente, int dia, int mes, int año,
-			int horaInicio, int horaFin, String estado) {
+			int horaInicio, int horaFin) {
 		this.id_alquiler = id_alquiler;
 		this.id_instalacion = id_instalacion;
 		this.id_cliente = id_cliente;
@@ -25,16 +23,10 @@ public class Alquiler implements Comparable<Alquiler> {
 		this.año = año;
 		this.horaInicio = horaInicio;
 		this.horaFin = horaFin;
-		this.estado = estado;
-	}
-
-	public Alquiler(String id_instalacion, String id_cliente, int dia, int mes, int año, int horaInicio, int horaFin,
-			String estado) {
-		this(UUID.randomUUID().toString(), id_instalacion, id_cliente, dia, mes, año, horaInicio, horaFin, estado);
 	}
 
 	public Alquiler(String id_instalacion, String id_cliente, int dia, int mes, int año, int horaInicio, int horaFin) {
-		this(id_instalacion, id_cliente, dia, mes, año, horaInicio, horaFin, "DISPONIBLE");
+		this(UUID.randomUUID().toString(), id_instalacion, id_cliente, dia, mes, año, horaInicio, horaFin);
 	}
 
 	public String getId_alquiler() {
@@ -101,19 +93,11 @@ public class Alquiler implements Comparable<Alquiler> {
 		this.horaFin = horaFin;
 	}
 
-	public String getEstado() {
-		return estado;
-	}
-
-	public void setEstado(String estado) {
-		this.estado = estado;
-	}
-
 	@Override
 	public String toString() {
 		return "Alquiler [id_alquiler=" + id_alquiler + ", id_instalacion=" + id_instalacion + ", id_cliente="
 				+ id_cliente + ", dia=" + dia + ", mes=" + mes + ", año=" + año + ", horaInicio=" + horaInicio
-				+ ", horaFin=" + horaFin + ", estado=" + estado + "]";
+				+ ", horaFin=" + horaFin + "]";
 	}
 
 	@Override
