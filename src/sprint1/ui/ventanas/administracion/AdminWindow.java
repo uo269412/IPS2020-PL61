@@ -41,10 +41,12 @@ public class AdminWindow extends JDialog {
 	private AdminReservaSocioWindow adminReservaSocio;
 	private AlquilarSocioMomentoWindow alquilarSocioMomento;
 	private CalendarioAlquilerAdmin calendarioAlquilerAdmin;
+	private RegistrarEntradaSocio registrarEntradaSocio;
 	private JButton btnReservaSocio;
 	private JButton btnVerOcupacion;
 	private JButton btnAlquilarSocioMomento;
 	private JButton btnAlquilarSocio;
+	private JButton btnRegistrarEntrada;
 
 	/**
 	 * Create the dialog.
@@ -52,7 +54,7 @@ public class AdminWindow extends JDialog {
 	public AdminWindow(MainWindow mainWindow) {
 		setTitle("Centro de Deportes: Administrador");
 		this.parent = mainWindow;
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 450, 362);
 		getContentPane().setLayout(new BorderLayout(0, 0));
 		getContentPane().add(getPnTextos(), BorderLayout.NORTH);
 		getContentPane().add(getPnFuncionalidad(), BorderLayout.CENTER);
@@ -120,6 +122,7 @@ public class AdminWindow extends JDialog {
 			pnAcciones.add(getBtnVerOcupacion());
 			pnAcciones.add(getBtnAlquilarSocioMomento());
 			pnAcciones.add(getBtnAlquilarSocio());
+			pnAcciones.add(getBtnRegistrarEntrada());
 		}
 		return pnAcciones;
 	}
@@ -281,5 +284,29 @@ public class AdminWindow extends JDialog {
 		calendarioAlquilerAdmin.setModal(true);
 		calendarioAlquilerAdmin.setLocationRelativeTo(this);
 		calendarioAlquilerAdmin.setVisible(true);
+	}
+
+	private JButton getBtnRegistrarEntrada() {
+		if (btnRegistrarEntrada == null) {
+			btnRegistrarEntrada = new JButton("Registrar entrada al alquiler");
+			btnRegistrarEntrada.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					if (getParent().getPrograma().hayAlquileresAhoraSocioNoHaEntrado()) {
+						openRegistrarEntradaSocioWindow();
+					} else {
+						JOptionPane.showMessageDialog(null,
+								"No hay ningún alquiler o los clientes ya se han presentado a los alquileres actuales");
+					}
+				}
+			});
+		}
+		return btnRegistrarEntrada;
+	}
+
+	private void openRegistrarEntradaSocioWindow() {
+		registrarEntradaSocio = new RegistrarEntradaSocio(this);
+		registrarEntradaSocio.setModal(true);
+		registrarEntradaSocio.setLocationRelativeTo(this);
+		registrarEntradaSocio.setVisible(true);
 	}
 }

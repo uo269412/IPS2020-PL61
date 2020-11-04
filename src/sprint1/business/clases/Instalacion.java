@@ -21,6 +21,10 @@ public class Instalacion implements Comparable<Instalacion> {
 	public Instalacion(String nombre, double precioHora) {
 		this(UUID.randomUUID().toString(), nombre, precioHora);
 	}
+	
+	public Instalacion(String nombre, double precioHora, boolean estado) {
+		this(UUID.randomUUID().toString(), nombre, precioHora, estado);
+	}
 
 	public Instalacion(String codigo_instalacion, String nombre, double precioHora, boolean estado) {
 		this(codigo_instalacion, nombre, precioHora);

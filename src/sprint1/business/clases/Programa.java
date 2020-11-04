@@ -30,11 +30,11 @@ public class Programa {
 	private List<Registro> registros;
 
 	// Conexión Javi
-	//public static String URL = "jdbc:sqlite:C:\\Users\\javie\\git\\IPS2020-PL61\\resources\\bdProject.db";
+	public static String URL = "jdbc:sqlite:C:\\Users\\javie\\git\\IPS2020-PL61\\resources\\bdProject.db";
 
 	// Conexión Dani
-	 public static String URL =
-	 "jdbc:sqlite:C:\\Users\\Dani\\git\\IPS2020-PL61_sprint2\\resources\\bdProject.db";
+	// public static String URL =
+	// "jdbc:sqlite:C:\\Users\\Dani\\git\\IPS2020-PL61_sprint2\\resources\\bdProject.db";
 
 	// Conexión Juan.elo
 	// public static String URL =
@@ -142,24 +142,24 @@ public class Programa {
 
 	public List<Actividad> actividadesPorInstalacion(String codigo_instalacion) {
 		List<Actividad> listaActividades = new LinkedList<>();
-		for(Actividad a: getActividades()) {
-			if(!a.requiresRecursos()) {
+		for (Actividad a : getActividades()) {
+			if (!a.requiresRecursos()) {
 				listaActividades.add(a);
 			} else {
 				boolean contieneTodos = true;
-				for(Recurso r: a.getRecursos()) {
-					if(r.getInstalacion().equals(codigo_instalacion)) {
+				for (Recurso r : a.getRecursos()) {
+					if (r.getInstalacion().equals(codigo_instalacion)) {
 						contieneTodos = contieneTodos && true;
 					} else {
 						contieneTodos = contieneTodos && false;
 					}
 				}
-				if(contieneTodos) {
+				if (contieneTodos) {
 					listaActividades.add(a);
 				}
 			}
 		}
-		
+
 		return listaActividades;
 	}
 //ACTIVIDADES PLANIFICADAS	
@@ -202,18 +202,19 @@ public class Programa {
 		return actividadesPlanificadas;
 	}
 
-	public List<ActividadPlanificada> getActividadesPlanificadasInstalacionDia(String idInstalacion, int dia, int mes, int año) {
+	public List<ActividadPlanificada> getActividadesPlanificadasInstalacionDia(String idInstalacion, int dia, int mes,
+			int año) {
 		List<ActividadPlanificada> planificadasSinFiltrar = getActividadesPlanificadas(dia, mes, año);
 		List<ActividadPlanificada> toRet = new LinkedList<>();
-		for(ActividadPlanificada a: planificadasSinFiltrar) {
-			if(a.getCodigoInstalacion().equals(idInstalacion)) {
+		for (ActividadPlanificada a : planificadasSinFiltrar) {
+			if (a.getCodigoInstalacion().equals(idInstalacion)) {
 				toRet.add(a);
 			}
 		}
-		
+
 		return toRet;
 	}
-	
+
 	public ActividadPlanificada encontrarActividadPlanificada(String codigo) {
 		for (ActividadPlanificada actividad : actividadesPlanificadas) {
 			if (actividad.getCodigoPlanificada().equals(codigo)) {
@@ -778,6 +779,24 @@ public class Programa {
 		return alquileresQueYaTieneAlquiladassElSocio;
 	}
 
+	public Alquiler getAlquilerSocioAhora(Cliente cliente) {
+		int[] fecha = obtenerHoraDiaMesAño();
+		int hora = fecha[0];
+		int dia = fecha[1];
+		int mes = fecha[2];
+		int año = fecha[3];
+		for (Alquiler alquiler : getAlquileres()) {
+			if (alquiler.getId_cliente().equals(cliente.getId_cliente())) {
+				if (alquiler.getDia() == dia && alquiler.getMes() == mes && alquiler.getAño() == año) {
+					if (alquiler.getHoraInicio() == hora
+							|| ((hora >= alquiler.getHoraInicio()) && (hora <= alquiler.getHoraFin())))
+						return alquiler;
+				}
+			}
+		}
+		return null;
+	}
+
 	public List<Alquiler> getAlquileres(int hora, int dia, int mes, int año) {
 		List<Alquiler> listaSort = new ArrayList<Alquiler>();
 		for (Alquiler ap : getAlquileres()) {
@@ -802,6 +821,18 @@ public class Programa {
 			}
 		}
 		return listaSort;
+	}
+
+	public boolean hayAlquileresAhoraSocioNoHaEntrado() {
+		for (Socio socio : getSocios()) {
+			Alquiler alquiler = getAlquilerSocioAhora(socio);
+			if (alquiler != null) {
+				if (encontrarRegistro(alquiler.getId_alquiler()) == null) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	// Checkear instalaciones abiertas cerradas
@@ -878,13 +909,27 @@ public class Programa {
 		Collections.sort(this.registros);
 	}
 
-	public void añadirRegistro(String id_alquiler) {
-		Registro registro = new Registro(id_alquiler);
+	public Registro encontrarRegistro(String id_alquiler) {
+		for (Registro registro : registros) {
+			if (registro.getId_alquiler().equals(id_alquiler)) {
+				return registro;
+			}
+		}
+		return null;
+	}
+
+	public void crearRegistro(Alquiler alquiler) {
+		Registro registro = new Registro(alquiler.getId_alquiler());
+		int[] fecha = obtenerHoraDiaMesAño();
+		int hora = fecha[0];
 		try {
 			Connection con = DriverManager.getConnection(Programa.URL);
-			PreparedStatement pst = con.prepareStatement("INSERT INTO REGISTRO (id_registro, id_alquiler) VALUES(?,?)");
+			PreparedStatement pst = con.prepareStatement(
+					"INSERT INTO REGISTRO (id_registro, id_alquiler, hora_entrada, socioPresentado) VALUES(?,?,?,?)");
 			pst.setString(1, registro.getId_registro());
 			pst.setString(2, registro.getId_alquiler());
+			pst.setInt(3, hora);
+			pst.setBoolean(4, true);
 			pst.execute();
 			pst.close();
 			con.close();
@@ -892,6 +937,11 @@ public class Programa {
 		} catch (SQLException e) {
 			System.out.println("Error añadiendo el registro");
 		}
+	}
+
+	public boolean ClienteSeHaPresentado(Cliente socio, Alquiler alquiler) {
+
+		return true;
 	}
 
 //MONITORES
