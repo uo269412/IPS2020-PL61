@@ -9,7 +9,7 @@ public class Actividad implements Comparable<Actividad> {
 	public static final int INTENSIDAD_BAJA = 0;
 	public static final int INTENSIDAD_MODERADA = 1;
 	public static final int INTENSIDAD_ALTA = 2;
-	// en un futuro se cambiar�n por un enum
+	// en un futuro se cambiarán por un enum
 
 	private String codigo;
 	private String nombre;
@@ -22,7 +22,7 @@ public class Actividad implements Comparable<Actividad> {
 		setIntensidad(intensidad);
 		recursosRequeridos = new LinkedList<>();
 	}
-
+	
 	public Actividad(String nombre, int intensidad) {
 		this(UUID.randomUUID().toString(), nombre, intensidad);
 	}
