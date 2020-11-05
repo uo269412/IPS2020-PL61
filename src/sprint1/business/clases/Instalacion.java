@@ -7,7 +7,7 @@ public class Instalacion implements Comparable<Instalacion> {
 	private String nombre;
 	private double precioHora;
 	private boolean estado;
-	//true(0) si disponible, false(1) si no
+	//1 (false) si disponible, true(0) si no
 	public Instalacion(String codigo_instalacion, String nombre) {
 		this.codigo_instalacion = codigo_instalacion;
 		this.nombre = nombre;

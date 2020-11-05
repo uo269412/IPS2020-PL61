@@ -70,7 +70,7 @@ public class AlquilarSocioMomentoWindow extends JDialog {
 	private void cargarInstalaciones() {
 		modeloInstalaciones.clear();
 		int fecha[] = getPrograma().obtenerHoraDiaMesAño();
-		int hora = fecha[0] + 1;
+		int hora = fecha[0];
 		int dia = fecha[1];
 		int mes = fecha[2];
 		int año = fecha[3];
@@ -103,7 +103,7 @@ public class AlquilarSocioMomentoWindow extends JDialog {
 
 	private boolean checkSePuedeReservar2Horas(Instalacion instalacion) {
 		int fecha[] = getPrograma().obtenerHoraDiaMesAño();
-		int hora = fecha[0] + 2;
+		int hora = fecha[0] + 1;
 		int dia = fecha[1];
 		int mes = fecha[2];
 		int año = fecha[3];
@@ -116,7 +116,7 @@ public class AlquilarSocioMomentoWindow extends JDialog {
 
 	public boolean comprobarSiSocioPuedeAlquilar(Socio socio) {
 		int fecha[] = getPrograma().obtenerHoraDiaMesAño();
-		int hora = fecha[0] + 1;
+		int hora = fecha[0];
 		int dia = fecha[1];
 		int mes = fecha[2];
 		int año = fecha[3];
@@ -182,11 +182,11 @@ public class AlquilarSocioMomentoWindow extends JDialog {
 							Instalacion instalacion = listInstalaciones.getSelectedValue();
 							int fecha[] = getPrograma().obtenerHoraDiaMesAño();
 							if (checkSePuedeReservar2Horas(instalacion)) {
-								getPrograma().añadirAlquiler(socio, instalacion, fecha[0] + 1, fecha[0] + 3);
+								getPrograma().añadirAlquiler(socio, instalacion, fecha[0], fecha[0] + 2);
 								JOptionPane.showMessageDialog(null,
 										"Se ha realizado el alquiler de dos horas correctamente");
 							} else {
-								getPrograma().añadirAlquiler(socio, instalacion, fecha[0] + 1, fecha[0] + 2);
+								getPrograma().añadirAlquiler(socio, instalacion, fecha[0], fecha[0] + 1);
 								JOptionPane.showMessageDialog(null,
 										"Se ha realizado el alquiler de una hora correctamente");
 							}

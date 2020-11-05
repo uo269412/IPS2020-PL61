@@ -797,6 +797,27 @@ public class Programa {
 		return null;
 	}
 
+	public Alquiler getAlquilerSocioAhoraNoCancelado(Cliente cliente) {
+		int[] fecha = obtenerHoraDiaMesAño();
+		int hora = fecha[0];
+		int dia = fecha[1];
+		int mes = fecha[2];
+		int año = fecha[3];
+		for (Alquiler alquiler : getAlquileres()) {
+			if (alquiler.getId_cliente().equals(cliente.getId_cliente())) {
+				if (alquiler.getDia() == dia && alquiler.getMes() == mes && alquiler.getAño() == año) {
+					if (alquiler.getHoraInicio() == hora
+							|| ((hora >= alquiler.getHoraInicio()) && (hora <= alquiler.getHoraFin()))) {
+						if (encontrarInstalacion(alquiler.getId_instalacion()).getEstado()) {
+							return alquiler;
+						}
+					}
+				}
+			}
+		}
+		return null;
+	}
+
 	public List<Alquiler> getAlquileres(int hora, int dia, int mes, int año) {
 		List<Alquiler> listaSort = new ArrayList<Alquiler>();
 		for (Alquiler ap : getAlquileres()) {
@@ -925,11 +946,12 @@ public class Programa {
 		try {
 			Connection con = DriverManager.getConnection(Programa.URL);
 			PreparedStatement pst = con.prepareStatement(
-					"INSERT INTO REGISTRO (id_registro, id_alquiler, hora_entrada, socioPresentado) VALUES(?,?,?,?)");
+					"INSERT INTO REGISTRO(id_registro, id_alquiler, hora_entrada, alquilerPagado, socioPresentado) VALUES(?,?,?,?,?)");
 			pst.setString(1, registro.getId_registro());
 			pst.setString(2, registro.getId_alquiler());
 			pst.setInt(3, hora);
-			pst.setBoolean(4, true);
+			pst.setBoolean(4, false);
+			pst.setBoolean(5, true);
 			pst.execute();
 			pst.close();
 			con.close();
@@ -1161,7 +1183,15 @@ public class Programa {
 		}
 
 		return false;
+	}
 
+	public Instalacion encontrarInstalacion(String id_instalacion) {
+		for (Instalacion instalacion : instalaciones) {
+			if (instalacion.getCodigo().equals(id_instalacion)) {
+				return instalacion;
+			}
+		}
+		return null;
 	}
 
 // UTIL

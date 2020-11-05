@@ -43,8 +43,7 @@ public class RegistrarEntradaSocio extends JDialog {
 
 	private AdminWindow parent = null;
 	private Socio socio = null;
-	private DefaultListModel<Instalacion> modeloInstalaciones = null;
-	private DefaultComboBoxModel<Socio> modeloSocios = null;
+	private DefaultComboBoxModel<Socio> modeloSocios = new DefaultComboBoxModel<Socio>();
 	private JPanel pnBotones;
 	private JButton btnVolver;
 	private JButton btnReservar;
@@ -57,10 +56,12 @@ public class RegistrarEntradaSocio extends JDialog {
 	private JLabel lblInfoAlquiler;
 	private JTextField textField;
 
+	private Instalacion seleccionada;
+
 	public RegistrarEntradaSocio(AdminWindow adminWindow) {
 		setTitle("Administraci\u00F3n: Registrando entrada del socio");
 		this.parent = adminWindow;
-		setBounds(100, 100, 471, 176);
+		setBounds(100, 100, 620, 169);
 		getContentPane().setLayout(new BorderLayout());
 		getContentPane().add(getPnBotones(), BorderLayout.SOUTH);
 		getContentPane().add(getPnSocio(), BorderLayout.NORTH);
@@ -70,9 +71,11 @@ public class RegistrarEntradaSocio extends JDialog {
 
 	private void cargarSocio() {
 		for (Socio socio : getPrograma().getSocios()) {
-			Alquiler alquiler = getPrograma().getAlquilerSocioAhora(socio);
-			if (getPrograma().encontrarRegistro(alquiler.getId_alquiler()) == null) {
-				modeloSocios.addElement(socio);
+			Alquiler alquiler = getPrograma().getAlquilerSocioAhoraNoCancelado(socio);
+			if (alquiler != null) {
+				if (getPrograma().encontrarRegistro(alquiler.getId_alquiler()) == null) {
+					modeloSocios.addElement(socio);
+				}
 			}
 		}
 	}
@@ -104,14 +107,16 @@ public class RegistrarEntradaSocio extends JDialog {
 
 	private JButton getBtnReservar() {
 		if (btnReservar == null) {
-			btnReservar = new JButton("Alquilar");
+			btnReservar = new JButton("Registrar entrada");
 			btnReservar.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					int yesNo = JOptionPane.showConfirmDialog(null,
 							"¿Seguro de que quieres registrar la asistencia del cliente "
 									+ ((Socio) comboBox.getSelectedItem()).getNombre() + " ?");
 					if (yesNo == JOptionPane.YES_OPTION) {
-						getPrograma().crearRegistro(getPrograma().getAlquilerSocioAhora((Socio) comboBox.getSelectedItem()));
+						getPrograma()
+								.crearRegistro(getPrograma().getAlquilerSocioAhora((Socio) comboBox.getSelectedItem()));
+						JOptionPane.showMessageDialog(null, "Se ha registrado la asistencia correctamente");
 						dispose();
 
 					}
@@ -149,11 +154,6 @@ public class RegistrarEntradaSocio extends JDialog {
 		return panel;
 	}
 
-	private void setSocio(Socio selectedItem) {
-		this.socio = selectedItem;
-
-	}
-
 	private JPanel getPnSeleccionSocio() {
 		if (pnSeleccionSocio == null) {
 			pnSeleccionSocio = new JPanel();
@@ -178,8 +178,11 @@ public class RegistrarEntradaSocio extends JDialog {
 			comboBox = new JComboBox<Socio>(modeloSocios);
 			comboBox.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					textField.setText(
-							getPrograma().getAlquilerSocioAhora((Socio) comboBox.getSelectedItem()).toString());
+					Instalacion instalacion = getPrograma().encontrarInstalacion((getPrograma()
+							.getAlquilerSocioAhora((Socio) comboBox.getSelectedItem()).getId_instalacion()));
+					textField.setText(getPrograma().getAlquilerSocioAhora((Socio) comboBox.getSelectedItem()).toString()
+							+ " en la instalación " + instalacion.toString());
+
 				}
 			});
 		}

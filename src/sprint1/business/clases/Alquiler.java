@@ -95,10 +95,9 @@ public class Alquiler implements Comparable<Alquiler> {
 
 	@Override
 	public String toString() {
-		return "Alquiler [id_alquiler=" + id_alquiler + ", id_instalacion=" + id_instalacion + ", id_cliente="
-				+ id_cliente + ", dia=" + dia + ", mes=" + mes + ", año=" + año + ", horaInicio=" + horaInicio
-				+ ", horaFin=" + horaFin + "]";
+		return "Alquiler desde " + horaInicio + " hasta " + horaFin; 
 	}
+	
 
 	@Override
 	public int compareTo(Alquiler arg0) {
