@@ -856,6 +856,19 @@ public class Programa {
 		return false;
 	}
 
+	public boolean hayAlquileresConSocioDentro() {
+		for (Alquiler alquiler : getAlquileres()) {
+			if (alquiler != null) {
+				if (encontrarRegistro(alquiler.getId_alquiler()) != null) {
+					if (encontrarRegistro(alquiler.getId_alquiler()).isSocioPresentado()) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
 	// Checkear instalaciones abiertas cerradas
 
 	public void añadirAlquiler(Cliente socio, Instalacion instalacion, int horaInicio, int horaFin) {

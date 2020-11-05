@@ -42,11 +42,13 @@ public class AdminWindow extends JDialog {
 	private AlquilarSocioMomentoWindow alquilarSocioMomento;
 	private CalendarioAlquilerAdmin calendarioAlquilerAdmin;
 	private RegistrarEntradaSocio registrarEntradaSocio;
+	private RegistrarSalidaSocio registrarSalidaSocio;
 	private JButton btnReservaSocio;
 	private JButton btnVerOcupacion;
 	private JButton btnAlquilarSocioMomento;
 	private JButton btnAlquilarSocio;
 	private JButton btnRegistrarEntrada;
+	private JButton btnRegistrarSalida;
 
 	/**
 	 * Create the dialog.
@@ -123,6 +125,7 @@ public class AdminWindow extends JDialog {
 			pnAcciones.add(getBtnAlquilarSocioMomento());
 			pnAcciones.add(getBtnAlquilarSocio());
 			pnAcciones.add(getBtnRegistrarEntrada());
+			pnAcciones.add(getBtnRegistrarSalida());
 		}
 		return pnAcciones;
 	}
@@ -308,5 +311,29 @@ public class AdminWindow extends JDialog {
 		registrarEntradaSocio.setModal(true);
 		registrarEntradaSocio.setLocationRelativeTo(this);
 		registrarEntradaSocio.setVisible(true);
+	}
+
+	private JButton getBtnRegistrarSalida() {
+		if (btnRegistrarSalida == null) {
+			btnRegistrarSalida = new JButton("Registrar salida del alquiler");
+			btnRegistrarSalida.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					if (getParent().getPrograma().hayAlquileresConSocioDentro()) {
+						openRegistrarSalidaSocioWindow();
+					} else {
+						JOptionPane.showMessageDialog(null,
+								"No hay ningún socio en los alquileres de las instalaciones");
+					}
+				}
+			});
+		}
+		return btnRegistrarSalida;
+	}
+
+	private void openRegistrarSalidaSocioWindow() {
+		registrarSalidaSocio = new RegistrarSalidaSocio(this);
+		registrarSalidaSocio.setModal(true);
+		registrarSalidaSocio.setLocationRelativeTo(this);
+		registrarSalidaSocio.setVisible(true);
 	}
 }
