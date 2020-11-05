@@ -11,6 +11,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -31,7 +32,7 @@ import javax.swing.JTextField;
 import java.awt.Color;
 import java.awt.Font;
 import javax.swing.ListSelectionModel;
-import java.awt.SystemColor;
+import javax.swing.JScrollPane;
 
 public class AsignarActividadDialog extends JDialog {
 
@@ -68,7 +69,11 @@ public class AsignarActividadDialog extends JDialog {
 	private List<ActividadPlanificada> aEliminar;
 	private JLabel lblInstalacion;
 	private JComboBox<Instalacion> cmbInstalaciones;
-
+	
+	private boolean updated = true;
+	DefaultComboBoxModel<Actividad> modeloBaseComboActividades;
+	private JScrollPane scrollPane;
+	
 //	/**
 //	 * Launch the application.
 //	 */
@@ -92,6 +97,8 @@ public class AsignarActividadDialog extends JDialog {
 		this.mes = mes;
 		this.año = año;
 		this.modeloLista = new DefaultListModel<ActividadPlanificada>();
+		this.modeloBaseComboActividades = new DefaultComboBoxModel<Actividad>(
+				programa.getActividades().toArray(new Actividad[programa.getActividades().size()]));
 		setBounds(100, 100, 760, 331);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -101,16 +108,15 @@ public class AsignarActividadDialog extends JDialog {
 		contentPanel.add(getPnActividadesPlanificadas());
 		getContentPane().add(getPnBotones(), BorderLayout.SOUTH);
 		aEliminar = new LinkedList<>();
-		rellenarInstalacion();
 	}
 
 	private JPanel getPnActividadesPlanificadas() {
 		if (pnActividadesPlanificadas == null) {
 			pnActividadesPlanificadas = new JPanel();
 			pnActividadesPlanificadas.setLayout(new BorderLayout(0, 0));
-			pnActividadesPlanificadas.add(getListActividadesPlanificadas(), BorderLayout.CENTER);
 			pnActividadesPlanificadas.add(getLblDia(), BorderLayout.NORTH);
 			pnActividadesPlanificadas.add(getBtnEliminar(), BorderLayout.SOUTH);
+			pnActividadesPlanificadas.add(getScrollPane(), BorderLayout.CENTER);
 		}
 		return pnActividadesPlanificadas;
 	}
@@ -162,14 +168,16 @@ public class AsignarActividadDialog extends JDialog {
 			cmbActividades.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
-					if(cmbActividades.getSelectedItem() != null) {
-						rellenarInstalacion();
+					if(updated) {
+						if(cmbActividades.getSelectedItem() != null) {
+							rellenarInstalacion();
+						}
 					}
 				}
 			});
 			cmbActividades.setFont(new Font("Tahoma", Font.PLAIN, 8));
-			cmbActividades.setModel(new DefaultComboBoxModel<Actividad>(
-					programa.getActividades().toArray(new Actividad[programa.getActividades().size()])));
+			cmbActividades.setModel(modeloBaseComboActividades);
+			
 		}
 		return cmbActividades;
 	}
@@ -233,14 +241,23 @@ public class AsignarActividadDialog extends JDialog {
 	private JButton getBtnAñadir() {
 		if (btnAñadir == null) {
 			btnAñadir = new JButton("A\u00F1adir");
+			if(cmbInstalaciones.getModel().getSize() == 0) {
+				btnAñadir.setEnabled(false);
+			} else {
+				btnAñadir.setEnabled(true);
+			}
 			btnAñadir.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					
 					if (checkHoraInicio() && checkHoraFin() && checkLimitePlazas()) {
 						// cuando se implemente lo de los monitores, cambiar el constructor
-						modeloLista.add(modeloLista.size(), crearPlanificada());
+						updated = false;
+						cmbInstalaciones.setEnabled(false);
+						añadirAModelo(crearPlanificada());
+						adaptarActividadesAInstalacion();
 						repintar();
 					}
+					
 				}
 			});
 			btnAñadir.setForeground(Color.WHITE);
@@ -269,10 +286,13 @@ public class AsignarActividadDialog extends JDialog {
 			btnEliminar.setBackground(new Color(255, 99, 71));
 			btnEliminar.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-
+					updated = false;
+					cmbInstalaciones.setEnabled(false);
+					cmbInstalaciones.setToolTipText("No puedes cambiar de instalación hasta que no hayas aplicado los cambios");
 					int indiceAEliminar = listActividadesPlanificadas.getSelectedIndex();
 					aEliminar.add(modeloLista.get(indiceAEliminar));
 					modeloLista.remove(indiceAEliminar);
+					adaptarActividadesAInstalacion();
 				}
 			});
 		}
@@ -308,10 +328,25 @@ public class AsignarActividadDialog extends JDialog {
 		return this;
 	}
 
-	public void mostrarActividadesPlanificadasDia() {
+	private void añadirAModelo(ActividadPlanificada a) {
+		List<ActividadPlanificada> lista = new LinkedList<>();
+		for(int i = 0; i < modeloLista.getSize(); i++) {
+			lista.add(modeloLista.getElementAt(i));
+		}
+		 
+		lista.add(a);
+		lista.sort(new ComparePlanificadas());
 		modeloLista.clear();
+		for(ActividadPlanificada actividad: lista) {
+			modeloLista.add(modeloLista.size(), actividad);
+		}
+		
+	}
+	
+	public void mostrarActividadesPlanificadasDia() {
+		/*
 		try {
-			for (ActividadPlanificada a : programa.getActividadesPlanificadasDia(dia, mes, año)) {
+			for (ActividadPlanificada a : programa.getActividadesPlanificadasInstalacionDia(((Instalacion)cmbInstalaciones.getSelectedItem()).getCodigo(), dia, mes, año)) {
 				modeloLista.addElement(a);
 			}
 			
@@ -319,6 +354,16 @@ public class AsignarActividadDialog extends JDialog {
 			JOptionPane.showMessageDialog(this,
 					"Ha ocurrido un error cargando las actividades para este día, por favor contacte con el desarrollador");
 		}
+		*/
+		List<ActividadPlanificada> actividades = new LinkedList<>();
+		for (ActividadPlanificada a : programa.getActividadesPlanificadasInstalacionDia(((Instalacion)cmbInstalaciones.getSelectedItem()).getCodigo(), dia, mes, año)) {
+			actividades.add(a);
+		}
+		actividades.sort(new ComparePlanificadas());
+		for(ActividadPlanificada a: actividades) {
+			modeloLista.addElement(a);
+		}
+		
 	}
 
 	private boolean checkHoraInicio() {
@@ -392,7 +437,10 @@ public class AsignarActividadDialog extends JDialog {
 			btnNewButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					aplicarCambios();
-					dispose();
+					updated = true;
+					cmbActividades.setModel(modeloBaseComboActividades);
+					cmbInstalaciones.setEnabled(true);
+					cmbInstalaciones.setToolTipText(null);
 				}
 			});
 		}
@@ -411,12 +459,13 @@ public class AsignarActividadDialog extends JDialog {
 					if( !programa.getActividadesPlanificadas().contains(modeloLista.getElementAt(i)))
 						programa.añadirActividadPlanificada(modeloLista.getElementAt(i));
 				}
-				
+				modeloLista.clear();
 				mostrarActividadesPlanificadasDia();
 			} catch (SQLException e) {
 				JOptionPane.showMessageDialog(this,
 						"Ha ocurrido un error cargando las actividades para este día, por favor contacte con el desarrollador");
 			}
+			
 			
 			listActividadesPlanificadas.validate();
 	}
@@ -429,7 +478,6 @@ public class AsignarActividadDialog extends JDialog {
 	
 	private void rellenarInstalacion() {
 		cmbInstalaciones.setEnabled(true);
-		btnAñadir.setEnabled(true);
 		Actividad a = programa.getActividades().get(cmbActividades.getSelectedIndex());
 		if(a.requiresRecursos()) {
 			boolean todosIguales = true;
@@ -465,7 +513,36 @@ public class AsignarActividadDialog extends JDialog {
 	private JComboBox<Instalacion> getCmbInstalaciones() {
 		if (cmbInstalaciones == null) {
 			cmbInstalaciones = new JComboBox<Instalacion>();
+			rellenarInstalacion();
+			cmbInstalaciones.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+						mostrarActividadesPlanificadasDia();
+					}
+				});
 		}
 		return cmbInstalaciones;
+	}
+	
+	private void adaptarActividadesAInstalacion() {
+		Instalacion i = (Instalacion) cmbInstalaciones.getSelectedItem();
+		cmbActividades.setModel(new DefaultComboBoxModel<Actividad>(
+				programa.actividadesPorInstalacion(i.getCodigo()).toArray(new Actividad[programa.actividadesPorInstalacion(i.getCodigo()).size()])));
+	}
+	
+	private class ComparePlanificadas implements Comparator<ActividadPlanificada> {
+
+		@Override
+		public int compare(ActividadPlanificada arg0, ActividadPlanificada arg1) {
+			return arg0.compareTo(arg1);
+		}
+		
+	}
+	private JScrollPane getScrollPane() {
+		if (scrollPane == null) {
+			scrollPane = new JScrollPane();
+			scrollPane.add(getListActividadesPlanificadas());
+			scrollPane.setViewportView(getListActividadesPlanificadas());
+		}
+		return scrollPane;
 	}
 }
