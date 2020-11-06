@@ -10,7 +10,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
@@ -30,15 +29,15 @@ public class Programa {
 	private List<Registro> registros;
 
 	// Conexión Javi
-	public static String URL = "jdbc:sqlite:C:\\Users\\javie\\git\\IPS2020-PL61\\resources\\bdProject.db";
+	//public static String URL = "jdbc:sqlite:C:\\Users\\javie\\git\\IPS2020-PL61\\resources\\bdProject.db";
 
 	// Conexión Dani
 	// public static String URL =
 	// "jdbc:sqlite:C:\\Users\\Dani\\git\\IPS2020-PL61_sprint2\\resources\\bdProject.db";
 
 	// Conexión Juan.elo
-	// public static String URL =
-	// "jdbc:sqlite:C:\\Users\\Usuario\\git\\IPS2020-PL61\\resources\\bdProject.db";
+	 public static String URL =
+	 "jdbc:sqlite:C:\\Users\\Usuario\\git\\IPS2020-PL61\\resources\\bdProject.db";
 
 	public Programa() throws SQLException {
 		cargarBaseDatos();
@@ -597,7 +596,8 @@ public class Programa {
 
 	public boolean añadirReserva(Socio socio, ActividadPlanificada actividad) {
 		boolean result = insertarReserva(socio.getId_cliente(), actividad.getCodigoPlanificada());
-		actualizarPlazasActividadPlanificada(actividad, actividad.getLimitePlazas() - 1);
+		if (result)
+			actualizarPlazasActividadPlanificada(actividad, actividad.getLimitePlazas() - 1);
 		try {
 			cargarReservas();
 			cargarActividadesPlanificadas();
