@@ -93,11 +93,18 @@ public class Alquiler implements Comparable<Alquiler> {
 		this.horaFin = horaFin;
 	}
 
+
 	@Override
 	public String toString() {
 		return "Alquiler desde " + horaInicio + " hasta " + horaFin; 
 	}
 	
+	
+	public String toDebug() {
+		return "Alquiler [id_alquiler=" + id_alquiler + ", id_instalacion=" + id_instalacion + ", id_cliente="
+				+ id_cliente + ", dia=" + dia + ", mes=" + mes + ", año=" + año + ", horaInicio=" + horaInicio
+				+ ", horaFin=" + horaFin + "]";
+	}
 
 	@Override
 	public int compareTo(Alquiler arg0) {

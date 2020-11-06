@@ -7,6 +7,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
@@ -26,6 +27,7 @@ import sprint1.business.clases.ActividadPlanificada;
 import sprint1.business.clases.Alquiler;
 import sprint1.business.clases.Instalacion;
 import sprint1.business.clases.Programa;
+import sprint1.business.clases.Registro;
 import sprint1.business.clases.Reserva;
 import sprint1.business.clases.Socio;
 import javax.swing.event.ListSelectionListener;
@@ -69,12 +71,38 @@ public class RegistrarSalidaSocio extends JDialog {
 		cargarSocio();
 	}
 
+//	private void cargarSocio() {
+//		int[] fecha = getPrograma().obtenerHoraDiaMesAño();
+//		List<Socio> socios = new ArrayList<>();
+//		for (Alquiler alquiler : getPrograma().getAlquileresNoCancelados(fecha[0], fecha[1], fecha[2], fecha[3])) {
+//			if (alquiler != null) {
+//				if (getPrograma().encontrarRegistro(alquiler.getId_alquiler()) != null) {
+//					Registro seleccionado = getPrograma().encontrarRegistro(alquiler.getId_alquiler());
+//					if (seleccionado.isSocioPresentado() && (seleccionado.getHora_salida() == 0)) {
+//						for (Socio socio : getPrograma().getSocios()) {
+//							if (socio.getId_cliente().equals(alquiler.getId_cliente())) {
+//								socios.add(socio);
+//							}
+//						}
+//					}
+//				}
+//			}
+//		}
+//		Collections.sort(socios);
+//		for (Socio socio : socios) {
+//			modeloSocios.addElement(socio);
+//		}
+//	}
+
 	private void cargarSocio() {
 		for (Socio socio : getPrograma().getSocios()) {
 			Alquiler alquiler = getPrograma().getAlquilerSocioAhoraNoCancelado(socio);
 			if (alquiler != null) {
-				if (getPrograma().encontrarRegistro(alquiler.getId_alquiler()) == null) {
-					modeloSocios.addElement(socio);
+				if (getPrograma().encontrarRegistro(alquiler.getId_alquiler()) != null) {
+					Registro seleccionado = getPrograma().encontrarRegistro(alquiler.getId_alquiler());
+					if ((seleccionado.isSocioPresentado()) && (seleccionado.getHora_salida() == 0)) {
+						modeloSocios.addElement(socio);
+					}
 				}
 			}
 		}
@@ -107,16 +135,19 @@ public class RegistrarSalidaSocio extends JDialog {
 
 	private JButton getBtnReservar() {
 		if (btnReservar == null) {
-			btnReservar = new JButton("Registrar entrada");
+			btnReservar = new JButton("Registrar salida");
 			btnReservar.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					int yesNo = JOptionPane.showConfirmDialog(null,
-							"¿Seguro de que quieres registrar la asistencia del cliente "
+							"¿Seguro de que quieres registrar la salida del cliente "
 									+ ((Socio) comboBox.getSelectedItem()).getNombre() + " ?");
 					if (yesNo == JOptionPane.YES_OPTION) {
-						getPrograma()
-								.crearRegistro(getPrograma().getAlquilerSocioAhora((Socio) comboBox.getSelectedItem()));
-						JOptionPane.showMessageDialog(null, "Se ha registrado la asistencia correctamente");
+
+						Alquiler alquiler = getPrograma().getAlquilerSocioAhora((Socio) comboBox.getSelectedItem());
+						Registro registro = getPrograma().encontrarRegistro(alquiler.getId_alquiler());
+						getPrograma().registrarHoraSalidaSocio(registro);
+						JOptionPane.showMessageDialog(null,
+								"Se ha registrado la salida de la instalación correctamente");
 						dispose();
 
 					}

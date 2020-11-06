@@ -723,7 +723,7 @@ public class Programa {
 	public void printAlquileres() {
 		System.out.println("Lista de alquileres");
 		for (Alquiler alquiler : alquileres) {
-			System.out.println(alquiler.toString());
+			System.out.println(alquiler.toDebug());
 		}
 	}
 
@@ -830,6 +830,45 @@ public class Programa {
 		return listaSort;
 	}
 
+	public List<Alquiler> getAlquileresNoCancelados(int hora, int dia, int mes, int año) {
+		List<Alquiler> listaSort = new ArrayList<>();
+		for (Alquiler a : getAlquileres()) {
+			if (a.getDia() == dia && a.getMes() == mes && a.getAño() == año) {
+				for (Instalacion instalacion : getInstalaciones()) {
+					if (a.getId_instalacion().equals(instalacion.getCodigo())) {
+						if (instalacion.getEstado()) {
+							if (hora == a.getHoraInicio() || (hora >= a.getHoraInicio() && hora <= a.getHoraFin())) {
+								listaSort.add(a);
+							}
+						}
+					}
+				}
+
+			}
+		}
+		return listaSort;
+	}
+
+	public Alquiler getAlquilerAhoraNoCancelado(Socio socio, int hora, int dia, int mes, int año) {
+		for (Alquiler a : getAlquileres()) {
+			if (a.getId_cliente().equals(socio.getId_cliente())) {
+				if (a.getDia() == dia && a.getMes() == mes && a.getAño() == año) {
+					for (Instalacion instalacion : getInstalaciones()) {
+						if (a.getId_instalacion().equals(instalacion.getCodigo())) {
+							if (instalacion.getEstado()) {
+								if (hora == a.getHoraInicio()
+										|| (hora >= a.getHoraInicio() && hora <= a.getHoraFin())) {
+									return a;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return null;
+	}
+
 	public List<Alquiler> getAlquileres(String codigo_instalacion, int hora, int dia, int mes, int año) {
 		List<Alquiler> listaSort = new ArrayList<Alquiler>();
 		for (Alquiler ap : getAlquileres()) {
@@ -857,10 +896,12 @@ public class Programa {
 	}
 
 	public boolean hayAlquileresConSocioDentro() {
-		for (Alquiler alquiler : getAlquileres()) {
+		int[] fecha = obtenerHoraDiaMesAño();
+		for (Alquiler alquiler : getAlquileresNoCancelados(fecha[0], fecha[1], fecha[2], fecha[3])) {
 			if (alquiler != null) {
 				if (encontrarRegistro(alquiler.getId_alquiler()) != null) {
-					if (encontrarRegistro(alquiler.getId_alquiler()).isSocioPresentado()) {
+					Registro seleccionado = encontrarRegistro(alquiler.getId_alquiler());
+					if (seleccionado.isSocioPresentado() && (seleccionado.getHora_salida() == 0)) {
 						return true;
 					}
 				}
@@ -974,9 +1015,22 @@ public class Programa {
 		}
 	}
 
-	public boolean ClienteSeHaPresentado(Cliente socio, Alquiler alquiler) {
-
-		return true;
+	public void registrarHoraSalidaSocio(Registro registro) {
+		String id = registro.getId_registro();
+		int[] fecha = obtenerHoraDiaMesAño();
+		int hora = fecha[0];
+		try {
+			Connection con = DriverManager.getConnection(Programa.URL);
+			PreparedStatement pst = con.prepareStatement("UPDATE REGISTRO SET hora_salida = ? WHERE id_registro = ?");
+			pst.setInt(1, hora);
+			pst.setString(2, id);
+			pst.execute();
+			pst.close();
+			con.close();
+			cargarRegistros();
+		} catch (SQLException e) {
+			System.out.println("Error actualizando la hora de salida");
+		}
 	}
 
 //MONITORES
