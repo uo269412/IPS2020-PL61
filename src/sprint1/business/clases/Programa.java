@@ -855,6 +855,15 @@ public class Programa {
 		}
 		return false;
 	}
+	
+	public List<Alquiler> getAlquileresSocio(Socio socio) {
+		List<Alquiler> listaSort = new ArrayList<Alquiler>();
+		for (Alquiler al : getAlquileres()) {
+			if(al.getId_cliente().equals(socio.getId_cliente()))
+				listaSort.add(al);
+		}
+		return listaSort;
+	}
 
 	// Checkear instalaciones abiertas cerradas
 
