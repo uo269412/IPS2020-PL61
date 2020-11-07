@@ -103,6 +103,9 @@ public class VerAlquileresSocio extends JDialog {
 		return btnVolver;
 	}
 	private void crearAlquileres(String opcion) {
+		pnCentro.removeAll();
+		alquileresAñadidos.clear();
+		tituloPuesto = false;
 		Date hoy = new Date();
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(hoy);
@@ -117,11 +120,21 @@ public class VerAlquileresSocio extends JDialog {
 			case "Pasado":
 				muestraPasado(hora, diaDeHoy, mesActual, añoActual, a);
 				break;
+			case "Futuro":
+				muestraFuturo(hora, diaDeHoy, mesActual, añoActual, a);
+				break;
 			case "":
 				crearAlquileres((String) cbOpcion.getSelectedItem());
 				break;
 			}
 		}
+		if(pnCentro.getComponents().length == 0) {
+			JLabel label = new JLabel();
+			label.setText("No hay alquileres disponibles");
+			pnCentro.add(label);
+		}
+		pnCentro.repaint();
+		pnCentro.validate();
 	}
 
 	private void muestraPasado(int hora, int diaDeHoy, int mesActual, int añoActual, Alquiler a) {
@@ -131,6 +144,22 @@ public class VerAlquileresSocio extends JDialog {
 		if ((a.getAño() < añoActual || a.getAño() == añoActual && a.getMes() < mesActual ||
 				a.getAño() == añoActual && a.getMes() == mesActual && a.getDia() < diaDeHoy ||
 				a.getAño() == añoActual && a.getMes() == mesActual && a.getDia() == diaDeHoy && hora < a.getHoraInicio())) {
+			if (!tituloPuesto) {
+				añadirLabelTituloDia(a.getDia(), a.getMes(), a.getAño());
+				tituloPuesto = true;
+			}
+			if(!alquileresAñadidos.contains(a))
+				añadirLabelAlquiler(a);
+		}
+		alquilerPrevio = a;
+	}
+	private void muestraFuturo(int hora, int diaDeHoy, int mesActual, int añoActual, Alquiler a) {
+		if (alquilerPrevio != null && (a.getDia() != alquilerPrevio.getDia() || a.getMes() != alquilerPrevio.getMes() || a.getAño() != alquilerPrevio.getAño())) {
+			tituloPuesto = false;
+		}
+		if ((a.getAño() > añoActual || a.getAño() == añoActual && a.getMes() > mesActual ||
+				a.getAño() == añoActual && a.getMes() == mesActual && a.getDia() > diaDeHoy ||
+				a.getAño() == añoActual && a.getMes() == mesActual && a.getDia() == diaDeHoy && hora >= a.getHoraInicio())) {
 			if (!tituloPuesto) {
 				añadirLabelTituloDia(a.getDia(), a.getMes(), a.getAño());
 				tituloPuesto = true;
@@ -220,6 +249,7 @@ public class VerAlquileresSocio extends JDialog {
 	private void creaModeloComboBox() {
 		modeloCb = new ArrayList<String>();
 		modeloCb.add("Pasado");
+		modeloCb.add("Futuro");
 	}
 	private JPanel getPnNorth() {
 		if (pnNorth == null) {
