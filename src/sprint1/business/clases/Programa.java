@@ -32,10 +32,10 @@ public class Programa {
 	private List<Registro> registros;
 
 	// Conexión Javi
-	//public static String URL = "jdbc:sqlite:C:\\Users\\javie\\git\\IPS2020-PL61\\resources\\bdProject.db";
+	public static String URL = "jdbc:sqlite:C:\\Users\\javie\\git\\IPS2020-PL61\\resources\\bdProject.db";
 
 	// Conexión Dani
-	public static String URL = "jdbc:sqlite:C:\\Users\\Dani\\git\\IPS2020-PL61_sprint2\\resources\\bdProject.db";
+	//public static String URL = "jdbc:sqlite:C:\\Users\\Dani\\git\\IPS2020-PL61_sprint2\\resources\\bdProject.db";
 
 	// Conexión Juan.elo
 	//public static String URL =
@@ -1137,6 +1137,30 @@ public class Programa {
 		}
 	}
 
+	public void añadirAlquiler(Cliente cliente, Instalacion instalacion, int horaInicio, int horaFin, int dia, int mes, int año) {
+		Alquiler alquiler = new Alquiler(instalacion.getCodigoInstalacion(), cliente.getId_cliente(), dia,
+				mes, año, horaInicio, horaFin);
+		try {
+			Connection con = DriverManager.getConnection(Programa.URL);
+			PreparedStatement pst = con.prepareStatement(
+					"INSERT INTO ALQUILER (id_alquiler, id_instalacion, id_cliente, dia, mes, año, horaInicio, horaFin) VALUES(?,?,?,?,?,?,?,?)");
+			pst.setString(1, alquiler.getId_alquiler());
+			pst.setString(2, alquiler.getId_instalacion());
+			pst.setString(3, alquiler.getId_cliente());
+			pst.setInt(4, alquiler.getDia());
+			pst.setInt(5, alquiler.getMes());
+			pst.setInt(6, alquiler.getAño());
+			pst.setInt(7, alquiler.getHoraInicio());
+			pst.setInt(8, alquiler.getHoraFin());
+			pst.executeUpdate();
+			pst.close();
+			con.close();
+			cargarAlquileres();
+		} catch (SQLException e) {
+			System.out.println("Error añadiendo el alquier");
+		}
+	}
+	
 //REGISTROS
 
 	public void cargarRegistros() throws SQLException {

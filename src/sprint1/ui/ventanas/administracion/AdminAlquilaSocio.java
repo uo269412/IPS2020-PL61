@@ -63,7 +63,6 @@ public class AdminAlquilaSocio extends JDialog {
 		setTitle("Centro de deportes: Alquilar para socio");
 		this.dia = dia;
 		this.mes = mes;
-		System.out.println(mes);
 		this.año = año;
 		this.parent = parent;
 		setBounds(100, 100, 707, 342);
@@ -189,9 +188,21 @@ public class AdminAlquilaSocio extends JDialog {
 
 	private boolean checkHoraInicioMayorHoraActual() {
 		int horaInicio = Integer.parseInt(txtHoraInicio.getText());
-		Calendar calendar = Calendar.getInstance();
-		int hora = calendar.get(Calendar.HOUR_OF_DAY);
-		return horaInicio >= hora;
+		int[] fecha = getPrograma().obtenerHoraDiaMesAño();
+		if (año == fecha[3]) {
+			if (mes == fecha[2]) {
+				if (dia == fecha[1]) {
+					return horaInicio >= fecha[0];
+				} else if (fecha[1] > dia) {
+					return false;
+				}
+			} else if (fecha[2] > mes) {
+				return false;
+			}
+		} else if (fecha[3] > año) {
+			return false;
+		}
+		return true;
 	}
 
 	private void crearAlquiler() {
@@ -199,7 +210,7 @@ public class AdminAlquilaSocio extends JDialog {
 		Instalacion instalacion = (Instalacion) cmbInstalaciones.getSelectedItem();
 		int horaInicio = Integer.parseInt(txtHoraInicio.getText());
 		int horaFin = Integer.parseInt(txtHoraFin.getText());
-		getPrograma().añadirAlquiler(socio, instalacion, horaInicio, horaFin);
+		getPrograma().añadirAlquiler(socio, instalacion, horaInicio, horaFin, dia, mes, año);
 	}
 
 	private JPanel getPnProgramarActividad() {
