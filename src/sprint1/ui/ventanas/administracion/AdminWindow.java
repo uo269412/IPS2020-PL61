@@ -49,6 +49,8 @@ public class AdminWindow extends JDialog {
 	private JButton btnAlquilarSocioMomento;
 	private JButton btnAlquilarSocio;
 	private JButton btnRegistrarEntrada;
+	private JButton btnNewButton;
+	private JButton btnCobrarAlquileres;
 	private JButton btnRegistrarSalida;
 
 	/**
@@ -57,7 +59,7 @@ public class AdminWindow extends JDialog {
 	public AdminWindow(MainWindow mainWindow) {
 		setTitle("Centro de Deportes: Administrador");
 		this.parent = mainWindow;
-		setBounds(100, 100, 450, 362);
+		setBounds(100, 100, 511, 413);
 		getContentPane().setLayout(new BorderLayout(0, 0));
 		getContentPane().add(getPnTextos(), BorderLayout.NORTH);
 		getContentPane().add(getPnFuncionalidad(), BorderLayout.CENTER);
@@ -126,8 +128,10 @@ public class AdminWindow extends JDialog {
 			pnAcciones.add(getBtnCerrarInstalación());
 			pnAcciones.add(getBtnAlquilarSocioMomento());
 			pnAcciones.add(getBtnAlquilarSocio());
-			pnAcciones.add(getBtnRegistrarEntrada());
+			pnAcciones.add(getBtnCobrarAlquileres());
 			pnAcciones.add(getBtnRegistrarSalida());
+			pnAcciones.add(getBtnRegistrarEntrada());
+			pnAcciones.add(getBtnNewButton());
 		}
 		return pnAcciones;
 	}
@@ -328,6 +332,27 @@ public class AdminWindow extends JDialog {
 		registrarEntradaSocio.setModal(true);
 		registrarEntradaSocio.setLocationRelativeTo(this);
 		registrarEntradaSocio.setVisible(true);
+	}
+	
+	private JButton getBtnNewButton() {
+		if (btnNewButton == null) {
+			btnNewButton = new JButton("Ver socios que no han pagado sus alquileres");
+			btnNewButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					ListaSociosConImpagos lsci = new ListaSociosConImpagos(parent.getPrograma());
+					lsci.setLocationRelativeTo(getMe());
+					lsci.setModal(true);
+					lsci.setVisible(true);
+				}
+			});
+		}
+		return btnNewButton;
+	}
+	private JButton getBtnCobrarAlquileres() {
+		if (btnCobrarAlquileres == null) {
+			btnCobrarAlquileres = new JButton("Cobrar alquiler a usuarios");
+		}
+		return btnCobrarAlquileres;
 	}
 
 	private JButton getBtnRegistrarSalida() {
