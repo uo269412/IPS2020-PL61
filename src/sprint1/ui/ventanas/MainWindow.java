@@ -9,11 +9,14 @@ import javax.swing.border.EmptyBorder;
 
 import sprint1.business.clases.Programa;
 import sprint1.business.clases.Socio;
+import sprint1.business.clases.Tercero;
 import sprint1.ui.ventanas.administracion.AdminWindow;
 import sprint1.ui.ventanas.socio.SocioWindow;
+import sprint1.ui.ventanas.tercero.TerceroWindow;
 
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
 import java.awt.BorderLayout;
@@ -28,6 +31,8 @@ public class MainWindow extends JFrame {
 
 	private AdminWindow adminWindow = null;
 	private SocioWindow socioWindow = null;
+	private TerceroWindow terceroWindow = null;
+	
 
 	private static Programa programa;
 
@@ -98,6 +103,32 @@ public class MainWindow extends JFrame {
 
 		});
 		pnBotones.add(btnSocio);
+		
+		JButton btnTercero = new JButton("Acceder como tercero");
+		btnTercero.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				String nombre_tercero;
+				nombre_tercero = JOptionPane.showInputDialog("Por favor, introduce un nombre");
+				boolean foundTercero = false;
+				for(Tercero t: programa.getTerceros()) {
+					if(t.getNombre().equals(nombre_tercero)) {
+						openTerceroWindow(t);
+						foundTercero = true;
+						break;
+					}
+				}
+				if(!foundTercero) {
+					Tercero t = new Tercero(nombre_tercero);
+					try {
+						programa.añadirTercero(t);
+					} catch (SQLException e) {
+						JOptionPane.showMessageDialog(MainWindow.this, "Ha ocurrido un error accediendo a la base de datos");
+					}
+					openTerceroWindow(t);
+				}
+			}
+		});
+		pnBotones.add(btnTercero);
 	}
 	
 	public Programa getPrograma() {
@@ -109,6 +140,13 @@ public class MainWindow extends JFrame {
 		socioWindow.setModal(true);
 		socioWindow.setLocationRelativeTo(this);
 		socioWindow.setVisible(true);
+	}
+	
+	private void openTerceroWindow(Tercero tercero) {
+		terceroWindow =  new TerceroWindow(this, tercero);
+		terceroWindow.setModal(true);
+		terceroWindow.setLocationRelativeTo(this);
+		terceroWindow.setVisible(true);
 	}
 	
 	private void openAdminWindow() {

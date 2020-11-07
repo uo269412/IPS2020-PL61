@@ -45,6 +45,7 @@ public class AdminWindow extends JDialog {
 	private RegistrarSalidaSocio registrarSalidaSocio;
 	private JButton btnReservaSocio;
 	private JButton btnVerOcupacion;
+	private JButton btnCerrarInstalación;
 	private JButton btnAlquilarSocioMomento;
 	private JButton btnAlquilarSocio;
 	private JButton btnRegistrarEntrada;
@@ -122,6 +123,7 @@ public class AdminWindow extends JDialog {
 			pnAcciones.add(getBtnAsignarActividad());
 			pnAcciones.add(getBtnReservaSocio());
 			pnAcciones.add(getBtnVerOcupacion());
+			pnAcciones.add(getBtnCerrarInstalación());
 			pnAcciones.add(getBtnAlquilarSocioMomento());
 			pnAcciones.add(getBtnAlquilarSocio());
 			pnAcciones.add(getBtnRegistrarEntrada());
@@ -244,6 +246,21 @@ public class AdminWindow extends JDialog {
 			btnVerOcupacion.setMnemonic('V');
 		}
 		return btnVerOcupacion;
+	}
+	
+	private JButton getBtnCerrarInstalación() {
+		if (btnCerrarInstalación == null) {
+			btnCerrarInstalación = new JButton("Cerrar instalaci\u00F3n");
+			btnCerrarInstalación.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					CerrarInstalacionDialog cid = new CerrarInstalacionDialog(getMe());
+					cid.setLocationRelativeTo(getMe());
+					cid.setModal(true);
+					cid.setVisible(true);
+				}
+			});
+		}
+		return btnCerrarInstalación;
 	}
 
 	private JButton getBtnAlquilarSocioMomento() {

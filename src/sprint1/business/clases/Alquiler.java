@@ -96,7 +96,7 @@ public class Alquiler implements Comparable<Alquiler> {
 
 	@Override
 	public String toString() {
-		return "Alquiler desde " + horaInicio + " hasta " + horaFin; 
+		return "Alquiler desde " + horaInicio + " hasta " + horaFin;
 	}
 	
 	

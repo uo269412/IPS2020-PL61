@@ -6,29 +6,25 @@ public class Instalacion implements Comparable<Instalacion> {
 	private String codigo_instalacion;
 	private String nombre;
 	private double precioHora;
-	private boolean estado;
-	//1 (false) si disponible, true(0) si no
-	public Instalacion(String codigo_instalacion, String nombre) {
+	private int estado;
+	
+	public static final int DISPONIBLE = 1;
+	public static final int CERRADA = 0;
+
+//	public Instalacion(String codigo_instalacion, String nombre) {
+//		this.codigo_instalacion = codigo_instalacion;
+//		this.nombre = nombre;
+//	}
+
+	public Instalacion(String codigo_instalacion, String nombre, double precioHora, int estado) {
 		this.codigo_instalacion = codigo_instalacion;
 		this.nombre = nombre;
-	}
-
-	public Instalacion(String codigo_instalacion, String nombre, double precioHora) {
-		this(codigo_instalacion, nombre);
 		this.precioHora = precioHora;
-	}
-
-	public Instalacion(String nombre, double precioHora) {
-		this(UUID.randomUUID().toString(), nombre, precioHora);
-	}
-	
-	public Instalacion(String nombre, double precioHora, boolean estado) {
-		this(UUID.randomUUID().toString(), nombre, precioHora, estado);
-	}
-
-	public Instalacion(String codigo_instalacion, String nombre, double precioHora, boolean estado) {
-		this(codigo_instalacion, nombre, precioHora);
 		this.estado = estado;
+	}
+
+	public Instalacion(String nombre, double precioHora, int estado) {
+		this(UUID.randomUUID().toString(), nombre, precioHora, estado);
 	}
 
 	public String getCodigo() {
@@ -46,22 +42,19 @@ public class Instalacion implements Comparable<Instalacion> {
 	public String getCodigoInstalacion() {
 		return codigo_instalacion;
 	}
-	
-	public void setEstado(boolean estado) {
-		this.estado = estado;
-	}
-	
-	public boolean getEstado() {
-		return estado;
-	}
 
 	@Override
 	public String toString() {
-		if (estado) {
-			return nombre + " (Precio por hora " + getPrecioHora() + " €)";
+		StringBuilder sb = new StringBuilder();
+		sb.append("Instalacion [codigo_instalacion=" + codigo_instalacion + ", nombre=" + nombre + ", precioHora="
+				+ precioHora);
+		if(estado == DISPONIBLE) {
+			sb.append(", estado=DISPONIBLE]");
 		} else {
-			return "[CANCELADA] " + nombre + " (Precio por hora " + getPrecioHora() + " €)";
+			sb.append(", estado=CERRADA]");
 		}
+		
+		return sb.toString();
 	}
 
 	@Override
@@ -69,4 +62,11 @@ public class Instalacion implements Comparable<Instalacion> {
 		return getNombre().compareTo(arg0.getNombre());
 	}
 
+	public int getEstado() {
+		return estado;
+	}
+
+	public void setEstado(int estado) {
+		this.estado = estado;
+	}
 }

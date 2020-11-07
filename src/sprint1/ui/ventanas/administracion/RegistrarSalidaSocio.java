@@ -142,7 +142,6 @@ public class RegistrarSalidaSocio extends JDialog {
 							"¿Seguro de que quieres registrar la salida del cliente "
 									+ ((Socio) comboBox.getSelectedItem()).getNombre() + " ?");
 					if (yesNo == JOptionPane.YES_OPTION) {
-
 						Alquiler alquiler = getPrograma().getAlquilerSocioAhora((Socio) comboBox.getSelectedItem());
 						Registro registro = getPrograma().encontrarRegistro(alquiler.getId_alquiler());
 						getPrograma().registrarHoraSalidaSocio(registro);

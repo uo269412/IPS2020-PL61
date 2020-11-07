@@ -78,7 +78,7 @@ public class AlquilarSocioMomentoWindow extends JDialog {
 		List<Alquiler> alquileresQueOcurrenAhoraEnInstalacion = new ArrayList<>();
 		boolean instalacionOcupada;
 		for (Instalacion instalacion : getPrograma().getInstalaciones()) {
-			if (instalacion.getEstado()) {
+			if (instalacion.getEstado() == Instalacion.DISPONIBLE) {
 				instalacionOcupada = false;
 				actividadesQueOcurrenAhoraEnInstalacion = getPrograma()
 						.getActividadesPlanificadas(instalacion.getCodigoInstalacion(), hora, dia, mes, año);

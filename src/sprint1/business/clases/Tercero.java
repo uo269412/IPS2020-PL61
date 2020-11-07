@@ -8,9 +8,18 @@ public class Tercero extends Cliente implements Comparable<Tercero> {
 		super(id_cliente);
 		this.nombre = nombre;
 	}
+	
+	public Tercero(String nombre) {
+		super();
+		this.nombre = nombre;
+	}
 
 	public String getNombre() {
 		return nombre;
+	}
+	
+	public String getId() {
+		return super.id_cliente;
 	}
 
 	@Override
