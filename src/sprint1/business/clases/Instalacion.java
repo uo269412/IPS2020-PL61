@@ -6,19 +6,25 @@ public class Instalacion implements Comparable<Instalacion> {
 	private String codigo_instalacion;
 	private String nombre;
 	private double precioHora;
+	private int estado;
+	
+	public static final int DISPONIBLE = 1;
+	public static final int CERRADA = 0;
 
-	public Instalacion(String codigo_instalacion, String nombre) {
+//	public Instalacion(String codigo_instalacion, String nombre) {
+//		this.codigo_instalacion = codigo_instalacion;
+//		this.nombre = nombre;
+//	}
+
+	public Instalacion(String codigo_instalacion, String nombre, double precioHora, int estado) {
 		this.codigo_instalacion = codigo_instalacion;
 		this.nombre = nombre;
-	}
-
-	public Instalacion(String codigo_instalacion, String nombre, double precioHora) {
-		this(codigo_instalacion, nombre);
 		this.precioHora = precioHora;
+		this.estado = estado;
 	}
 
-	public Instalacion(String nombre, double precioHora) {
-		this(UUID.randomUUID().toString(), nombre, precioHora);
+	public Instalacion(String nombre, double precioHora, int estado) {
+		this(UUID.randomUUID().toString(), nombre, precioHora, estado);
 	}
 
 	public String getCodigo() {
@@ -39,8 +45,16 @@ public class Instalacion implements Comparable<Instalacion> {
 
 	@Override
 	public String toString() {
-		return "Instalacion [codigo_instalacion=" + codigo_instalacion + ", nombre=" + nombre + ", precioHora="
-				+ precioHora + "]";
+		StringBuilder sb = new StringBuilder();
+		sb.append("Instalacion [codigo_instalacion=" + codigo_instalacion + ", nombre=" + nombre + ", precioHora="
+				+ precioHora);
+		if(estado == DISPONIBLE) {
+			sb.append(", estado=DISPONIBLE]");
+		} else {
+			sb.append(", estado=CERRADA]");
+		}
+		
+		return sb.toString();
 	}
 
 	@Override
@@ -48,4 +62,11 @@ public class Instalacion implements Comparable<Instalacion> {
 		return getNombre().compareTo(arg0.getNombre());
 	}
 
+	public int getEstado() {
+		return estado;
+	}
+
+	public void setEstado(int estado) {
+		this.estado = estado;
+	}
 }

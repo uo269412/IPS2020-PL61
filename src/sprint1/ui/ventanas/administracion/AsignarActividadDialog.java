@@ -493,9 +493,16 @@ public class AsignarActividadDialog extends JDialog {
 			if(todosIguales) {
 				try {
 					Instalacion inst = programa.obtenerInstalacionPorId(a.getRecursos().get(0).getInstalacion());
-					Instalacion[] arrayInst = new Instalacion[1];
-					arrayInst[0] = inst;
-					cmbInstalaciones.setModel(new DefaultComboBoxModel<Instalacion>(arrayInst));
+					if(inst.getEstado() == Instalacion.DISPONIBLE) {
+						Instalacion[] arrayInst = new Instalacion[1];
+						arrayInst[0] = inst;
+						cmbInstalaciones.setModel(new DefaultComboBoxModel<Instalacion>(arrayInst));
+					} else {
+						cmbInstalaciones.setEnabled(false);
+						cmbInstalaciones.setToolTipText("No hay ninguna instalación que tenga recursos para esta actividad");
+						btnAñadir.setEnabled(false);
+					}
+					
 				} catch(SQLException e) {
 					JOptionPane.showMessageDialog(this, "Ha habido un problema con la base de datos asignando la instalacion"
 							+ ", póngase en contacto con el desarrollador");
@@ -506,7 +513,7 @@ public class AsignarActividadDialog extends JDialog {
 				btnAñadir.setEnabled(false);
 			}
 		} else {
-			cmbInstalaciones.setModel(new DefaultComboBoxModel<Instalacion>(programa.getInstalaciones().toArray(new Instalacion[programa.getInstalaciones().size()])));
+			cmbInstalaciones.setModel(new DefaultComboBoxModel<Instalacion>(programa.getInstalacionesDisponibles().toArray(new Instalacion[programa.getInstalacionesDisponibles().size()])));
 		}
 	}
 	

@@ -40,7 +40,7 @@ public class Calendario extends JFrame {
 	private JLabel lblViernes;
 	private JLabel lblSabado;
 	private JLabel lblDomingo;
-	private JPanel pnDiasMes;
+	protected JPanel pnDiasMes;
 	private ArrayList<String> meses;
 	private ArrayList<Integer> años;
 	private JPanel pnNextMonth;

@@ -8,13 +8,16 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 public class Programa {
 
@@ -73,6 +76,46 @@ public class Programa {
 		printTerceros();
 		printAlquileres();
 		printRegistros();
+	}
+	
+//CLIENTES
+	public Set<Cliente> clientesAfectadosPorCierre(Instalacion i) throws SQLException {
+		Set<Cliente> clientesAfectados = new HashSet<>();
+		
+		LocalDate horacierre = LocalDate.now();
+		Connection con = DriverManager.getConnection(URL);
+//		PreparedStatement pst1 = con.prepareStatement("SELECT id_cliente FROM reserva JOIN actividad_planificada ON reserva.codigo_actividad=actividad_planificada=codigoPlanificada WHERE codigoInstalacion=?");
+//		pst1.setString(1, i.getCodigo());
+//		ResultSet rs1 = pst1.executeQuery();
+//		while(rs1.next()) {
+//			for(Socio s: socios) {
+//				if(s.getId_cliente().equals(rs1.getString(1))) {
+//					clientesAfectados.add(s);
+//				}
+//			}
+//			//la iteración por terceros se podría quitar
+//			for(Tercero s: terceros) {
+//				if(s.getId_cliente().equals(rs1.getString(1))) {
+//					clientesAfectados.add(s);
+//				}
+//			}
+//		}
+//		rs1.close();
+//		pst1.close();
+		PreparedStatement pst2 = con.prepareStatement("SELECT id_cliente, dia, mes, año, horaInicio FROM alquiler WHERE id_instalacion = ?");
+		pst2.setString(1, i.getCodigo());
+		ResultSet rs2 = pst2.executeQuery();
+		while(rs2.next()) {
+			
+			for(Tercero s: terceros) {
+				if(s.getId_cliente().equals(rs2.getString(1)) && horacierre.isBefore(LocalDate.of(rs2.getInt(4), rs2.getInt(3), rs2.getInt(2)))) {
+					clientesAfectados.add(s);
+				}
+			}
+		}
+		
+		return clientesAfectados;
+		
 	}
 
 //ACTIVIDADES	
@@ -228,6 +271,18 @@ public class Programa {
 		for (ActividadPlanificada actividad : actividadesPlanificadas) {
 			System.out.println(actividad.toString());
 		}
+	}
+	
+	public List<ActividadPlanificada> getActividadesPlanificadas(int hora, int dia, int mes, int año) {
+		List<ActividadPlanificada> listaSort = new ArrayList<ActividadPlanificada>();
+		for (ActividadPlanificada ap : getActividadesPlanificadas()) {
+			if (ap.getDia() == dia && ap.getMes() == mes && ap.getAño() == año) {
+				if (hora == ap.getHoraInicio() || (hora > ap.getHoraInicio() && hora < ap.getHoraFin())) {
+					listaSort.add(ap);
+				}
+			}
+		}
+		return listaSort;
 	}
 
 	public List<ActividadPlanificada> getActividadesPlanificadas(int dia, int mes, int año) {
@@ -439,10 +494,20 @@ public class Programa {
 	public void ordenarSocios() {
 		Collections.sort(this.socios);
 	}
-	
 
 //TERCEROS
 
+	public void añadirTercero(Tercero t) throws SQLException {
+		Connection con = DriverManager.getConnection(URL);
+		PreparedStatement pst = con.prepareStatement("INSERT INTO terceros(id_cliente, nombre) VALUES(?, ?)");
+		pst.setString(1, t.getId_cliente());
+		pst.setString(2, t.getNombre());
+		pst.executeUpdate();
+		terceros.add(t);
+		pst.close();
+		con.close();
+	}
+	
 	private void cargarTerceros() throws SQLException {
 		Connection con = DriverManager.getConnection(URL);
 		Statement st = con.createStatement();
@@ -468,6 +533,34 @@ public class Programa {
 		return new Tercero(id_cliente, nombre);
 	}
 
+	public List<Alquiler> getAlquileresQueHaHechoTerceroEnInstalacion(Tercero tercero, Instalacion i) {
+		List<Alquiler> alquileresSocio = new LinkedList<>();
+		
+		for(Alquiler a: getAlquileres()) {
+			if(a.getId_cliente().equals(tercero.getId_cliente()) &&  a.getId_instalacion().equals(i.getCodigo())) {
+				alquileresSocio.add(a);
+			}
+		}
+		
+		return alquileresSocio;
+	}
+	
+	public List<Alquiler> getAlquileresQueHaHechoTerceroEnInstalacionAPartirDe(Tercero tercero, Instalacion i, int dia, int mes, int año, int hora) {
+		List<Alquiler> alquileresSocio = new LinkedList<>();
+		
+		for(Alquiler a: getAlquileresQueHaHechoTerceroEnInstalacion(tercero, i)) {
+			if(LocalDate.of(año, mes, dia).isBefore(LocalDate.of(a.getAño(), a.getMes(), a.getDia()))) {
+				alquileresSocio.add(a);
+			} else if(LocalDate.of(año, mes, dia).isEqual(LocalDate.of(a.getAño(), a.getMes(), a.getDia()))) {
+				if(hora <= a.getHoraInicio()) {
+					alquileresSocio.add(a);
+				}
+			}
+		}
+		
+		return alquileresSocio;
+	}
+	
 	public List<Tercero> getTerceros() {
 		return terceros;
 	}
@@ -603,6 +696,67 @@ public class Programa {
 
 //ALQUILERES
 
+	public void añadirAlquiler(Cliente cliente, Instalacion instalacion, int horaInicio, int horaFin) {
+		int[] fecha = obtenerHoraDiaMesAño();
+		Alquiler alquiler = new Alquiler(instalacion.getCodigoInstalacion(), cliente.getId_cliente(), fecha[1], fecha[2],
+				fecha[3], horaInicio, horaFin);
+		try {
+			Connection con = DriverManager.getConnection(Programa.URL);
+			PreparedStatement pst = con
+					.prepareStatement("INSERT INTO ALQUILER (id_alquiler, id_instalacion, id_cliente, dia, mes, año, horaInicio, horaFin) VALUES(?,?,?,?,?,?,?,?)");
+			pst.setString(1, alquiler.getId_alquiler());
+			pst.setString(2, alquiler.getId_instalacion());
+			pst.setString(3, alquiler.getId_cliente());
+			pst.setInt(4, alquiler.getDia());
+			pst.setInt(5, alquiler.getMes());
+			pst.setInt(6, alquiler.getAño());
+			pst.setInt(7, alquiler.getHoraInicio());
+			pst.setInt(8, alquiler.getHoraFin());
+			pst.executeUpdate();
+			pst.close();
+			con.close();
+			cargarAlquileres();
+		} catch (SQLException e) {
+			System.out.println("Error añadiendo el alquier");
+		}	
+	}
+	
+	public void añadirAlquilerDia(Cliente cliente, Instalacion instalacion, int dia, int mes, int año, int horaInicio, int horaFin) {
+		Alquiler alquiler = new Alquiler(instalacion.getCodigoInstalacion(), cliente.getId_cliente(), dia, mes,
+				año, horaInicio, horaFin);
+		try {
+			Connection con = DriverManager.getConnection(Programa.URL);
+			PreparedStatement pst = con
+					.prepareStatement("INSERT INTO ALQUILER (id_alquiler, id_instalacion, id_cliente, dia, mes, año, horaInicio, horaFin) VALUES(?,?,?,?,?,?,?,?)");
+			pst.setString(1, alquiler.getId_alquiler());
+			pst.setString(2, alquiler.getId_instalacion());
+			pst.setString(3, alquiler.getId_cliente());
+			pst.setInt(4, alquiler.getDia());
+			pst.setInt(5, alquiler.getMes());
+			pst.setInt(6, alquiler.getAño());
+			pst.setInt(7, alquiler.getHoraInicio());
+			pst.setInt(8, alquiler.getHoraFin());
+			pst.execute();
+			pst.close();
+			con.close();
+			cargarAlquileres();
+		} catch (SQLException e) {
+			System.out.println("Error añadiendo el alquier");
+		}	
+	}
+	
+	public List<Alquiler> getAlquileres(int hora, int dia, int mes, int año) {
+		List<Alquiler> listaSort = new ArrayList<Alquiler>();
+		for (Alquiler ap : getAlquileres()) {
+			if (ap.getDia() == dia && ap.getMes() == mes && ap.getAño() == año) {
+				if (hora == ap.getHoraInicio() || (hora > ap.getHoraInicio() && hora < ap.getHoraFin())) {
+					listaSort.add(ap);
+				}
+			}
+		}
+		return listaSort;
+	}
+	
 	private void cargarAlquileres() throws SQLException {
 		Connection con = DriverManager.getConnection(URL);
 		Statement st = con.createStatement();
@@ -631,8 +785,7 @@ public class Programa {
 		int año = rs.getInt(6);
 		int horaInicio = rs.getInt(7);
 		int horaFin = rs.getInt(8);
-		String estado = rs.getString(9);
-		return new Alquiler(id_alquiler, id_instalacion, id_cliente, dia, mes, año, horaInicio, horaFin, estado);
+		return new Alquiler(id_alquiler, id_instalacion, id_cliente, dia, mes, año, horaInicio, horaFin);
 	}
 
 	public List<Alquiler> getAlquileres() {
@@ -657,7 +810,37 @@ public class Programa {
 	public void ordenarAlquileres() {
 		Collections.sort(this.alquileres);
 	}
+	
+	public void eliminarAlquileresNoDisponibles() throws SQLException {
+		Connection con = DriverManager.getConnection(URL);
+		PreparedStatement pst = con.prepareStatement("DELETE FROM alquiler WHERE id_instalacion = ?");
+		for(Instalacion i: instalaciones) {
+			if(i.getEstado() == Instalacion.CERRADA) {
+				pst.setString(1, i.getCodigoInstalacion());
+				pst.executeUpdate();
+			}
+		}
+		pst.close();
+		con.close();
+	}
 
+	public List<Alquiler> getAlquileresDia(int dia, int mes, int año) throws SQLException {
+		List<Alquiler> alquileresDia = new ArrayList<>();
+
+		Connection con = DriverManager.getConnection(URL);
+		PreparedStatement pst = con.prepareStatement(
+				"SELECT id_alquiler FROM alquiler WHERE dia = ? AND mes = ? AND año = ?");
+		pst.setInt(1, dia);
+		pst.setInt(2, mes);
+		pst.setInt(3, año);
+		ResultSet rs = pst.executeQuery();
+
+		while (rs.next()) {
+			alquileresDia.add(encontrarAlquileres(rs.getString(1)));
+		}
+
+		return alquileresDia;
+	}
 //REGISTROS
 
 	public void cargarRegistros() throws SQLException {
@@ -852,22 +1035,23 @@ public class Programa {
 		}
 	}
 
-	// INSTALACION
-
+//INSTALACION
+	
 	public Instalacion obtenerInstalacionPorId(String id) throws SQLException {
 		Connection con = DriverManager.getConnection(URL);
 		PreparedStatement pst = con.prepareStatement(
-				"SELECT codigo_instalacion, nombre_instalacion, preciohora FROM instalacion WHERE codigo_instalacion = ?");
+				"SELECT codigo_instalacion, nombre_instalacion, preciohora, estado FROM instalacion WHERE codigo_instalacion = ?");
 		pst.setString(1, id);
 		ResultSet rs = pst.executeQuery();
 		String codigo_instalacion = rs.getString(1);
 		String nombre = rs.getString(2);
 		double precio = rs.getDouble(3);
+		int estado = rs.getInt(4);
 		rs.close();
 		pst.close();
 		con.close();
 
-		return new Instalacion(codigo_instalacion, nombre, precio);
+		return new Instalacion(codigo_instalacion, nombre, precio, estado);
 	}
 
 	private List<Instalacion> convertirInstalacionesEnLista(ResultSet rs) throws SQLException {
@@ -876,7 +1060,8 @@ public class Programa {
 			String codigo = rs.getString(1);
 			String nombre = rs.getString(2);
 			Double precio = rs.getDouble(3);
-			instalaciones.add(new Instalacion(codigo, nombre, precio));
+			int estado = rs.getInt(4);
+			instalaciones.add(new Instalacion(codigo, nombre, precio, estado));
 		}
 		return instalaciones;
 	}
@@ -887,6 +1072,18 @@ public class Programa {
 		ResultSet rs = pst.executeQuery();
 		convertirInstalacionesEnLista(rs);
 		ordenarInstalaciones();
+	}
+	
+	public List<Instalacion> getInstalacionesDisponibles() {
+		List<Instalacion> instalacionesDisponibles = new LinkedList<>();
+		
+		for(Instalacion i: instalaciones) {
+			if(i.getEstado() == Instalacion.DISPONIBLE) {
+				instalacionesDisponibles.add(i);
+			}
+		}
+		
+		return instalacionesDisponibles;
 	}
 
 	public void printInstalaciones() {
@@ -935,5 +1132,17 @@ public class Programa {
 			System.out.println("Error parseando fechas");
 		}
 		return false;
+	}
+
+	public void updateInstalacion(Instalacion i) throws SQLException {
+		Connection con = DriverManager.getConnection(URL);
+		PreparedStatement pst = con.prepareStatement("UPDATE INSTALACION SET nombre_instalacion=?, preciohora=?, estado=? WHERE codigo_instalacion = ?");
+		pst.setString(1, i.getNombre());
+		pst.setDouble(2, i.getPrecioHora());
+		pst.setInt(3, i.getEstado());
+		pst.setString(4, i.getCodigo());
+		pst.executeUpdate();
+		pst.close();
+		con.close();
 	}
 }

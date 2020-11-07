@@ -41,6 +41,7 @@ public class AdminWindow extends JDialog {
 	private AdminReservaSocioWindow adminReservaSocio;
 	private JButton btnReservaSocio;
 	private JButton btnVerOcupacion;
+	private JButton btnCerrarInstalación;
 
 	/**
 	 * Create the dialog.
@@ -114,6 +115,7 @@ public class AdminWindow extends JDialog {
 			pnAcciones.add(getBtnAsignarActividad());
 			pnAcciones.add(getBtnReservaSocio());
 			pnAcciones.add(getBtnVerOcupacion());
+			pnAcciones.add(getBtnCerrarInstalación());
 		}
 		return pnAcciones;
 	}
@@ -243,5 +245,19 @@ public class AdminWindow extends JDialog {
 			btnVerOcupacion.setMnemonic('V');
 		}
 		return btnVerOcupacion;
+	}
+	private JButton getBtnCerrarInstalación() {
+		if (btnCerrarInstalación == null) {
+			btnCerrarInstalación = new JButton("Cerrar instalaci\u00F3n");
+			btnCerrarInstalación.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					CerrarInstalacionDialog cid = new CerrarInstalacionDialog(getMe());
+					cid.setLocationRelativeTo(getMe());
+					cid.setModal(true);
+					cid.setVisible(true);
+				}
+			});
+		}
+		return btnCerrarInstalación;
 	}
 }
