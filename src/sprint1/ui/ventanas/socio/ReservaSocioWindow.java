@@ -103,14 +103,19 @@ public class ReservaSocioWindow extends JDialog {
 		actividadesYaReservadasPorSocio = getPrograma()
 				.getActividadesPlanificadasQueHaReservadoSocioEnUnDiaEspecifico(socio, dia, mes, año);
 		List<ActividadPlanificada> actividadesDisponibles = getPrograma().getActividadesDisponiblesParaReservaDeSocio(dia, mes, año, hora);
+		
 		for (ActividadPlanificada actividadPosible : actividadesDisponibles) {
 			if (actividadesYaReservadasPorSocio.isEmpty()) {
 				modeloActividades.addElement(actividadPosible);
 			} else if (!actividadesYaReservadasPorSocio.contains(actividadPosible)) {
 				for (ActividadPlanificada actividadYaReservada : actividadesYaReservadasPorSocio) {
 					if (!getPrograma().comprobarTiempoActividadesColisiona(actividadPosible,
-							actividadYaReservada)) {
+							actividadYaReservada) && !modeloActividades.contains(actividadPosible)) {
 						modeloActividades.addElement(actividadPosible);
+					}
+					else if (getPrograma().comprobarTiempoActividadesColisiona(actividadPosible,
+							actividadYaReservada)){
+						break;
 					}
 				}
 			}

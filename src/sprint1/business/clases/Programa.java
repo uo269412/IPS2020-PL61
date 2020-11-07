@@ -38,8 +38,8 @@ public class Programa {
 	public static String URL = "jdbc:sqlite:C:\\Users\\Dani\\git\\IPS2020-PL61_sprint2\\resources\\bdProject.db";
 
 	// Conexión Juan.elo
-	// public static String URL =
-	// "jdbc:sqlite:C:\\Users\\Usuario\\git\\IPS2020-PL61\\resources\\bdProject.db";
+	//public static String URL =
+	 //"jdbc:sqlite:C:\\Users\\Usuario\\git\\IPS2020-PL61\\resources\\bdProject.db";
 
 	public Programa() throws SQLException {
 		cargarBaseDatos();
@@ -704,7 +704,8 @@ public class Programa {
 
 	public boolean añadirReserva(Socio socio, ActividadPlanificada actividad) {
 		boolean result = insertarReserva(socio.getId_cliente(), actividad.getCodigoPlanificada());
-		actualizarPlazasActividadPlanificada(actividad, actividad.getLimitePlazas() - 1);
+		if (result)
+			actualizarPlazasActividadPlanificada(actividad, actividad.getLimitePlazas() - 1);
 		try {
 			cargarReservas();
 			cargarActividadesPlanificadas();
@@ -1085,6 +1086,15 @@ public class Programa {
 			}
 		}
 		return false;
+	}
+	
+	public List<Alquiler> getAlquileresSocio(Socio socio) {
+		List<Alquiler> listaSort = new ArrayList<Alquiler>();
+		for (Alquiler al : getAlquileres()) {
+			if(al.getId_cliente().equals(socio.getId_cliente()))
+				listaSort.add(al);
+		}
+		return listaSort;
 	}
 
 	public boolean hayAlquileresConSocioDentro() {

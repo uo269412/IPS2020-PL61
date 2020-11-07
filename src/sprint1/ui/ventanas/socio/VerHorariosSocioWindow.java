@@ -110,10 +110,12 @@ public class VerHorariosSocioWindow extends JDialog{
 			if (previousAp != null && (ap.getDia() != previousAp.getDia() || ap.getMes() != previousAp.getMes() || ap.getAño() != previousAp.getAño())) {
 				tituloPuesto = false;
 			}
-			if (!tituloPuesto && (ap.getAño() > añoActual || ap.getAño() == añoActual && ap.getMes() > mesActual ||
+			if ((ap.getAño() > añoActual || ap.getAño() == añoActual && ap.getMes() > mesActual ||
 					ap.getAño() == añoActual && ap.getMes() == mesActual && ap.getDia() >= diaDeHoy)) {
-				añadirLabelTituloDia(ap.getDia(), ap.getMes(), ap.getAño());
-				tituloPuesto = true;
+				if (!tituloPuesto) {
+					añadirLabelTituloDia(ap.getDia(), ap.getMes(), ap.getAño());
+					tituloPuesto = true;
+				}
 				añadirLabelActividad(ap);
 			}
 			previousAp = ap;
@@ -144,8 +146,8 @@ public class VerHorariosSocioWindow extends JDialog{
 		String labelText = "    ● ";
 		for (Actividad a : actividades) {
 			if (a.getCodigo().equals(ap.getCodigoActividad())) {
-				labelText += a.getNombre() + " (" + ap.getHoraInicio() + ":00 - " + ap.getHoraFin() + ":00)";
-				if (ap.esDeLibreAcceso()) {
+				labelText += a.getNombre() + " " + a.getIntensidad() + " (" + ap.getHoraInicio() + ":00 - " + ap.getHoraFin() + ":00)";
+				if (!ap.esDeLibreAcceso()) {
 					labelText += " - Plazas restantes: " + ap.getLimitePlazas();
 				} else {
 					labelText += " - Actividad de libre acceso.";

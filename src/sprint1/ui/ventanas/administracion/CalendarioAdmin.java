@@ -22,6 +22,7 @@ public class CalendarioAdmin extends Calendario {
 
 	public CalendarioAdmin(AdminWindow parent) {
 		super();
+		setTitle("Calendario");
 		this.p = parent.getParent().getPrograma();
 		al = new AsignarActividades();
 		setLocationRelativeTo(parent);

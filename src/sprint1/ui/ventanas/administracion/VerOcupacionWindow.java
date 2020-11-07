@@ -63,6 +63,7 @@ public class VerOcupacionWindow extends JDialog {
 	 * Create the frame.
 	 */
 	public VerOcupacionWindow(Programa p) {
+		setTitle("Ver ocupación");
 		this.programa = p;
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 891, 560);
