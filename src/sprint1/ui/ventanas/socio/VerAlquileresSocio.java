@@ -71,7 +71,7 @@ public class VerAlquileresSocio extends JDialog {
 		contentPane.add(getPnCentro(), BorderLayout.CENTER);
 		contentPane.add(getPnSur(), BorderLayout.SOUTH);
 		contentPane.add(getPnNorth(), BorderLayout.NORTH);
-		crearAlquileres("");
+		crearAlquileres((String) cbOpcion.getSelectedItem());
 	}
 	private JPanel getPnCentro() {
 		if (pnCentro == null) {
@@ -109,12 +109,13 @@ public class VerAlquileresSocio extends JDialog {
 		int diaDeHoy = cal.get(Calendar.DAY_OF_MONTH);
 		int mesActual = cal.get(Calendar.MONTH) + 1;
 		int añoActual = cal.get(Calendar.YEAR);
+		int hora = cal.get(Calendar.HOUR);
 		List<Alquiler> alquileres = parent.getParent().getPrograma().getAlquileresSocio(socio);
 		alquileres.sort(new ComparadorPorDiaAlquiler());
 		for (Alquiler a : alquileres) {
 			switch (opcion) {
 			case "Pasado":
-				muestraPasado(diaDeHoy, mesActual, añoActual, a);
+				muestraPasado(hora, diaDeHoy, mesActual, añoActual, a);
 				break;
 			case "":
 				crearAlquileres((String) cbOpcion.getSelectedItem());
@@ -123,12 +124,13 @@ public class VerAlquileresSocio extends JDialog {
 		}
 	}
 
-	private void muestraPasado(int diaDeHoy, int mesActual, int añoActual, Alquiler a) {
+	private void muestraPasado(int hora, int diaDeHoy, int mesActual, int añoActual, Alquiler a) {
 		if (alquilerPrevio != null && (a.getDia() != alquilerPrevio.getDia() || a.getMes() != alquilerPrevio.getMes() || a.getAño() != alquilerPrevio.getAño())) {
 			tituloPuesto = false;
 		}
 		if ((a.getAño() < añoActual || a.getAño() == añoActual && a.getMes() < mesActual ||
-				a.getAño() == añoActual && a.getMes() == mesActual && a.getDia() < diaDeHoy)) {
+				a.getAño() == añoActual && a.getMes() == mesActual && a.getDia() < diaDeHoy ||
+				a.getAño() == añoActual && a.getMes() == mesActual && a.getDia() == diaDeHoy && hora < a.getHoraInicio())) {
 			if (!tituloPuesto) {
 				añadirLabelTituloDia(a.getDia(), a.getMes(), a.getAño());
 				tituloPuesto = true;
