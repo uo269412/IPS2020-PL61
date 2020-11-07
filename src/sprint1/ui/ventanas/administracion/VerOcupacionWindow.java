@@ -1,33 +1,38 @@
 package sprint1.ui.ventanas.administracion;
 
 import java.awt.BorderLayout;
-
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.time.YearMonth;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSeparator;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
 import sprint1.business.clases.Actividad;
 import sprint1.business.clases.ActividadPlanificada;
+import sprint1.business.clases.Alquiler;
 import sprint1.business.clases.Instalacion;
 import sprint1.business.clases.Programa;
-
-import javax.swing.JSeparator;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.awt.event.ActionEvent;
-import java.awt.Font;
-import javax.swing.SwingConstants;
+import sprint1.business.clases.Socio;
+import javax.swing.JTextPane;
+import javax.swing.BoxLayout;
+import java.awt.CardLayout;
 
 public class VerOcupacionWindow extends JDialog {
 
@@ -42,22 +47,9 @@ public class VerOcupacionWindow extends JDialog {
 	private JPanel pnCentralDias;
 	private Programa programa = null;
 	private ArrayList<String> dias = new ArrayList<String>();
-
-	/**
-	 * Launch the application.
-	 */
-//	public static void main(String[] args) {
-//		EventQueue.invokeLater(new Runnable() {
-//			public void run() {
-//				try {
-//					VerOcupacionWindow frame = new VerOcupacionWindow();
-//					frame.setVisible(true);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
-//	}
+	private JPanel pnTopCenter;
+	private JPanel pnTopEast;
+	private JTextPane txtLeyenda;
 
 	/**
 	 * Create the frame.
@@ -66,7 +58,7 @@ public class VerOcupacionWindow extends JDialog {
 		setTitle("Ver ocupación");
 		this.programa = p;
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 891, 560);
+		setBounds(100, 100, 1335, 792);
 		pnPrincipal = new JPanel();
 		pnPrincipal.setBackground(Color.WHITE);
 		pnPrincipal.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -82,9 +74,9 @@ public class VerOcupacionWindow extends JDialog {
 			pnNorth = new JPanel();
 			pnNorth.setBorder(null);
 			pnNorth.setBackground(Color.WHITE);
-			pnNorth.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-			pnNorth.add(getCbInstalacionSeleccionada());
-			pnNorth.add(getBtnMostrarOcupacion());
+			pnNorth.setLayout(new BorderLayout(0, 0));
+			pnNorth.add(getPnTopCenter(), BorderLayout.CENTER);
+			pnNorth.add(getPnTopEast(), BorderLayout.EAST);
 		}
 		return pnNorth;
 	}
@@ -171,6 +163,14 @@ public class VerOcupacionWindow extends JDialog {
 					else
 						label.setBackground(Color.green);
 				}
+				Alquiler al = hayInstalacionAEsaHoraYEseDiaAlquiler(hora, instalacion, col);
+				if ( al != null) {
+					label.setText("Alquiler - " + nombreInstalacionAlquiler(instalacion));
+					label.setFont(new Font("Tahoma", Font.PLAIN, 15));
+					label.setOpaque(true);
+					label.setHorizontalAlignment(SwingConstants.CENTER);
+					label.setBackground(Color.LIGHT_GRAY);
+				}
 				panel.add(label);
 				if (hora < 22) //ultima hora no necesita separador
 					panel.add(crearSeparador());
@@ -187,6 +187,35 @@ public class VerOcupacionWindow extends JDialog {
 		}
 		return null;
 	}
+	
+	private Alquiler hayInstalacionAEsaHoraYEseDiaAlquiler(int hora, Instalacion instalacion, int col) {
+		List<Alquiler> alquileres = programa.getAlquileres();
+		for (Alquiler al : alquileres) {
+			int dia = Integer.parseInt(dias.get(col).split(" ")[1]);
+			if (al.getHoraInicio() <= hora && al.getHoraFin() > hora && al.getId_instalacion().equals(instalacion.getCodigo()) && dia == al.getDia())
+				return al;
+		}
+		return null;
+	}
+	
+	private String nombreInstalacionAlquiler(Instalacion instalacion) {
+		List<Alquiler> alquileres = programa.getAlquileres();
+		for (Alquiler al : alquileres) {
+			if (al.getId_instalacion().equals(instalacion.getCodigo()))
+				return getNombreCliente(al);
+		}
+		return null;
+	}
+
+	private String getNombreCliente(Alquiler al) {
+		List<Socio> socios = programa.getSocios();
+		for (Socio s : socios) {
+			if (al.getId_cliente().equals(s.getId_cliente())) {
+				return s.getNombre() + " " + s.getApellido();
+			}
+		}
+		return null;
+	}
 
 	private String nombreInstalacion(Instalacion instalacion) {
 		List<ActividadPlanificada> actividades = programa.getActividadesPlanificadas();
@@ -200,7 +229,7 @@ public class VerOcupacionWindow extends JDialog {
 	private String nombreActividad(ActividadPlanificada ap) {
 		for (Actividad a : programa.getActividades()) {
 			if(a.getCodigo().equals(ap.getCodigoActividad()))
-				return a.getNombre() + " - " + a.getIntensidad();
+				return a.getNombre() + " - " + a.getIntensidad() + " (P.L.:" + ap.getLimitePlazas() + ")";
 		}
 		return "-";
 	}
@@ -212,65 +241,129 @@ public class VerOcupacionWindow extends JDialog {
 	}
 	
 	private String generarTitulo(int i) {
-		Date date = new Date();
-		String[] dateToArray = date.toString().split(" ");
-		String diaDeLaSemana = dateToArray[0];
-		int numeroDeDia = Integer.parseInt(dateToArray[2]);
-		int primerDiaDeLaSemana = 0;
-		
-		switch (diaDeLaSemana) {
-		case "Mon":
-			primerDiaDeLaSemana = numeroDeDia;
-			break;
-		case "Tue":
-			primerDiaDeLaSemana = numeroDeDia - 1;
-			break;
-		case "Wed":
-			primerDiaDeLaSemana = numeroDeDia - 2;
-			break;
-		case "Thu":
-			primerDiaDeLaSemana = numeroDeDia - 3;
-			break;
-		case "Fri":
-			primerDiaDeLaSemana = numeroDeDia - 4;
-			break;
-		case "Sat":
-			primerDiaDeLaSemana = numeroDeDia - 5;
-			break;
-		case "Sun":
-			primerDiaDeLaSemana = numeroDeDia - 6;
-			break;
+		if (i == 0) {
+			dias.add("Horarios");
+			return "Horarios";
 		}
-		
-		String toRet = "";
-		switch (i) {
+		Calendar cal = Calendar.getInstance();
+		int diaDeLaSemana = (cal.get(Calendar.DAY_OF_WEEK) + i - 2) % 7;
+		int diaDelMes = cal.get(Calendar.DAY_OF_MONTH);
+		String dia = "";
+		switch(diaDeLaSemana) {
 		case 0:
-			toRet = "Horarios";
+			dia = "Domingo";
 			break;
 		case 1:
-			toRet = "Lunes " + String.valueOf(primerDiaDeLaSemana);
+			dia = "Lunes";
 			break;
 		case 2:
-			toRet = "Martes " + String.valueOf(primerDiaDeLaSemana + 1);
+			dia = "Martes";
 			break;
 		case 3:
-			toRet = "Miércoles " + String.valueOf(primerDiaDeLaSemana+ 2);
+			dia = "Miércoles";
 			break;
 		case 4:
-			toRet = "Jueves " + String.valueOf(primerDiaDeLaSemana + 3);
+			dia = "Jueves";
 			break;
 		case 5:
-			toRet = "Viernes " + String.valueOf(primerDiaDeLaSemana + 4);
+			dia = "Viernes";
 			break;
 		case 6:
-			toRet = "Sábado " + String.valueOf(primerDiaDeLaSemana + 5);
-			break;
-		case 7:
-			toRet = "Domingo " + String.valueOf(primerDiaDeLaSemana + 6);
+			dia = "Sábado";
 			break;
 		}
+		YearMonth yearMonthObject = YearMonth.of(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1);
+		int daysInMonth = yearMonthObject.lengthOfMonth();
+		String toRet = dia + " " + ((diaDelMes + i - 2) %daysInMonth+1);
 		dias.add(toRet);
-		
 		return toRet;
+	}
+	
+//	private String generarTitulo(int i) {
+//		Date date = new Date();
+//		String[] dateToArray = date.toString().split(" ");
+//		String diaDeLaSemana = dateToArray[0];
+//		int numeroDeDia = Integer.parseInt(dateToArray[2]);
+//		int primerDiaDeLaSemana = 0;
+//		
+//		switch (diaDeLaSemana) {
+//		case "Mon":
+//			primerDiaDeLaSemana = numeroDeDia;
+//			break;
+//		case "Tue":
+//			primerDiaDeLaSemana = numeroDeDia - 1;
+//			break;
+//		case "Wed":
+//			primerDiaDeLaSemana = numeroDeDia - 2;
+//			break;
+//		case "Thu":
+//			primerDiaDeLaSemana = numeroDeDia - 3;
+//			break;
+//		case "Fri":
+//			primerDiaDeLaSemana = numeroDeDia - 4;
+//			break;
+//		case "Sat":
+//			primerDiaDeLaSemana = numeroDeDia - 5;
+//			break;
+//		case "Sun":
+//			primerDiaDeLaSemana = numeroDeDia - 6;
+//			break;
+//		}
+//		
+//		String toRet = "";
+//		switch (i) {
+//		case 0:
+//			toRet = "Horarios";
+//			break;
+//		case 1:
+//			toRet = "Domingo " + String.valueOf(primerDiaDeLaSemana + 6);
+//			break;
+//		case 2:
+//			toRet = "Lunes " + String.valueOf(primerDiaDeLaSemana);
+//			break;
+//		case 3:
+//			toRet = "Martes " + String.valueOf(primerDiaDeLaSemana+ 1);
+//			break;
+//		case 4:
+//			toRet = "Miércoles " + String.valueOf(primerDiaDeLaSemana + 2);
+//			break;
+//		case 5:
+//			toRet = "Jueves " + String.valueOf(primerDiaDeLaSemana + 3);
+//			break;
+//		case 6:
+//			toRet = "Viernes " + String.valueOf(primerDiaDeLaSemana + 4);
+//			break;
+//		case 7:
+//			toRet = "Sábado " + String.valueOf(primerDiaDeLaSemana + 5);
+//			break;
+//		}
+//		dias.add(toRet);
+//		
+//		return toRet;
+//	}
+	private JPanel getPnTopCenter() {
+		if (pnTopCenter == null) {
+			pnTopCenter = new JPanel();
+			pnTopCenter.setBackground(Color.WHITE);
+			pnTopCenter.add(getCbInstalacionSeleccionada());
+			pnTopCenter.add(getBtnMostrarOcupacion());
+		}
+		return pnTopCenter;
+	}
+	private JPanel getPnTopEast() {
+		if (pnTopEast == null) {
+			pnTopEast = new JPanel();
+			pnTopEast.setBackground(Color.WHITE);
+			pnTopEast.setLayout(new GridLayout(0, 1, 0, 0));
+			pnTopEast.add(getTxtLeyenda());
+		}
+		return pnTopEast;
+	}
+	private JTextPane getTxtLeyenda() {
+		if (txtLeyenda == null) {
+			txtLeyenda = new JTextPane();
+			txtLeyenda.setText("Verde: Reserva disponible\r\nRojo: Reserva completa\r\nGris: Alquiler\r\n");
+		}
+		return txtLeyenda;
 	}
 }
