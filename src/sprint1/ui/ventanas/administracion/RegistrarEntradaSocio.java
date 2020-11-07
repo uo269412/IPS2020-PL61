@@ -6,33 +6,21 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ListSelectionModel;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-import sprint1.business.clases.ActividadPlanificada;
 import sprint1.business.clases.Alquiler;
 import sprint1.business.clases.Instalacion;
 import sprint1.business.clases.Programa;
-import sprint1.business.clases.Reserva;
 import sprint1.business.clases.Socio;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.ComboBoxModel;
-import javax.swing.JTextField;
-import java.awt.GridLayout;
 
 public class RegistrarEntradaSocio extends JDialog {
 
