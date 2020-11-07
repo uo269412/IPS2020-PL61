@@ -48,6 +48,8 @@ public class AdminWindow extends JDialog {
 	private JButton btnAlquilarSocioMomento;
 	private JButton btnAlquilarSocio;
 	private JButton btnRegistrarEntrada;
+	private JButton btnNewButton;
+	private JButton btnCobrarAlquileres;
 
 	/**
 	 * Create the dialog.
@@ -125,6 +127,8 @@ public class AdminWindow extends JDialog {
 			pnAcciones.add(getBtnAlquilarSocioMomento());
 			pnAcciones.add(getBtnAlquilarSocio());
 			pnAcciones.add(getBtnRegistrarEntrada());
+			pnAcciones.add(getBtnNewButton());
+			pnAcciones.add(getBtnCobrarAlquileres());
 		}
 		return pnAcciones;
 	}
@@ -325,5 +329,25 @@ public class AdminWindow extends JDialog {
 		registrarEntradaSocio.setModal(true);
 		registrarEntradaSocio.setLocationRelativeTo(this);
 		registrarEntradaSocio.setVisible(true);
+	}
+	private JButton getBtnNewButton() {
+		if (btnNewButton == null) {
+			btnNewButton = new JButton("Ver socios que no han pagado sus alquileres");
+			btnNewButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					ListaSociosConImpagos lsci = new ListaSociosConImpagos(parent.getPrograma());
+					lsci.setLocationRelativeTo(getMe());
+					lsci.setModal(true);
+					lsci.setVisible(true);
+				}
+			});
+		}
+		return btnNewButton;
+	}
+	private JButton getBtnCobrarAlquileres() {
+		if (btnCobrarAlquileres == null) {
+			btnCobrarAlquileres = new JButton("Cobrar alquiler a usuarios");
+		}
+		return btnCobrarAlquileres;
 	}
 }

@@ -520,6 +520,26 @@ public class Programa {
 	public void ordenarSocios() {
 		Collections.sort(this.socios);
 	}
+	
+	public Set<Socio> sociosQueNoHanPagadoAlquilerMes(int mes, int año) {
+		Set<Socio> sociosSinPagar = new HashSet<>();
+		for(Alquiler a: getAlquileres(mes, año)) {
+			boolean hayRegistro = false;
+			for(Registro r: registros) {
+				if(r.getId_alquiler().equals(a.getId_alquiler())) {
+					hayRegistro = true;
+					if(!r.isAlquilerPagado()) {
+						sociosSinPagar.add(encontrarSocio(a.getId_cliente()));
+					}
+				}
+			}
+			if(!hayRegistro) { //no se ha presentado
+				sociosSinPagar.add(encontrarSocio(a.getId_cliente()));
+			}
+		}
+		
+		return sociosSinPagar;
+	}
 
 //TERCEROS
 
@@ -803,6 +823,16 @@ public class Programa {
 				if (hora == ap.getHoraInicio() || (hora > ap.getHoraInicio() && hora < ap.getHoraFin())) {
 					listaSort.add(ap);
 				}
+			}
+		}
+		return listaSort;
+	}
+	
+	public List<Alquiler> getAlquileres(int mes, int año) {
+		List<Alquiler> listaSort = new ArrayList<Alquiler>();
+		for (Alquiler ap : getAlquileres()) {
+			if (ap.getMes() == mes && ap.getAño() == año) {
+				listaSort.add(ap);
 			}
 		}
 		return listaSort;
@@ -1093,6 +1123,8 @@ public class Programa {
 		}
 		return null;
 	}
+	
+	
 
 	public void crearRegistro(Alquiler alquiler) {
 		Registro registro = new Registro(alquiler.getId_alquiler());
