@@ -40,6 +40,7 @@ public class SocioWindow extends JDialog {
 	private JButton btnVerHorariosSocios;
 	private JButton btnReservar;
 	private JButton btnCancelarAlquiler;
+	private JButton btnVerAlquileres;
 
 	/**
 	 * Create the dialog.
@@ -112,6 +113,7 @@ public class SocioWindow extends JDialog {
 			pnAcciones.add(getBtnVerActividades());
 			pnAcciones.add(getBtnVerHorariosSocios());
 			pnAcciones.add(getBtnCancelarAlquiler());
+			pnAcciones.add(getBtnVerAlquileres());
 		}
 		return pnAcciones;
 	}
@@ -251,5 +253,19 @@ public class SocioWindow extends JDialog {
 			return false;
 		}
 		return true;
+	}
+	private JButton getBtnVerAlquileres() {
+		if (btnVerAlquileres == null) {
+			btnVerAlquileres = new JButton("Ver alquileres");
+			btnVerAlquileres.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					VerAlquileresSocio vas = new VerAlquileresSocio(SocioWindow.this, socio);
+					vas.setModal(true);
+					vas.setLocationRelativeTo(SocioWindow.this);
+					vas.setVisible(true);
+				}
+			});
+		}
+		return btnVerAlquileres;
 	}
 }

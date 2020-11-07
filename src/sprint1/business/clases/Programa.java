@@ -11,7 +11,6 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -35,10 +34,11 @@ public class Programa {
 	// Conexión Javi
 //	 public static String URL = "jdbc:sqlite:C:\\Users\\javie\\git\\IPS2020-PL61\\resources\\bdProject.db";
 
+
 	// Conexión Dani
 	//public static String URL = "jdbc:sqlite:C:\\Users\\Dani\\git\\IPS2020-PL61_sprint2\\resources\\bdProject.db";
 
-//	 Conexión Juan.elo
+	// Conexión Juan.elo
 	 public static String URL =
 	 "jdbc:sqlite:C:\\Users\\Usuario\\git\\IPS2020-PL61\\resources\\bdProject.db";
 
@@ -701,7 +701,8 @@ public class Programa {
 
 	public boolean añadirReserva(Socio socio, ActividadPlanificada actividad) {
 		boolean result = insertarReserva(socio.getId_cliente(), actividad.getCodigoPlanificada());
-		actualizarPlazasActividadPlanificada(actividad, actividad.getLimitePlazas() - 1);
+		if (result)
+			actualizarPlazasActividadPlanificada(actividad, actividad.getLimitePlazas() - 1);
 		try {
 			cargarReservas();
 			cargarActividadesPlanificadas();
@@ -1082,6 +1083,15 @@ public class Programa {
 			}
 		}
 		return false;
+	}
+	
+	public List<Alquiler> getAlquileresSocio(Socio socio) {
+		List<Alquiler> listaSort = new ArrayList<Alquiler>();
+		for (Alquiler al : getAlquileres()) {
+			if(al.getId_cliente().equals(socio.getId_cliente()))
+				listaSort.add(al);
+		}
+		return listaSort;
 	}
 
 	public boolean hayAlquileresConSocioDentro() {
