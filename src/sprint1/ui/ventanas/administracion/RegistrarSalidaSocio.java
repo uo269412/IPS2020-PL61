@@ -147,6 +147,7 @@ public class RegistrarSalidaSocio extends JDialog {
 						getPrograma().registrarHoraSalidaSocio(registro);
 						JOptionPane.showMessageDialog(null,
 								"Se ha registrado la salida de la instalación correctamente");
+						generarRecibo();
 						dispose();
 
 					}
@@ -245,5 +246,9 @@ public class RegistrarSalidaSocio extends JDialog {
 			textField.setColumns(10);
 		}
 		return textField;
+	}
+	
+	private void generarRecibo() {
+		
 	}
 }
