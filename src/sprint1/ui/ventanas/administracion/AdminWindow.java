@@ -42,6 +42,7 @@ public class AdminWindow extends JDialog {
 	private AlquilarSocioMomentoWindow alquilarSocioMomento;
 	private CalendarioAlquilerAdmin calendarioAlquilerAdmin;
 	private RegistrarEntradaSocio registrarEntradaSocio;
+	private RegistrarSalidaSocio registrarSalidaSocio;
 	private JButton btnReservaSocio;
 	private JButton btnVerOcupacion;
 	private JButton btnCerrarInstalación;
@@ -50,6 +51,7 @@ public class AdminWindow extends JDialog {
 	private JButton btnRegistrarEntrada;
 	private JButton btnNewButton;
 	private JButton btnCobrarAlquileres;
+	private JButton btnRegistrarSalida;
 
 	/**
 	 * Create the dialog.
@@ -57,7 +59,7 @@ public class AdminWindow extends JDialog {
 	public AdminWindow(MainWindow mainWindow) {
 		setTitle("Centro de Deportes: Administrador");
 		this.parent = mainWindow;
-		setBounds(100, 100, 450, 362);
+		setBounds(100, 100, 511, 413);
 		getContentPane().setLayout(new BorderLayout(0, 0));
 		getContentPane().add(getPnTextos(), BorderLayout.NORTH);
 		getContentPane().add(getPnFuncionalidad(), BorderLayout.CENTER);
@@ -126,9 +128,10 @@ public class AdminWindow extends JDialog {
 			pnAcciones.add(getBtnCerrarInstalación());
 			pnAcciones.add(getBtnAlquilarSocioMomento());
 			pnAcciones.add(getBtnAlquilarSocio());
+			pnAcciones.add(getBtnCobrarAlquileres());
+			pnAcciones.add(getBtnRegistrarSalida());
 			pnAcciones.add(getBtnRegistrarEntrada());
 			pnAcciones.add(getBtnNewButton());
-			pnAcciones.add(getBtnCobrarAlquileres());
 		}
 		return pnAcciones;
 	}
@@ -330,6 +333,7 @@ public class AdminWindow extends JDialog {
 		registrarEntradaSocio.setLocationRelativeTo(this);
 		registrarEntradaSocio.setVisible(true);
 	}
+	
 	private JButton getBtnNewButton() {
 		if (btnNewButton == null) {
 			btnNewButton = new JButton("Ver socios que no han pagado sus alquileres");
@@ -349,5 +353,29 @@ public class AdminWindow extends JDialog {
 			btnCobrarAlquileres = new JButton("Cobrar alquiler a usuarios");
 		}
 		return btnCobrarAlquileres;
+	}
+
+	private JButton getBtnRegistrarSalida() {
+		if (btnRegistrarSalida == null) {
+			btnRegistrarSalida = new JButton("Registrar salida del alquiler");
+			btnRegistrarSalida.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					if (getParent().getPrograma().hayAlquileresConSocioDentro()) {
+						openRegistrarSalidaSocioWindow();
+					} else {
+						JOptionPane.showMessageDialog(null,
+								"No hay ningún socio en los alquileres de las instalaciones");
+					}
+				}
+			});
+		}
+		return btnRegistrarSalida;
+	}
+
+	private void openRegistrarSalidaSocioWindow() {
+		registrarSalidaSocio = new RegistrarSalidaSocio(this);
+		registrarSalidaSocio.setModal(true);
+		registrarSalidaSocio.setLocationRelativeTo(this);
+		registrarSalidaSocio.setVisible(true);
 	}
 }
