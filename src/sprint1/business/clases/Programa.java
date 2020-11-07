@@ -36,8 +36,7 @@ public class Programa {
 	//public static String URL = "jdbc:sqlite:C:\\Users\\javie\\git\\IPS2020-PL61\\resources\\bdProject.db";
 
 	// Conexión Dani
-	 public static String URL =
-	 "jdbc:sqlite:C:\\Users\\Dani\\git\\IPS2020-PL61_sprint2\\resources\\bdProject.db";
+	 public static String URL = "jdbc:sqlite:C:\\Users\\Dani\\git\\IPS2020-PL61_sprint2\\resources\\bdProject.db";
 
 	// Conexión Juan.elo
 	// public static String URL =
@@ -185,24 +184,24 @@ public class Programa {
 
 	public List<Actividad> actividadesPorInstalacion(String codigo_instalacion) {
 		List<Actividad> listaActividades = new LinkedList<>();
-		for(Actividad a: getActividades()) {
-			if(!a.requiresRecursos()) {
+		for (Actividad a : getActividades()) {
+			if (!a.requiresRecursos()) {
 				listaActividades.add(a);
 			} else {
 				boolean contieneTodos = true;
-				for(Recurso r: a.getRecursos()) {
-					if(r.getInstalacion().equals(codigo_instalacion)) {
+				for (Recurso r : a.getRecursos()) {
+					if (r.getInstalacion().equals(codigo_instalacion)) {
 						contieneTodos = contieneTodos && true;
 					} else {
 						contieneTodos = contieneTodos && false;
 					}
 				}
-				if(contieneTodos) {
+				if (contieneTodos) {
 					listaActividades.add(a);
 				}
 			}
 		}
-		
+
 		return listaActividades;
 	}
 //ACTIVIDADES PLANIFICADAS	
@@ -245,18 +244,19 @@ public class Programa {
 		return actividadesPlanificadas;
 	}
 
-	public List<ActividadPlanificada> getActividadesPlanificadasInstalacionDia(String idInstalacion, int dia, int mes, int año) {
+	public List<ActividadPlanificada> getActividadesPlanificadasInstalacionDia(String idInstalacion, int dia, int mes,
+			int año) {
 		List<ActividadPlanificada> planificadasSinFiltrar = getActividadesPlanificadas(dia, mes, año);
 		List<ActividadPlanificada> toRet = new LinkedList<>();
-		for(ActividadPlanificada a: planificadasSinFiltrar) {
-			if(a.getCodigoInstalacion().equals(idInstalacion)) {
+		for (ActividadPlanificada a : planificadasSinFiltrar) {
+			if (a.getCodigoInstalacion().equals(idInstalacion)) {
 				toRet.add(a);
 			}
 		}
-		
+
 		return toRet;
 	}
-	
+
 	public ActividadPlanificada encontrarActividadPlanificada(String codigo) {
 		for (ActividadPlanificada actividad : actividadesPlanificadas) {
 			if (actividad.getCodigoPlanificada().equals(codigo)) {
@@ -272,7 +272,17 @@ public class Programa {
 			System.out.println(actividad.toString());
 		}
 	}
-	
+
+	public List<ActividadPlanificada> getActividadesPlanificadas(int dia, int mes, int año) {
+		List<ActividadPlanificada> listaSort = new ArrayList<ActividadPlanificada>();
+		for (ActividadPlanificada ap : getActividadesPlanificadas()) {
+			if (ap.getDia() == dia && ap.getMes() == mes && ap.getAño() == año) {
+				listaSort.add(ap);
+			}
+		}
+		return listaSort;
+	}
+
 	public List<ActividadPlanificada> getActividadesPlanificadas(int hora, int dia, int mes, int año) {
 		List<ActividadPlanificada> listaSort = new ArrayList<ActividadPlanificada>();
 		for (ActividadPlanificada ap : getActividadesPlanificadas()) {
@@ -285,11 +295,16 @@ public class Programa {
 		return listaSort;
 	}
 
-	public List<ActividadPlanificada> getActividadesPlanificadas(int dia, int mes, int año) {
+	public List<ActividadPlanificada> getActividadesPlanificadas(String codigoInstalacion, int hora, int dia, int mes,
+			int año) {
 		List<ActividadPlanificada> listaSort = new ArrayList<ActividadPlanificada>();
 		for (ActividadPlanificada ap : getActividadesPlanificadas()) {
 			if (ap.getDia() == dia && ap.getMes() == mes && ap.getAño() == año) {
-				listaSort.add(ap);
+				if ((hora == ap.getHoraInicio()) || (hora > ap.getHoraInicio() && hora < ap.getHoraFin())) {
+					if (ap.getCodigoInstalacion().equals(codigoInstalacion)) {
+						listaSort.add(ap);
+					}
+				}
 			}
 		}
 		return listaSort;
@@ -313,6 +328,17 @@ public class Programa {
 
 	public void ordenarActividadesPlanificadasPorFecha() {
 		Collections.sort(this.actividadesPlanificadas);
+	}
+
+	public boolean checkIfHayActividadesParaHoy() {
+		int fecha[] = obtenerHoraDiaMesAño();
+		int dia = fecha[1];
+		int mes = fecha[2];
+		int año = fecha[3];
+		if (getActividadesPlanificadas(dia, mes, año).isEmpty()) {
+			return false;
+		}
+		return true;
 	}
 
 	public void actualizarPlazasActividadPlanificada(ActividadPlanificada actividad, int incremento) {
@@ -490,7 +516,7 @@ public class Programa {
 		}
 		return listaSort;
 	}
-	
+
 	public void ordenarSocios() {
 		Collections.sort(this.socios);
 	}
@@ -580,6 +606,7 @@ public class Programa {
 			System.out.println(tercero.toString());
 		}
 	}
+
 	public void ordenarTerceros() {
 		Collections.sort(this.terceros);
 	}
@@ -692,7 +719,31 @@ public class Programa {
 			System.out.println("Error borrando la reserva");
 		}
 	}
-	
+
+	public List<Reserva> getReservas(int hora, int dia, int mes, int año) {
+		List<Reserva> listaSort = new ArrayList<Reserva>();
+		for (Reserva reserva : getReservas()) {
+			for (ActividadPlanificada ap : getActividadesPlanificadas(hora, dia, mes, año)) {
+				if (ap.getCodigoPlanificada().equals(reserva.getCodigo_actividad())) {
+					listaSort.add(reserva);
+				}
+			}
+		}
+		return listaSort;
+	}
+
+	public List<Reserva> getReservas(String codigo_instalacion, int hora, int dia, int mes, int año) {
+		List<Reserva> listaSort = new ArrayList<Reserva>();
+		for (Reserva reserva : getReservas()) {
+			for (ActividadPlanificada ap : getActividadesPlanificadas(codigo_instalacion, hora, dia, mes, año)) {
+				if (ap.getCodigoPlanificada().equals(reserva.getCodigo_actividad())) {
+					listaSort.add(reserva);
+				}
+			}
+		}
+		return listaSort;
+
+	}
 
 //ALQUILERES
 
@@ -792,6 +843,16 @@ public class Programa {
 		return alquileres;
 	}
 
+	public List<Alquiler> getAlquileres(int dia, int mes, int año) {
+		List<Alquiler> listaSort = new ArrayList<Alquiler>();
+		for (Alquiler a : getAlquileres()) {
+			if (a.getDia() == dia && a.getMes() == mes && a.getAño() == año) {
+				listaSort.add(a);
+			}
+		}
+		return listaSort;
+	}
+
 	public Alquiler encontrarAlquileres(String id_alquiler) {
 		for (Alquiler alquiler : alquileres) {
 			if (alquiler.getId_alquiler().equals(id_alquiler)) {
@@ -807,6 +868,7 @@ public class Programa {
 			System.out.println(alquiler.toString());
 		}
 	}
+
 	public void ordenarAlquileres() {
 		Collections.sort(this.alquileres);
 	}
@@ -823,6 +885,7 @@ public class Programa {
 		pst.close();
 		con.close();
 	}
+
 
 	public List<Alquiler> getAlquileresDia(int dia, int mes, int año) throws SQLException {
 		List<Alquiler> alquileresDia = new ArrayList<>();
@@ -841,6 +904,140 @@ public class Programa {
 
 		return alquileresDia;
 	}
+
+	public void anularAlquiler(Alquiler alquiler) {
+		cancelarAlquiler(alquiler.getId_alquiler());
+		anularRegistroAsociado(alquiler.getId_alquiler());
+		try {
+			cargarAlquileres();
+		} catch (SQLException e) {
+			System.out.println("Fallo al cargar alquileres");
+		}
+	}
+
+	private void cancelarAlquiler(String id_alquiler) {
+		try {
+			Connection con = DriverManager.getConnection(Programa.URL);
+			PreparedStatement pst = con.prepareStatement("DELETE FROM ALQUILER WHERE id_alquiler = ?");
+			pst.setString(1, id_alquiler);
+			pst.execute();
+			pst.close();
+			con.close();
+		} catch (SQLException e) {
+			System.out.println("Error borrando el alquiler");
+		}
+	}
+
+	private void anularRegistroAsociado(String id_alquiler) {
+		try {
+			Connection con = DriverManager.getConnection(Programa.URL);
+			PreparedStatement pst = con.prepareStatement("DELETE FROM REGISTRO WHERE id_alquiler = ?");
+			pst.setString(1, id_alquiler);
+			pst.execute();
+			pst.close();
+			con.close();
+		} catch (SQLException e) {
+			System.out.println("Error borrando el registro del alquiler");
+		}
+	}
+	
+	public boolean comprobarAlquilerAPartirDeHoy(Alquiler alquiler) {
+		int[] fechaActual = obtenerHoraDiaMesAño();
+		int diaAlquiler = alquiler.getDia();
+		int mesAlquiler = alquiler.getMes();
+		int añoAlquiler = alquiler.getAño();
+		SimpleDateFormat sdformat = new SimpleDateFormat("yyyy-MM-dd");
+
+		try {
+			Date real = sdformat.parse(fechaActual[3] + "-" + fechaActual[2] + "-" + fechaActual[1]);
+			Date fechaAlquiler = sdformat.parse(añoAlquiler + "-" + mesAlquiler + "-" + diaAlquiler);
+			if (real.compareTo(fechaAlquiler) < 0) {
+				return true;
+			}
+		} catch (ParseException e) {
+			System.out.println("Error parseando fechas");
+		}
+		return false;
+	}
+
+	public List<Alquiler> getAlquileresSocioEnUnDiaEspecifico(Cliente cliente, int dia, int mes, int año) {
+		List<Alquiler> alquileresQueYaTieneAlquiladassElSocio = new ArrayList<Alquiler>();
+		for (Alquiler alquiler : getAlquileres()) {
+			if (alquiler.getId_cliente().equals(cliente.getId_cliente())) {
+				if (alquiler.getDia() == dia && alquiler.getMes() == mes && alquiler.getAño() == año) {
+					alquileresQueYaTieneAlquiladassElSocio.add(alquiler);
+				}
+			}
+		}
+		return alquileresQueYaTieneAlquiladassElSocio;
+	}
+
+	public Alquiler getAlquilerSocioAhora(Cliente cliente) {
+		int[] fecha = obtenerHoraDiaMesAño();
+		int hora = fecha[0];
+		int dia = fecha[1];
+		int mes = fecha[2];
+		int año = fecha[3];
+		for (Alquiler alquiler : getAlquileres()) {
+			if (alquiler.getId_cliente().equals(cliente.getId_cliente())) {
+				if (alquiler.getDia() == dia && alquiler.getMes() == mes && alquiler.getAño() == año) {
+					if (alquiler.getHoraInicio() == hora
+							|| ((hora >= alquiler.getHoraInicio()) && (hora <= alquiler.getHoraFin())))
+						return alquiler;
+				}
+			}
+		}
+		return null;
+	}
+
+	public Alquiler getAlquilerSocioAhoraNoCancelado(Cliente cliente) {
+		int[] fecha = obtenerHoraDiaMesAño();
+		int hora = fecha[0];
+		int dia = fecha[1];
+		int mes = fecha[2];
+		int año = fecha[3];
+		for (Alquiler alquiler : getAlquileres()) {
+			if (alquiler.getId_cliente().equals(cliente.getId_cliente())) {
+				if (alquiler.getDia() == dia && alquiler.getMes() == mes && alquiler.getAño() == año) {
+					if (alquiler.getHoraInicio() == hora
+							|| ((hora >= alquiler.getHoraInicio()) && (hora <= alquiler.getHoraFin()))) {
+						if (encontrarInstalacion(alquiler.getId_instalacion()).getEstado() == Instalacion.DISPONIBLE) {
+							return alquiler;
+						}
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	public List<Alquiler> getAlquileres(String codigo_instalacion, int hora, int dia, int mes, int año) {
+		List<Alquiler> listaSort = new ArrayList<Alquiler>();
+		for (Alquiler ap : getAlquileres()) {
+			if (ap.getDia() == dia && ap.getMes() == mes && ap.getAño() == año) {
+				if ((hora == ap.getHoraInicio()) || (hora > ap.getHoraInicio() && hora < ap.getHoraFin())) {
+					if (codigo_instalacion.equals(ap.getId_instalacion())) {
+						listaSort.add(ap);
+					}
+				}
+			}
+		}
+		return listaSort;
+	}
+
+	public boolean hayAlquileresAhoraSocioNoHaEntrado() {
+		for (Socio socio : getSocios()) {
+			Alquiler alquiler = getAlquilerSocioAhora(socio);
+			if (alquiler != null) {
+				if (encontrarRegistro(alquiler.getId_alquiler()) == null) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+
 //REGISTROS
 
 	public void cargarRegistros() throws SQLException {
@@ -883,9 +1080,45 @@ public class Programa {
 			System.out.println(registro.toString());
 		}
 	}
-	
+
 	public void ordenarRegistros() {
 		Collections.sort(this.registros);
+	}
+
+	public Registro encontrarRegistro(String id_alquiler) {
+		for (Registro registro : registros) {
+			if (registro.getId_alquiler().equals(id_alquiler)) {
+				return registro;
+			}
+		}
+		return null;
+	}
+
+	public void crearRegistro(Alquiler alquiler) {
+		Registro registro = new Registro(alquiler.getId_alquiler());
+		int[] fecha = obtenerHoraDiaMesAño();
+		int hora = fecha[0];
+		try {
+			Connection con = DriverManager.getConnection(Programa.URL);
+			PreparedStatement pst = con.prepareStatement(
+					"INSERT INTO REGISTRO(id_registro, id_alquiler, hora_entrada, alquilerPagado, socioPresentado) VALUES(?,?,?,?,?)");
+			pst.setString(1, registro.getId_registro());
+			pst.setString(2, registro.getId_alquiler());
+			pst.setInt(3, hora);
+			pst.setBoolean(4, false);
+			pst.setBoolean(5, true);
+			pst.execute();
+			pst.close();
+			con.close();
+			cargarRegistros();
+		} catch (SQLException e) {
+			System.out.println("Error añadiendo el registro");
+		}
+	}
+
+	public boolean ClienteSeHaPresentado(Cliente socio, Alquiler alquiler) {
+
+		return true;
 	}
 
 //MONITORES
@@ -934,7 +1167,7 @@ public class Programa {
 		}
 		return null;
 	}
-	
+
 	public void ordenarMonitores() {
 		Collections.sort(this.monitores);
 	}
@@ -960,7 +1193,7 @@ public class Programa {
 
 	}
 
-	// RECURSOS
+// RECURSOS
 
 	public boolean checkRecursosExisten(String[] nombreRecursos) throws SQLException {
 		Connection con = DriverManager.getConnection(URL);
@@ -1053,6 +1286,18 @@ public class Programa {
 
 		return new Instalacion(codigo_instalacion, nombre, precio, estado);
 	}
+	
+	public void updateInstalacion(Instalacion i) throws SQLException {
+		Connection con = DriverManager.getConnection(URL);
+		PreparedStatement pst = con.prepareStatement("UPDATE INSTALACION SET nombre_instalacion=?, preciohora=?, estado=? WHERE codigo_instalacion = ?");
+		pst.setString(1, i.getNombre());
+		pst.setDouble(2, i.getPrecioHora());
+		pst.setInt(3, i.getEstado());
+		pst.setString(4, i.getCodigo());
+		pst.executeUpdate();
+		pst.close();
+		con.close();
+	}
 
 	private List<Instalacion> convertirInstalacionesEnLista(ResultSet rs) throws SQLException {
 		instalaciones = new ArrayList<Instalacion>();
@@ -1096,12 +1341,39 @@ public class Programa {
 	public List<Instalacion> getInstalaciones() {
 		return this.instalaciones;
 	}
-	
+
 	public void ordenarInstalaciones() {
 		Collections.sort(this.instalaciones);
 	}
 
-	// UTIL
+	public boolean checkIfHayInstalacionesLibresParaAhora() {
+		int fecha[] = obtenerHoraDiaMesAño();
+		int hora = fecha[0] + 1;
+		int dia = fecha[1];
+		int mes = fecha[2];
+		int año = fecha[3];
+		for (Instalacion instalacion : instalaciones) {
+			if (instalacion.getEstado() == Instalacion.DISPONIBLE) {
+				if (getAlquileres(instalacion.getCodigoInstalacion(), hora, dia, mes, año).isEmpty()
+						&& getReservas(instalacion.getCodigoInstalacion(), hora, dia, mes, año).isEmpty()) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	public Instalacion encontrarInstalacion(String id_instalacion) {
+		for (Instalacion instalacion : instalaciones) {
+			if (instalacion.getCodigo().equals(id_instalacion)) {
+				return instalacion;
+			}
+		}
+		return null;
+	}
+
+// UTIL
 
 	public int[] obtenerHoraDiaMesAño() {
 		Calendar calendar = Calendar.getInstance();
@@ -1134,15 +1406,6 @@ public class Programa {
 		return false;
 	}
 
-	public void updateInstalacion(Instalacion i) throws SQLException {
-		Connection con = DriverManager.getConnection(URL);
-		PreparedStatement pst = con.prepareStatement("UPDATE INSTALACION SET nombre_instalacion=?, preciohora=?, estado=? WHERE codigo_instalacion = ?");
-		pst.setString(1, i.getNombre());
-		pst.setDouble(2, i.getPrecioHora());
-		pst.setInt(3, i.getEstado());
-		pst.setString(4, i.getCodigo());
-		pst.executeUpdate();
-		pst.close();
-		con.close();
-	}
+	
+	
 }

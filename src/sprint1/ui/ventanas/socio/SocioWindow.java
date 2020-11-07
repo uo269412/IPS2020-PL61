@@ -1,5 +1,15 @@
 package sprint1.ui.ventanas.socio;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -7,19 +17,10 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import sprint1.business.clases.ActividadPlanificada;
+import sprint1.business.clases.Alquiler;
 import sprint1.business.clases.Reserva;
 import sprint1.business.clases.Socio;
 import sprint1.ui.ventanas.MainWindow;
-
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
-import java.awt.event.ActionEvent;
 
 public class SocioWindow extends JDialog {
 
@@ -35,9 +36,11 @@ public class SocioWindow extends JDialog {
 	private JButton btnLogOut;
 	private JButton btnVerActividades;
 	private ListaDeActividadesWindow listaDeActividadesWindow = null;
+	private ListaDeAlquileresWindow listaDeAlquileresWindow = null;
 	private JButton btnVerHorariosSocios;
 	private JButton btnReservar;
-	
+	private JButton btnCancelarAlquiler;
+
 	/**
 	 * Create the dialog.
 	 */
@@ -108,6 +111,7 @@ public class SocioWindow extends JDialog {
 			pnAcciones.add(getButton_1());
 			pnAcciones.add(getBtnVerActividades());
 			pnAcciones.add(getBtnVerHorariosSocios());
+			pnAcciones.add(getBtnCancelarAlquiler());
 		}
 		return pnAcciones;
 	}
@@ -178,12 +182,14 @@ public class SocioWindow extends JDialog {
 		}
 		return btnVerActividades;
 	}
+
 	private JButton getBtnVerHorariosSocios() {
 		if (btnVerHorariosSocios == null) {
 			btnVerHorariosSocios = new JButton("Ver horarios");
 			btnVerHorariosSocios.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					VerHorariosSocioWindow vosw = new VerHorariosSocioWindow(SocioWindow.this.getParent().getPrograma());
+					VerHorariosSocioWindow vosw = new VerHorariosSocioWindow(
+							SocioWindow.this.getParent().getPrograma());
 					vosw.setModal(true);
 					vosw.setLocationRelativeTo(SocioWindow.this);
 					vosw.setVisible(true);
@@ -192,6 +198,7 @@ public class SocioWindow extends JDialog {
 		}
 		return btnVerHorariosSocios;
 	}
+
 	private JButton getButton_1() {
 		if (btnReservar == null) {
 			btnReservar = new JButton("Hacer reserva");
@@ -205,5 +212,44 @@ public class SocioWindow extends JDialog {
 			});
 		}
 		return btnReservar;
+	}
+
+	private JButton getBtnCancelarAlquiler() {
+		if (btnCancelarAlquiler == null) {
+			btnCancelarAlquiler = new JButton("Cancelar alquiler de una instalaci\u00F3n");
+			btnCancelarAlquiler.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					openListaAlquileresWindow();
+				}
+			});
+			btnCancelarAlquiler.setMnemonic('A');
+		}
+		return btnCancelarAlquiler;
+	}
+
+	private void openListaAlquileresWindow() {
+		if (checkIfListaAlquileresAbre()) {
+			listaDeAlquileresWindow = new ListaDeAlquileresWindow(this, socio);
+			listaDeAlquileresWindow.setModal(true);
+			listaDeAlquileresWindow.setLocationRelativeTo(this);
+			listaDeAlquileresWindow.setVisible(true);
+		} else {
+			JOptionPane.showMessageDialog(this, "No tienes ningun alquiler de ninguna instalación");
+		}
+	}
+
+	public boolean checkIfListaAlquileresAbre() {
+		List<Alquiler> alquileres = new ArrayList<Alquiler>();
+		for (Alquiler alquiler : getParent().getPrograma().getAlquileres()) {
+			if (alquiler.getId_cliente().equals(socio.getId_cliente())) {
+				if (getParent().getPrograma().comprobarAlquilerAPartirDeHoy(alquiler)) {
+					alquileres.add(alquiler);
+				}
+			}
+		}
+		if (alquileres.isEmpty()) {
+			return false;
+		}
+		return true;
 	}
 }

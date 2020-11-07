@@ -37,7 +37,7 @@ public class Socio extends Cliente implements Comparable<Socio> {
 
 	@Override
 	public String toString() {
-		return ("Socio " + nombre + " " + apellido);
+		return (nombre + " " + apellido);
 	}
 
 	@Override

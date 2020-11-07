@@ -39,9 +39,15 @@ public class AdminWindow extends JDialog {
 
 	private AsignarMonitorActividadDialog asignarMonitor;
 	private AdminReservaSocioWindow adminReservaSocio;
+	private AlquilarSocioMomentoWindow alquilarSocioMomento;
+	private CalendarioAlquilerAdmin calendarioAlquilerAdmin;
+	private RegistrarEntradaSocio registrarEntradaSocio;
 	private JButton btnReservaSocio;
 	private JButton btnVerOcupacion;
 	private JButton btnCerrarInstalación;
+	private JButton btnAlquilarSocioMomento;
+	private JButton btnAlquilarSocio;
+	private JButton btnRegistrarEntrada;
 
 	/**
 	 * Create the dialog.
@@ -49,7 +55,7 @@ public class AdminWindow extends JDialog {
 	public AdminWindow(MainWindow mainWindow) {
 		setTitle("Centro de Deportes: Administrador");
 		this.parent = mainWindow;
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 450, 362);
 		getContentPane().setLayout(new BorderLayout(0, 0));
 		getContentPane().add(getPnTextos(), BorderLayout.NORTH);
 		getContentPane().add(getPnFuncionalidad(), BorderLayout.CENTER);
@@ -116,6 +122,9 @@ public class AdminWindow extends JDialog {
 			pnAcciones.add(getBtnReservaSocio());
 			pnAcciones.add(getBtnVerOcupacion());
 			pnAcciones.add(getBtnCerrarInstalación());
+			pnAcciones.add(getBtnAlquilarSocioMomento());
+			pnAcciones.add(getBtnAlquilarSocio());
+			pnAcciones.add(getBtnRegistrarEntrada());
 		}
 		return pnAcciones;
 	}
@@ -203,24 +212,13 @@ public class AdminWindow extends JDialog {
 		adminReservaSocio.setVisible(true);
 	}
 
-	private boolean checkIfHayActividadesParaHoy() {
-		int fecha[] = getParent().getPrograma().obtenerHoraDiaMesAño();
-		int dia = fecha[1];
-		int mes = fecha[2];
-		int año = fecha[3];
-		if (getParent().getPrograma().getActividadesPlanificadas(dia, mes, año).isEmpty()) {
-			return false;
-		}
-		return true;
-	}
-
 	private JButton getBtnReservaSocio() {
 		if (btnReservaSocio == null) {
 			btnReservaSocio = new JButton("Hacer una reserva para un socio en una actividad que se realiza hoy");
 			btnReservaSocio.setMnemonic('H');
 			btnReservaSocio.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					if (checkIfHayActividadesParaHoy()) {
+					if (getParent().getPrograma().checkIfHayActividadesParaHoy()) {
 						openAdminReservaSocioWindow();
 					} else {
 						JOptionPane.showMessageDialog(null, "No hay ninguna actividad planificada para hoy");
@@ -246,6 +244,7 @@ public class AdminWindow extends JDialog {
 		}
 		return btnVerOcupacion;
 	}
+	
 	private JButton getBtnCerrarInstalación() {
 		if (btnCerrarInstalación == null) {
 			btnCerrarInstalación = new JButton("Cerrar instalaci\u00F3n");
@@ -259,5 +258,72 @@ public class AdminWindow extends JDialog {
 			});
 		}
 		return btnCerrarInstalación;
+	}
+
+	private JButton getBtnAlquilarSocioMomento() {
+		if (btnAlquilarSocioMomento == null) {
+			btnAlquilarSocioMomento = new JButton("Alquilarle una instalación en el momento a un socio");
+			btnAlquilarSocioMomento.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					if (getParent().getPrograma().checkIfHayInstalacionesLibresParaAhora()) {
+						openAlquilarSocioMomentoWindow();
+					} else {
+						JOptionPane.showMessageDialog(null, "No hay ninguna instalación libre para hoy");
+					}
+				}
+			});
+		}
+		return btnAlquilarSocioMomento;
+	}
+
+	private void openAlquilarSocioMomentoWindow() {
+		alquilarSocioMomento = new AlquilarSocioMomentoWindow(this);
+		alquilarSocioMomento.setModal(true);
+		alquilarSocioMomento.setLocationRelativeTo(this);
+		alquilarSocioMomento.setVisible(true);
+
+	}
+
+	private JButton getBtnAlquilarSocio() {
+		if (btnAlquilarSocio == null) {
+			btnAlquilarSocio = new JButton("Alquilarle una instalaci\u00F3n a un socio");
+			btnAlquilarSocio.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					openAlquilarSocioWindow();
+				}
+			});
+		}
+		return btnAlquilarSocio;
+	}
+
+	private void openAlquilarSocioWindow() {
+		calendarioAlquilerAdmin = new CalendarioAlquilerAdmin(this);
+		calendarioAlquilerAdmin.setModal(true);
+		calendarioAlquilerAdmin.setLocationRelativeTo(this);
+		calendarioAlquilerAdmin.setVisible(true);
+	}
+
+	private JButton getBtnRegistrarEntrada() {
+		if (btnRegistrarEntrada == null) {
+			btnRegistrarEntrada = new JButton("Registrar entrada al alquiler");
+			btnRegistrarEntrada.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					if (getParent().getPrograma().hayAlquileresAhoraSocioNoHaEntrado()) {
+						openRegistrarEntradaSocioWindow();
+					} else {
+						JOptionPane.showMessageDialog(null,
+								"No hay ningún alquiler o los clientes ya se han presentado a los alquileres actuales");
+					}
+				}
+			});
+		}
+		return btnRegistrarEntrada;
+	}
+
+	private void openRegistrarEntradaSocioWindow() {
+		registrarEntradaSocio = new RegistrarEntradaSocio(this);
+		registrarEntradaSocio.setModal(true);
+		registrarEntradaSocio.setLocationRelativeTo(this);
+		registrarEntradaSocio.setVisible(true);
 	}
 }

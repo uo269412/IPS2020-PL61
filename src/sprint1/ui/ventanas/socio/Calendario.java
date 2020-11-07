@@ -82,37 +82,36 @@ public class Calendario extends JDialog {
 		contentPane.add(getPanel_1(), BorderLayout.CENTER);
 		contentPane.add(getPnNextMonth(), BorderLayout.EAST);
 		contentPane.add(getPnPreviousMonth(), BorderLayout.WEST);
-		//iniciarMes("Octubre", 2020);
+		// iniciarMes("Octubre", 2020);
 	}
-	
+
 	public Calendario(String mes, int año) {
 		this();
-		iniciarMes(mes,año);
+		iniciarMes(mes, año);
 	}
 
 	protected void iniciarMes(String mes, int año) {
 		if (año < 2020) {
-			JOptionPane.showMessageDialog(this, "No puedes escoger un año previo a 2020"
-					,"Error en el calendario", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "No puedes escoger un año previo a 2020", "Error en el calendario",
+					JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		
-		int primerDiaDelMes = 3 ,diasDelMes = 0;
-		
+
+		int primerDiaDelMes = 3, diasDelMes = 0;
+
 		for (int i = 2020; i < año; i++) {
 			if (i % 4 == 0) {
 				primerDiaDelMes = primerDiaDelMes + 2;
-			}
-			else
+			} else
 				primerDiaDelMes++;
 		}
 		diasDelMes = calcularDias(mes, año);
-		
+
 		for (int i = 0; i < Integer.MAX_VALUE; i++) {
 			if (mes == meses.get(i))
 				break;
 			else {
-				switch(calcularDias(meses.get(i),año)) {
+				switch (calcularDias(meses.get(i), año)) {
 				case 31:
 					primerDiaDelMes = primerDiaDelMes + 3;
 					break;
@@ -124,7 +123,7 @@ public class Calendario extends JDialog {
 					break;
 				}
 			}
-			if(primerDiaDelMes != 7) {
+			if (primerDiaDelMes != 7) {
 				primerDiaDelMes = primerDiaDelMes % 7;
 			}
 		}
@@ -134,7 +133,7 @@ public class Calendario extends JDialog {
 	}
 
 	private int calcularDias(String mes, int año) {
-		switch(mes) {
+		switch (mes) {
 		case "Enero":
 		case "Marzo":
 		case "Mayo":
@@ -173,11 +172,11 @@ public class Calendario extends JDialog {
 		meses.add("Noviembre");
 		meses.add("Diciembre");
 	}
-	
+
 	private void llenarAños() {
 		años = new ArrayList<Integer>();
 		for (int i = 0; i < 100; i++) {
-			años.add(i+2020);
+			años.add(i + 2020);
 		}
 	}
 
@@ -191,6 +190,7 @@ public class Calendario extends JDialog {
 		}
 		return pnNorth;
 	}
+
 	private JPanel getPanel_1() {
 		if (pnCenter == null) {
 			pnCenter = new JPanel();
@@ -201,6 +201,7 @@ public class Calendario extends JDialog {
 		}
 		return pnCenter;
 	}
+
 	private JPanel getPanel_1_1() {
 		if (pnDias == null) {
 			pnDias = new JPanel();
@@ -216,6 +217,7 @@ public class Calendario extends JDialog {
 		}
 		return pnDias;
 	}
+
 	private JLabel getLabel_6() {
 		if (lblLunes == null) {
 			lblLunes = new JLabel("Lunes");
@@ -223,6 +225,7 @@ public class Calendario extends JDialog {
 		}
 		return lblLunes;
 	}
+
 	private JLabel getLabel_7() {
 		if (lblMartes == null) {
 			lblMartes = new JLabel("Martes");
@@ -230,6 +233,7 @@ public class Calendario extends JDialog {
 		}
 		return lblMartes;
 	}
+
 	private JLabel getLabel_8() {
 		if (lblMiercoles == null) {
 			lblMiercoles = new JLabel("Mi\u00E9rcoles");
@@ -237,6 +241,7 @@ public class Calendario extends JDialog {
 		}
 		return lblMiercoles;
 	}
+
 	private JLabel getLabel_9() {
 		if (lblJueves == null) {
 			lblJueves = new JLabel("Jueves");
@@ -244,6 +249,7 @@ public class Calendario extends JDialog {
 		}
 		return lblJueves;
 	}
+
 	private JLabel getLabel_10() {
 		if (lblViernes == null) {
 			lblViernes = new JLabel("Viernes");
@@ -251,6 +257,7 @@ public class Calendario extends JDialog {
 		}
 		return lblViernes;
 	}
+
 	private JLabel getLabel_11() {
 		if (lblSabado == null) {
 			lblSabado = new JLabel("S\u00E1bado");
@@ -258,6 +265,7 @@ public class Calendario extends JDialog {
 		}
 		return lblSabado;
 	}
+
 	private JLabel getLabel_12() {
 		if (lblDomingo == null) {
 			lblDomingo = new JLabel("Domingo");
@@ -265,6 +273,7 @@ public class Calendario extends JDialog {
 		}
 		return lblDomingo;
 	}
+
 	private JPanel getPnDiasMes() {
 		if (pnDiasMes == null) {
 			pnDiasMes = new JPanel();
@@ -273,22 +282,21 @@ public class Calendario extends JDialog {
 		}
 		return pnDiasMes;
 	}
+
 	private void generateButtons(int primerDia, int diasTotal) {
 		pnDiasMes.removeAll();
 		int numeroDeBotones = 0;
 		if (primerDia == 1 && diasTotal == 28) {
 			pnDiasMes.setLayout(new GridLayout(4, 7, 0, 0));
-			numeroDeBotones = 28; //4 semanas
-		}
-		else if (primerDia < 6) {
+			numeroDeBotones = 28; // 4 semanas
+		} else if (primerDia < 6) {
 			pnDiasMes.setLayout(new GridLayout(5, 7, 0, 0));
-			numeroDeBotones = 35; //5 semanas
-		}
-		else {
+			numeroDeBotones = 35; // 5 semanas
+		} else {
 			pnDiasMes.setLayout(new GridLayout(6, 7, 0, 0));
-			numeroDeBotones = 42; //6 semanas
+			numeroDeBotones = 42; // 6 semanas
 		}
-			
+
 		for (int i = 1; i <= numeroDeBotones; i++) {
 			if (i < primerDia || i + 1 - primerDia > diasTotal)
 				pnDiasMes.add(paintDia(-1));
@@ -300,7 +308,7 @@ public class Calendario extends JDialog {
 
 	private Component paintDia(int numeroDia) {
 		JButton dia = new JButton();
-		dia.setBorder(new LineBorder(Color.BLACK,1));
+		dia.setBorder(new LineBorder(Color.BLACK, 1));
 		dia.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		if (numeroDia != -1)
 			dia.setText(String.valueOf(numeroDia));
@@ -308,6 +316,7 @@ public class Calendario extends JDialog {
 			dia.setEnabled(false);
 		return dia;
 	}
+
 	private JPanel getPnNextMonth() {
 		if (pnNextMonth == null) {
 			pnNextMonth = new JPanel();
@@ -316,6 +325,7 @@ public class Calendario extends JDialog {
 		}
 		return pnNextMonth;
 	}
+
 	private JButton getBtnNextMonth() {
 		if (btnNextMonth == null) {
 			btnNextMonth = new JButton("\u25BA");
@@ -328,7 +338,7 @@ public class Calendario extends JDialog {
 		}
 		return btnNextMonth;
 	}
-	
+
 	private void siguienteMes() {
 		int pos = 0;
 		String mes = meses.get(cbMeses.getSelectedIndex());
@@ -337,17 +347,16 @@ public class Calendario extends JDialog {
 			if (mes.equals(meses.get(i))) {
 				pos = i;
 				break;
-			}	
+			}
 		}
 		if (pos == 11) {
 			pos = 0;
 			año++;
-		}
-		else
+		} else
 			pos = pos + 1;
 		iniciarMes(meses.get(pos), año);
 	}
-	
+
 	private JPanel getPnPreviousMonth() {
 		if (pnPreviousMonth == null) {
 			pnPreviousMonth = new JPanel();
@@ -356,6 +365,7 @@ public class Calendario extends JDialog {
 		}
 		return pnPreviousMonth;
 	}
+
 	private JButton getBtnPreviousMonth() {
 		if (btnPreviousMonth == null) {
 			btnPreviousMonth = new JButton("\u25C4");
@@ -368,7 +378,7 @@ public class Calendario extends JDialog {
 		}
 		return btnPreviousMonth;
 	}
-	
+
 	private void anteriorMes() {
 		int pos = 0;
 		String mes = meses.get(cbMeses.getSelectedIndex());
@@ -376,38 +386,47 @@ public class Calendario extends JDialog {
 		for (int i = meses.size() - 1; i >= 0; i--) {
 			if (mes.equals(meses.get(i))) {
 				pos = i;
-			}	
+			}
 		}
 		if (pos == 0) {
 			pos = 11;
 			año--;
-		}
-		else
+		} else
 			pos = pos - 1;
 		iniciarMes(meses.get(pos), año);
 	}
+
 	private JComboBox<String> getCbMeses() {
 		if (cbMeses == null) {
 			cbMeses = new JComboBox<String>();
 			cbMeses.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					iniciarMes((String)cbMeses.getSelectedItem(), (int)cbAños.getSelectedItem());
+					iniciarMes((String) cbMeses.getSelectedItem(), (int) cbAños.getSelectedItem());
 				}
 			});
 			cbMeses.setModel(new DefaultComboBoxModel<String>(meses.toArray(new String[0])));
 		}
 		return cbMeses;
 	}
+
 	private JComboBox<Integer> getCbAños() {
 		if (cbAños == null) {
 			cbAños = new JComboBox<Integer>();
 			cbAños.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					iniciarMes((String)cbMeses.getSelectedItem(), (int)cbAños.getSelectedItem());
+					iniciarMes((String) cbMeses.getSelectedItem(), (int) cbAños.getSelectedItem());
 				}
 			});
 			cbAños.setModel(new DefaultComboBoxModel<Integer>(años.toArray(new Integer[0])));
 		}
 		return cbAños;
+	}
+
+	protected ArrayList<String> getMeses() {
+		return this.meses;
+	}
+	
+	protected ArrayList<Integer> getAños() {
+		return this.años;
 	}
 }
