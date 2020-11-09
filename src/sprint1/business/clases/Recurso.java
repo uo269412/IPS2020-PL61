@@ -7,6 +7,7 @@ public class Recurso {
 	private String nombre_recurso;
 	private String codigo_actividad = null;
 	private String codigo_instalacion;
+	private int unidades;
 
 //	public Recurso(String nombre, String codigo_instalacion) {
 //		this.nombre_recurso = nombre;
@@ -15,10 +16,26 @@ public class Recurso {
 //				+ codigo_instalacion.substring(0, 3).toUpperCase();
 //	}
 
-	public Recurso(String nombre, String codigo_instalacion) {
+//	public Recurso(String nombre, String codigo_instalacion, int unidades) {
+//		this.nombre_recurso = nombre;
+//		this.codigo_instalacion = codigo_instalacion;
+//		this.unidades = unidades;
+//		this.id_recurso = UUID.randomUUID().toString();
+//	}
+	
+	public Recurso(String id, String nombre, String codigo_instalacion, int unidades) {
 		this.nombre_recurso = nombre;
 		this.codigo_instalacion = codigo_instalacion;
-		this.id_recurso = UUID.randomUUID().toString();
+		this.unidades = unidades;
+		this.id_recurso = id;
+	}
+
+	public int getUnidades() {
+		return unidades;
+	}
+
+	public void setUnidades(int unidades) {
+		this.unidades = unidades;
 	}
 
 	public String getActividad() {
@@ -36,9 +53,13 @@ public class Recurso {
 	public String getInstalacion() {
 		return this.codigo_instalacion;
 	}
-
+	
 	@Override
 	public String toString() {
+		return nombre_recurso + ", Localización: " + codigo_instalacion + ", Unidades: " + unidades;
+	}
+	
+	public String toDebug() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Recurso [id_recurso=");
 		sb.append(id_recurso);

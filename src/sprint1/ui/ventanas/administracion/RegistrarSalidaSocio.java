@@ -6,35 +6,21 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 
-import sprint1.business.clases.ActividadPlanificada;
 import sprint1.business.clases.Alquiler;
 import sprint1.business.clases.Instalacion;
 import sprint1.business.clases.Programa;
 import sprint1.business.clases.Registro;
-import sprint1.business.clases.Reserva;
 import sprint1.business.clases.Socio;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.ComboBoxModel;
 import javax.swing.JTextField;
-import java.awt.GridLayout;
 
 public class RegistrarSalidaSocio extends JDialog {
 
@@ -249,6 +235,19 @@ public class RegistrarSalidaSocio extends JDialog {
 	}
 	
 	private void generarRecibo() {
+		Socio s = (Socio)comboBox.getSelectedItem();
+		Alquiler alquiler = getPrograma().getAlquilerSocioAhoraNoCancelado(s);
+		Registro registro = getPrograma().encontrarRegistro(alquiler.getId_alquiler());
+		double aPagar = (registro.getHora_salida() - registro.getHora_entrada()) * getPrograma().encontrarInstalacion(alquiler.getId_instalacion()).getPrecioHora();
+	
+		StringBuilder sb = new StringBuilder();
+		sb.append("-----RECIBO DE ALQUILER----\n");
+		sb.append("Socio: " + s.getNombre() + " " + s.getApellido() + "\n");
+		sb.append("Instalación: " + getPrograma().encontrarInstalacion(alquiler.getId_instalacion()).getNombre() + "\n");
+		sb.append("\t hora entrada: " + registro.getHora_entrada() + "\n");
+		sb.append("\t hora salida: " + registro.getHora_salida() + "\n");
+		sb.append("\t\t\t\timporte a pagar: " + aPagar);
 		
+		System.out.println(sb.toString());
 	}
 }

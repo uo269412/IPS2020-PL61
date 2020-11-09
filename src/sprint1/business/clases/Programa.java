@@ -32,14 +32,14 @@ public class Programa {
 	private List<Registro> registros;
 
 	// Conexión Javi
-//	public static String URL = "jdbc:sqlite:C:\\Users\\javie\\git\\IPS2020-PL61\\resources\\bdProject.db";
+	//public static String URL = "jdbc:sqlite:C:\\Users\\javie\\git\\IPS2020-PL61\\resources\\bdProject.db";
 
 	// Conexión Dani
-	//public static String URL = "jdbc:sqlite:C:\\Users\\Dani\\git\\IPS2020-PL61_sprint2\\resources\\bdProject.db";
+	public static String URL = "jdbc:sqlite:C:\\Users\\Dani\\git\\IPS2020-PL61_sprint2\\resources\\bdProject.db";
 
 	// Conexión Juan.elo
-	public static String URL =
-	 "jdbc:sqlite:C:\\Users\\Usuario\\git\\IPS2020-PL61\\resources\\bdProject.db";
+	//public static String URL =
+	//"jdbc:sqlite:C:\\Users\\Usuario\\git\\IPS2020-PL61\\resources\\bdProject.db";
 
 	public Programa() throws SQLException {
 		cargarBaseDatos();
@@ -1333,28 +1333,12 @@ public class Programa {
 
 // RECURSOS
 
-	public boolean checkRecursosExisten(String[] nombreRecursos) throws SQLException {
-		Connection con = DriverManager.getConnection(URL);
-		PreparedStatement pst = con.prepareStatement("SELECT nombre_recurso FROM recurso");
-		ResultSet rs = pst.executeQuery();
-		List<String> nombres = new ArrayList<>();
-		while (rs.next()) {
-			nombres.add(rs.getString(1));
-		}
-		for (int i = 0; i < nombreRecursos.length; i++) {
-			if (!nombres.contains(nombreRecursos[i]))
-				return false;
-		}
-
-		return true;
-	}
-
 	public void updateRecursosFromLista(List<Recurso> listaRecursos) throws SQLException {
 		Connection con = DriverManager.getConnection(URL);
 		for (Recurso r : listaRecursos) {
 
 			PreparedStatement pst = con
-					.prepareStatement("UPDATE RECURSO SET codigo_actividad = ? WHERE id_recurso = ?");
+					.prepareStatement("UPDATE RECURSOS SET codigo_actividad = ? WHERE codigo_recurso = ?");
 			pst.setString(1, r.getActividad());
 			pst.setString(2, r.getIdRecurso());
 			pst.execute();
@@ -1368,9 +1352,11 @@ public class Programa {
 		ResultSet rs = pst.executeQuery();
 
 		while (rs.next()) {
+			String codigoRecurso = rs.getString("codigo_recurso");
 			String nombre = rs.getString("nombre_recurso");
 			String codigoInst = rs.getString("codigo_instalacion");
-			Recurso r = new Recurso(nombre, codigoInst);
+			int unidades = rs.getInt("unidades");
+			Recurso r = new Recurso(codigoRecurso, nombre, codigoInst, unidades);
 			recursos.add(r);
 			String codigoActividad = rs.getString("codigo_actividad");
 			if (!rs.wasNull()) {
@@ -1383,26 +1369,43 @@ public class Programa {
 		}
 
 	}
-
+	
+	public List<Recurso> getRecursosSinActividad() {
+		List<Recurso> recursosSinActividad = new ArrayList<>();
+		for(Recurso r: recursos) {
+			if(r.getActividad() == null) {
+				recursosSinActividad.add(r);
+			}
+		}
+		
+		return recursosSinActividad;
+	}
+	
 	public Recurso obtenerRecursoPorNombre(String nombreRecurso) throws SQLException {
 		// no hay que hacer check aqui porque se supone que ya hemos checkeado los
 		// nombres usando el otro método antes que este
 		Connection con = DriverManager.getConnection(URL);
-		PreparedStatement pst = con.prepareStatement("SELECT codigo_instalacion FROM recurso WHERE nombre_recurso = ?");
+		PreparedStatement pst = con.prepareStatement("SELECT codigo_instalacion, codigo_recurso FROM recurso WHERE nombre_recurso = ?");
 		pst.setString(1, nombreRecurso);
 		ResultSet rs = pst.executeQuery();
+		rs.next();
 		String codigo_instalacion = rs.getString(1);
-
+		String codigoRecurso = rs.getString(2);
+		int unidades = rs.getInt(2);
 		rs.close();
 		pst.close();
 		con.close();
-		return new Recurso(nombreRecurso, codigo_instalacion);
+		return new Recurso(codigoRecurso, nombreRecurso, codigo_instalacion, unidades);
+	}
+	
+	public List<Recurso> getRecursos() {
+		return this.recursos;
 	}
 
 	public void printRecursos() {
 		System.out.println("Lista de recursos");
 		for (Recurso r : recursos) {
-			System.out.println(r.toString());
+			System.out.println(r.toDebug());
 		}
 	}
 

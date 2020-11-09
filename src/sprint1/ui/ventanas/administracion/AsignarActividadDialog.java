@@ -355,6 +355,7 @@ public class AsignarActividadDialog extends JDialog {
 					"Ha ocurrido un error cargando las actividades para este día, por favor contacte con el desarrollador");
 		}
 		*/
+		modeloLista.clear();
 		List<ActividadPlanificada> actividades = new LinkedList<>();
 		for (ActividadPlanificada a : programa.getActividadesPlanificadasInstalacionDia(((Instalacion)cmbInstalaciones.getSelectedItem()).getCodigo(), dia, mes, año)) {
 			actividades.add(a);
@@ -404,7 +405,18 @@ public class AsignarActividadDialog extends JDialog {
 		}
 		else {
 			try {
-				Integer.parseInt(txtLimitePlazas.getText());
+				int limitePlazas = Integer.parseInt(txtLimitePlazas.getText());
+				
+				int minRecursos = Integer.MAX_VALUE;
+				for(Recurso r: ((Actividad)cmbActividades.getSelectedItem()).getRecursos()) {
+					if(r.getUnidades() < minRecursos) {
+						minRecursos = r.getUnidades();
+					}
+				}
+				
+				if(limitePlazas > minRecursos) {
+					return false;
+				}
 			} catch (NumberFormatException e) {
 				txtLimitePlazas.setBackground(Color.RED);
 				txtLimitePlazas.setForeground(Color.WHITE);
@@ -493,16 +505,9 @@ public class AsignarActividadDialog extends JDialog {
 			if(todosIguales) {
 				try {
 					Instalacion inst = programa.obtenerInstalacionPorId(a.getRecursos().get(0).getInstalacion());
-					if(inst.getEstado() == Instalacion.DISPONIBLE) {
-						Instalacion[] arrayInst = new Instalacion[1];
-						arrayInst[0] = inst;
-						cmbInstalaciones.setModel(new DefaultComboBoxModel<Instalacion>(arrayInst));
-					} else {
-						cmbInstalaciones.setEnabled(false);
-						cmbInstalaciones.setToolTipText("No hay ninguna instalación que tenga recursos para esta actividad");
-						btnAñadir.setEnabled(false);
-					}
-					
+					Instalacion[] arrayInst = new Instalacion[1];
+					arrayInst[0] = inst;
+					cmbInstalaciones.setModel(new DefaultComboBoxModel<Instalacion>(arrayInst));
 				} catch(SQLException e) {
 					JOptionPane.showMessageDialog(this, "Ha habido un problema con la base de datos asignando la instalacion"
 							+ ", póngase en contacto con el desarrollador");
@@ -513,7 +518,7 @@ public class AsignarActividadDialog extends JDialog {
 				btnAñadir.setEnabled(false);
 			}
 		} else {
-			cmbInstalaciones.setModel(new DefaultComboBoxModel<Instalacion>(programa.getInstalacionesDisponibles().toArray(new Instalacion[programa.getInstalacionesDisponibles().size()])));
+			cmbInstalaciones.setModel(new DefaultComboBoxModel<Instalacion>(programa.getInstalaciones().toArray(new Instalacion[programa.getInstalaciones().size()])));
 		}
 	}
 	

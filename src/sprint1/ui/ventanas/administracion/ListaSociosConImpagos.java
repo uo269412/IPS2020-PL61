@@ -152,7 +152,8 @@ public class ListaSociosConImpagos extends JDialog {
 	}
 	
 	private void cargarListado(int mes, int año) {
-		List<Socio> sociosMorosos = new LinkedList<Socio>();
+		dflm.clear();
+		List<Socio> sociosMorosos = new LinkedList<>();
 		for(Socio s: p.sociosQueNoHanPagadoAlquilerMes(mes, año)) {
 			sociosMorosos.add(s);
 		}
