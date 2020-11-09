@@ -139,6 +139,7 @@ public class AdminAlquilaSocio extends JDialog {
 
 	private boolean checkSocioLibre() {
 		int horaInicio = Integer.parseInt(txtHoraInicio.getText());
+		int horaFin = Integer.parseInt(txtHoraFin.getText());
 		Socio socio = (Socio) cmbSocio.getSelectedItem();
 		List<Reserva> reservasSocio = getPrograma().getReservas(horaInicio, dia, mes, año);
 		List<Alquiler> alquileresSocio = getPrograma().getAlquileres(horaInicio, dia, mes, año);
@@ -152,7 +153,42 @@ public class AdminAlquilaSocio extends JDialog {
 				return false;
 			}
 		}
+		reservasSocio = getPrograma().getReservas();
+		alquileresSocio = getPrograma().getAlquileresSocioEnUnDiaEspecifico(socio, dia, mes, año);
+		for (Reserva reserva : reservasSocio) {
+			if (socio.getId_cliente().equals(reserva.getId_cliente())) {
+				if (chocaHoras(reserva, horaInicio, horaFin))
+					return false;
+			}
+		}
+		for (Alquiler alquiler : alquileresSocio) {
+			if (socio.getId_cliente().equals(alquiler.getId_cliente())) {
+				if (chocaHoras(alquiler, horaInicio, horaFin))
+					return false;
+			}
+		}
 		return true;
+	}
+	
+	private boolean chocaHoras(Alquiler alquiler, int horaInicio, int horaFin) {
+		for (int hora = alquiler.getHoraInicio(); hora < alquiler.getHoraFin(); hora++) {
+			if (hora >= horaInicio && hora < horaFin)
+				return true;
+		}
+		return false;
+	}
+
+	private boolean chocaHoras(Reserva reserva, int horaInicio, int horaFin) {
+		List<ActividadPlanificada> actividades = getPrograma().getActividadesPlanificadas();
+		for (ActividadPlanificada ap : actividades) {
+			if (reserva.getCodigo_actividad().equals(ap.getCodigoActividad())) {
+				for (int hora = ap.getHoraInicio(); hora < ap.getHoraFin(); hora++) {
+					if (hora >= horaInicio && hora < horaFin)
+						return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	private boolean checkInstalacionLibre() {
