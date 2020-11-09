@@ -112,6 +112,19 @@ public class SocioAlquilaWindow extends JDialog {
 		} else if (!checkHorasNoSuperan2()) {
 			JOptionPane.showMessageDialog(this, "No se puede alquilar por más de dos horas");
 			return false;
+		} else if (!checkMenosDeUnaHoraAntes()) {
+			JOptionPane.showMessageDialog(this, "Solo se puede reservar hasta una hora antes del comienzo del alquiler");
+			return false;
+		}
+		return true;
+	}
+
+	private boolean checkMenosDeUnaHoraAntes() {
+		int[] fecha = getPrograma().obtenerHoraDiaMesAño();
+		if (dia == fecha[1] && mes == fecha[2] && año == fecha[3]) {
+			if (fecha[0] >= Integer.parseInt(txtHoraInicio.getText() ) - 1) {
+				return false;
+			}
 		}
 		return true;
 	}
