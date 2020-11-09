@@ -405,7 +405,18 @@ public class AsignarActividadDialog extends JDialog {
 		}
 		else {
 			try {
-				Integer.parseInt(txtLimitePlazas.getText());
+				int limitePlazas = Integer.parseInt(txtLimitePlazas.getText());
+				
+				int minRecursos = Integer.MAX_VALUE;
+				for(Recurso r: ((Actividad)cmbActividades.getSelectedItem()).getRecursos()) {
+					if(r.getUnidades() < minRecursos) {
+						minRecursos = r.getUnidades();
+					}
+				}
+				
+				if(limitePlazas > minRecursos) {
+					return false;
+				}
 			} catch (NumberFormatException e) {
 				txtLimitePlazas.setBackground(Color.RED);
 				txtLimitePlazas.setForeground(Color.WHITE);

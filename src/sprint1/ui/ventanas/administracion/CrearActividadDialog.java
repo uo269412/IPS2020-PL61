@@ -4,6 +4,9 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
@@ -19,8 +22,15 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextPane;
+import javax.swing.JComboBox;
+import javax.swing.JSpinner;
+import javax.swing.JList;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.ListSelectionModel;
 
 public class CrearActividadDialog extends JDialog {
 
@@ -37,16 +47,20 @@ public class CrearActividadDialog extends JDialog {
 	private final JPanel pnRegistrarActividad = new JPanel();
 	private JTextField txtNombre;
 	private JTextField txtIntensidad;
-	private JTextPane txtRecursos;
+	private JComboBox<Recurso> cmbRecursos;
+	
+	private DefaultListModel<Recurso> modelRecursos;
+	private JList<Recurso> listRecursos;
 
 	/**
 	 * Create the dialog.
 	 */
 	public CrearActividadDialog(Programa p) {
 		this.p = p;
+		this.modelRecursos = new DefaultListModel<Recurso>();
 		setTitle("Administrador: Crear actividad");
 		setModal(true);
-		setBounds(100, 100, 300, 298);
+		setBounds(100, 100, 347, 457);
 		getContentPane().setLayout(new BorderLayout());
 		pnRegistrarActividad.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(pnRegistrarActividad, BorderLayout.CENTER);
@@ -74,8 +88,40 @@ public class CrearActividadDialog extends JDialog {
 			pnRegistrarActividad.add(lblRecursos);
 		}
 		{
-			txtRecursos = new JTextPane();
-			pnRegistrarActividad.add(txtRecursos);
+			JPanel pnRecursos = new JPanel();
+			pnRegistrarActividad.add(pnRecursos);
+			pnRecursos.setLayout(new BorderLayout(0, 0));
+			{
+				cmbRecursos = new JComboBox<Recurso>(new DefaultComboBoxModel<Recurso>((Recurso[])p.getRecursosSinActividad().toArray(new Recurso[p.getRecursosSinActividad().size()])));
+				pnRecursos.add(cmbRecursos);
+			}
+			{
+				JButton btnAñadirRecurso = new JButton("A\u00F1adir recurso");
+				btnAñadirRecurso.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {
+						añadirRecursos();
+					}
+				});
+				btnAñadirRecurso.setBackground(new Color(60, 179, 113));
+				btnAñadirRecurso.setForeground(Color.WHITE);
+				pnRecursos.add(btnAñadirRecurso, BorderLayout.SOUTH);
+			}
+		}
+		{
+			listRecursos = new JList<Recurso>(modelRecursos);
+			listRecursos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			pnRegistrarActividad.add(listRecursos);
+		}
+		{
+			JButton btnEliminarRecurso = new JButton("Eliminar recurso seleccionado");
+			btnEliminarRecurso.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					eliminarRecursos();
+				}
+			});
+			btnEliminarRecurso.setForeground(new Color(255, 255, 255));
+			btnEliminarRecurso.setBackground(new Color(255, 99, 71));
+			pnRegistrarActividad.add(btnEliminarRecurso);
 		}
 		{
 			JPanel buttonPane = new JPanel();
@@ -92,10 +138,9 @@ public class CrearActividadDialog extends JDialog {
 						} else {
 							String nombreActividad = txtNombre.getText();
 							int intensidad = Integer.parseInt(txtIntensidad.getText());
-							String recursos = txtRecursos.getText();
 							
 							boolean creacionActividadSatisfactoria = true;
-							Actividad a = crearActividad(nombreActividad, intensidad, recursos);
+							Actividad a = crearActividad(nombreActividad, intensidad);
 							if (p.encontrarActividad(a.getCodigo()) != null) {
 								JOptionPane.showMessageDialog(getCrearActividadDialog(),
 										"Error: una actividad con este codigo ya se encuentra en la base de datos");
@@ -137,15 +182,21 @@ public class CrearActividadDialog extends JDialog {
 		}
 	}
 	
-	private Actividad crearActividad(String nombreActividad, int intensidad, String recursos) {
-		if(recursos.equals("")) {
+	private Actividad crearActividad(String nombreActividad, int intensidad) {
+		if(modelRecursos.getSize() == 0) {
 			return new Actividad(nombreActividad, intensidad);
 		} else {
+			
 			try {
 				Actividad a = new Actividad(nombreActividad, intensidad);
-				String[] nombreRecursosArray = recursos.split(", ");
-				for(String nombreRecurso: nombreRecursosArray) {
-					Recurso r = p.obtenerRecursoPorNombre(nombreRecurso);
+				
+				List<Recurso> toIterate = new ArrayList<>();
+				
+				for(int i = 0; i < modelRecursos.size(); i++) {
+					toIterate.add(modelRecursos.get(i));
+				}
+				
+				for(Recurso r: toIterate) {
 					a.añadirRecurso(r);
 				}
 				p.updateRecursosFromLista(a.getRecursos());
@@ -188,7 +239,7 @@ public class CrearActividadDialog extends JDialog {
 
 	private boolean checkEverything() {
 		return checkNombre() //&& checkHoraInicio() && checkHoraFin() && checkLimitePlazas()
-				&& checkIntensidad() && checkRecursos();
+				&& checkIntensidad();
 	}
 
 	private boolean checkNombre() { // restricciones del nombre de la actividad
@@ -291,28 +342,13 @@ public class CrearActividadDialog extends JDialog {
 		return true;
 	}
 	
-	private boolean checkRecursos() { // IMPORTANTE hay que definir un parámetro de la longitud de la id para hacer una comprobación más.
-		if(txtRecursos.getText().equals("")) {
-			return true;
-		} else {
-			String rawRecursos = txtRecursos.getText();
-			String[] nombreRecursos = rawRecursos.split(", ");
-			try {
-				if(!p.checkRecursosExisten(nombreRecursos)) {
-					JOptionPane.showMessageDialog(this, "Algunos de los recursos que se intentan asociar no están disponibles.");
-					return false;
-				}
-				else
-					return true;
-				
-			} catch(SQLException e) {
-				JOptionPane.showMessageDialog(this,
-						"Ha habido un problema con la base de datos comprobando los recursos, por favor contacte con el desarrollador");
-				return false;
-			}
-			
-		}
-		
+	public void añadirRecursos() {
+		modelRecursos.addElement((Recurso)cmbRecursos.getSelectedItem());
 	}
+	
+	public void eliminarRecursos() {
+		modelRecursos.remove(listRecursos.getSelectedIndex());
+	}
+	
 }
 
