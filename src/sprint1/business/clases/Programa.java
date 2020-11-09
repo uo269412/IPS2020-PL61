@@ -33,10 +33,10 @@ public class Programa {
 	private List<Registro> registros;
 
 	// Conexión Javi
-	 public static String URL = "jdbc:sqlite:C:\\Users\\javie\\git\\IPS2020-PL61\\resources\\bdProject.db";
+	///public static String URL = "jdbc:sqlite:C:\\Users\\javie\\git\\IPS2020-PL61\\resources\\bdProject.db";
 
 	// Conexión Dani
-	//public static String URL = "jdbc:sqlite:C:\\Users\\Dani\\git\\IPS2020-PL61_sprint2\\resources\\bdProject.db";
+	public static String URL = "jdbc:sqlite:C:\\Users\\Dani\\git\\IPS2020-PL61_sprint2\\resources\\bdProject.db";
 
 	// Conexión Juan.elo
 	// public static String URL =
@@ -531,12 +531,16 @@ public class Programa {
 				if(r.getId_alquiler().equals(a.getId_alquiler())) {
 					hayRegistro = true;
 					if(!r.isAlquilerPagado()) {
-						sociosSinPagar.add(encontrarSocio(a.getId_cliente()));
+						if(encontrarSocio(a.getId_cliente()) != null) {
+							sociosSinPagar.add(encontrarSocio(a.getId_cliente()));
+						}
 					}
 				}
 			}
 			if(!hayRegistro) { //no se ha presentado
-				sociosSinPagar.add(encontrarSocio(a.getId_cliente()));
+				if(encontrarSocio(a.getId_cliente()) != null) {
+					sociosSinPagar.add(encontrarSocio(a.getId_cliente()));
+				}
 			}
 		}
 		

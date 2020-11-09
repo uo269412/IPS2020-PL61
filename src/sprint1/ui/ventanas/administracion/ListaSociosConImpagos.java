@@ -18,7 +18,10 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
@@ -80,7 +83,7 @@ public class ListaSociosConImpagos extends JDialog {
 	}
 	private JList<Socio> getList_1() {
 		if (list == null) {
-			list = new JList<Socio>();
+			list = new JList<Socio>(dflm);
 		}
 		return list;
 	}
@@ -155,8 +158,15 @@ public class ListaSociosConImpagos extends JDialog {
 	
 	private void cargarListado(int mes, int año) {
 		dflm.clear();
+		List<Socio> sociosMorosos = new LinkedList<>();
 		for(Socio s: p.sociosQueNoHanPagadoAlquilerMes(mes, año)) {
-			dflm.add(dflm.size(), s);
+			sociosMorosos.add(s);
+		}
+		
+		Collections.sort(sociosMorosos);
+		
+		for(Socio s: sociosMorosos) {
+			dflm.addElement(s);
 		}
 	}
 }
