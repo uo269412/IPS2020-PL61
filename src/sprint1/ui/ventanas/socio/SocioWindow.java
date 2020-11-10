@@ -69,7 +69,7 @@ public class SocioWindow extends JDialog {
 
 	private JLabel getLblBienvenida() {
 		if (lblBienvenida == null) {
-			lblBienvenida = new JLabel("Bienvenido, socio " + socio.getId_cliente());
+			lblBienvenida = new JLabel("Bienvenido, socio " + socio.getNombre());
 			lblBienvenida.setHorizontalAlignment(SwingConstants.CENTER);
 			lblBienvenida.setFont(new Font("Tahoma", Font.BOLD, 20));
 		}
