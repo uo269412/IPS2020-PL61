@@ -48,6 +48,7 @@ public class ListaSociosConImpagos extends JDialog {
 	 * Create the dialog.
 	 */
 	public ListaSociosConImpagos(Programa p) {
+		setTitle("Administrador: Listar socios que no han pagado sus alquileres");
 		this.p = p;
 		this.dflm = new DefaultListModel<>();
 		this.mes = new HashMap<>();

@@ -26,6 +26,7 @@ import javax.swing.border.LineBorder;
 
 import sprint1.business.clases.Alquiler;
 import sprint1.business.clases.ComparadorPorDiaAlquiler;
+import sprint1.business.clases.Instalacion;
 import sprint1.business.clases.Socio;
 
 public class VerAlquileresSocio extends JDialog {
@@ -190,8 +191,12 @@ public class VerAlquileresSocio extends JDialog {
 	private void añadirLabelAlquiler(Alquiler a) {
 		alquileresAñadidos .add(a);
 		JLabel lblActividad = new JLabel();
-		String labelText = "    ● ";
-		labelText += a.toString();
+		String labelText = "    ● Alquiler de ";
+		for (Instalacion i : parent.getParent().getPrograma().getInstalaciones()) {
+			if (i.getCodigo().equals(a.getId_instalacion()))
+				labelText += i.getNombre();
+		}
+		labelText += " desde " + a.getHoraInicio() + ":00 hasta " + a.getHoraFin() + ":00";
 		lblActividad.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblActividad.setText(labelText);
 		pnCentro.add(lblActividad);

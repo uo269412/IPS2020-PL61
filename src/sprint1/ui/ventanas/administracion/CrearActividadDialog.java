@@ -60,7 +60,7 @@ public class CrearActividadDialog extends JDialog {
 		this.modelRecursos = new DefaultListModel<Recurso>();
 		setTitle("Administrador: Crear actividad");
 		setModal(true);
-		setBounds(100, 100, 347, 457);
+		setBounds(100, 100, 483, 499);
 		getContentPane().setLayout(new BorderLayout());
 		pnRegistrarActividad.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(pnRegistrarActividad, BorderLayout.CENTER);

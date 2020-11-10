@@ -518,7 +518,7 @@ public class AsignarActividadDialog extends JDialog {
 				btnAñadir.setEnabled(false);
 			}
 		} else {
-			cmbInstalaciones.setModel(new DefaultComboBoxModel<Instalacion>(programa.getInstalaciones().toArray(new Instalacion[programa.getInstalaciones().size()])));
+			cmbInstalaciones.setModel(new DefaultComboBoxModel<Instalacion>(programa.getInstalacionesDisponibles().toArray(new Instalacion[programa.getInstalacionesDisponibles().size()])));
 		}
 	}
 	

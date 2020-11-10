@@ -24,7 +24,7 @@ public class Actividad implements Comparable<Actividad> {
 	}
 	
 	public Actividad(String nombre, int intensidad) {
-		this(UUID.randomUUID().toString(), nombre, intensidad);
+		this(nombre + "_" + intensidad, nombre, intensidad);
 	}
 
 	private void setIntensidad(int intensidad) {
