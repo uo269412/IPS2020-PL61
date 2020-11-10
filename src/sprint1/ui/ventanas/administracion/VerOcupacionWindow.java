@@ -154,7 +154,7 @@ public class VerOcupacionWindow extends JDialog {
 				JLabel label = new JLabel();
 				ActividadPlanificada ap = hayInstalacionAEsaHoraYEseDia(hora, instalacion, col);
 				if ( ap != null) {
-					label.setText(nombreInstalacion(instalacion));
+					label.setText(nombreInstalacion(instalacion, ap));
 					label.setFont(new Font("Tahoma", Font.PLAIN, 15));
 					label.setOpaque(true);
 					label.setHorizontalAlignment(SwingConstants.CENTER);
@@ -165,7 +165,7 @@ public class VerOcupacionWindow extends JDialog {
 				}
 				Alquiler al = hayInstalacionAEsaHoraYEseDiaAlquiler(hora, instalacion, col);
 				if ( al != null) {
-					label.setText("Alquiler - " + nombreInstalacionAlquiler(instalacion));
+					label.setText("Alquiler - " + nombreInstalacionAlquiler(instalacion, al));
 					label.setFont(new Font("Tahoma", Font.PLAIN, 15));
 					label.setOpaque(true);
 					label.setHorizontalAlignment(SwingConstants.CENTER);
@@ -198,12 +198,9 @@ public class VerOcupacionWindow extends JDialog {
 		return null;
 	}
 	
-	private String nombreInstalacionAlquiler(Instalacion instalacion) {
-		List<Alquiler> alquileres = programa.getAlquileres();
-		for (Alquiler al : alquileres) {
-			if (al.getId_instalacion().equals(instalacion.getCodigo()))
-				return getNombreCliente(al);
-		}
+	private String nombreInstalacionAlquiler(Instalacion instalacion, Alquiler al) {
+		if (al.getId_instalacion().equals(instalacion.getCodigo()))
+			return getNombreCliente(al);
 		return null;
 	}
 
@@ -217,12 +214,9 @@ public class VerOcupacionWindow extends JDialog {
 		return null;
 	}
 
-	private String nombreInstalacion(Instalacion instalacion) {
-		List<ActividadPlanificada> actividades = programa.getActividadesPlanificadas();
-		for (ActividadPlanificada ap : actividades) {
-			if (ap.getCodigoInstalacion().equals(instalacion.getCodigo()))
-				return nombreActividad(ap);
-		}
+	private String nombreInstalacion(Instalacion instalacion, ActividadPlanificada ap) {
+		if (ap.getCodigoInstalacion().equals(instalacion.getCodigo()))
+			return nombreActividad(ap);
 		return null;
 	}
 
@@ -362,6 +356,7 @@ public class VerOcupacionWindow extends JDialog {
 	private JTextPane getTxtLeyenda() {
 		if (txtLeyenda == null) {
 			txtLeyenda = new JTextPane();
+			txtLeyenda.setEditable(false);
 			txtLeyenda.setText("Verde: Reserva disponible\r\nRojo: Reserva completa\r\nGris: Alquiler\r\n");
 		}
 		return txtLeyenda;

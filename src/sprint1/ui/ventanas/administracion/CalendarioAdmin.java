@@ -26,7 +26,7 @@ public class CalendarioAdmin extends Calendario {
 		this.p = parent.getParent().getPrograma();
 		al = new AsignarActividades();
 		setLocationRelativeTo(parent);
-		iniciarMes("Octubre", 2020);
+		iniciarMes("Noviembre", 2020);
 		
 	}
 

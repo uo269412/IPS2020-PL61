@@ -316,7 +316,11 @@ public class SocioAlquilaWindow extends JDialog {
 			btnAñadir = new JButton("A\u00F1adir");
 			btnAñadir.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					if (comprobacionesAlquiler()) {
+					Instalacion instalacion = (Instalacion) cmbInstalaciones.getSelectedItem();
+					int horaInicio = Integer.parseInt(txtHoraInicio.getText());
+					int horaFin = Integer.parseInt(txtHoraFin.getText());
+					int yesNo = JOptionPane.showConfirmDialog(getMe(), "El precio será de " + instalacion.getPrecioHora() * (horaFin - horaInicio) + ". ¿Confirmar?");	
+					if (yesNo == JOptionPane.YES_OPTION && comprobacionesAlquiler()) {
 						crearAlquiler();
 						JOptionPane.showMessageDialog(getMe(), "Se ha añadido el alquiler correctamente");
 					}

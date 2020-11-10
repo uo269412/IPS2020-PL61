@@ -495,7 +495,7 @@ public class Programa {
 		for (Reserva reserva : getReservas()) {
 			if (reserva.getId_cliente().equals(socio.getId_cliente())) {
 				for (ActividadPlanificada ap : getActividadesPlanificadas()) {
-					if (ap.getDia() == dia && ap.getMes() == mes && ap.getAño() == año
+					if (ap.getDia() == dia || ap.getDia() == dia + 1 && ap.getMes() == mes && ap.getAño() == año
 							&& reserva.getCodigo_actividad().equals(ap.getCodigoPlanificada())) {
 						actividadesQueYaTieneReservadasElSocio.add(ap);
 					}
@@ -511,7 +511,7 @@ public class Programa {
 			if (ap.getDia() == dia + 1 && ap.getMes() == mes && ap.getAño() == año) {
 				listaSort.add(ap);
 			} else if (ap.getDia() == dia && ap.getMes() == mes && ap.getAño() == año
-					&& ap.getHoraInicio() >= hora + 1) {
+					&& ap.getHoraInicio() > hora + 1) {
 				listaSort.add(ap);
 			}
 		}

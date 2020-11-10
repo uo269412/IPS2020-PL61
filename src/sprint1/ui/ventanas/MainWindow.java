@@ -1,8 +1,16 @@
 package sprint1.ui.ventanas;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -11,17 +19,9 @@ import sprint1.business.clases.Programa;
 import sprint1.business.clases.Socio;
 import sprint1.business.clases.Tercero;
 import sprint1.ui.ventanas.administracion.AdminWindow;
+import sprint1.ui.ventanas.socio.CbSociosWindow;
 import sprint1.ui.ventanas.socio.SocioWindow;
 import sprint1.ui.ventanas.tercero.TerceroWindow;
-
-import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.sql.SQLException;
-import java.awt.event.ActionEvent;
-import java.awt.Color;
-import java.awt.BorderLayout;
-import javax.swing.JLabel;
-import javax.swing.ImageIcon;
 
 public class MainWindow extends JFrame {
 	
@@ -60,7 +60,7 @@ public class MainWindow extends JFrame {
 	public MainWindow() {
 		setTitle("Centro de Deportes");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 551, 541);
+		setBounds(100, 100, 577, 545);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -89,18 +89,18 @@ public class MainWindow extends JFrame {
 		JButton btnSocio = new JButton("Acceder como socio");
 		btnSocio.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String id_socio;
-				id_socio = JOptionPane.showInputDialog("Por favor, introduce un id de socio válido ");
-				if (id_socio != null) {
-					if(programa.encontrarSocio(id_socio) != null) {
-						openSocioWindow(programa.encontrarSocio(id_socio)); 
-					} else {
-						JOptionPane.showMessageDialog(MainWindow.this, "Por favor, introduce un id de socio válido ");
-					}
-				}
+//				String id_socio;
+//				id_socio = JOptionPane.showInputDialog("Por favor, introduce un id de socio válido ");
+//				if (id_socio != null) {
+//					if(programa.encontrarSocio(id_socio) != null) {
+//						openSocioWindow(programa.encontrarSocio(id_socio)); 
+//					} else {
+//						JOptionPane.showMessageDialog(MainWindow.this, "Por favor, introduce un id de socio válido ");
+//					}
+//				}
+				abrirCbSociosWindowPrueba();
 				
 			}
-
 		});
 		pnBotones.add(btnSocio);
 		
@@ -110,18 +110,29 @@ public class MainWindow extends JFrame {
 				String nombre_tercero;
 				nombre_tercero = JOptionPane.showInputDialog("Por favor, introduce un nombre");
 				boolean foundTercero = false;
-				for(Tercero t: programa.getTerceros()) {
-					if(t.getNombre().equals(nombre_tercero)) {
+				Tercero t = null;
+				for(Tercero ter: programa.getTerceros()) {
+					if(ter.getNombre().equals(nombre_tercero)) {
 						foundTercero = true;
+						t = ter;
 						break;
 					}
 				}
 				if(!foundTercero) {
-					Tercero t = new Tercero(nombre_tercero);
+					t = new Tercero(nombre_tercero);
+					if (t.getNombre() != null && !t.getNombre().isEmpty()) {
+						openTerceroWindow(t);
+						try {
+							programa.añadirTercero(t);
+						} catch (SQLException e) {
+							System.out.println("Ha ocurrido un problema añadiendo un nuevo tercero, por favor póngase en contacto con el admin");
+						}
+					}
+					else {
+						JOptionPane.showMessageDialog(MainWindow.this, "Por favor, introduce un id de tercero válido ");
+					}
+				} else if(foundTercero) {
 					openTerceroWindow(t);
-				} else {
-					JOptionPane.showMessageDialog(MainWindow.this, "Por favor, introduce un id de socio válido ");
-					
 				}
 			}
 		});
@@ -152,6 +163,14 @@ public class MainWindow extends JFrame {
 		adminWindow.setLocationRelativeTo(this);
 		adminWindow.setVisible(true);
 
+	}
+	
+
+	private void abrirCbSociosWindowPrueba() {
+		CbSociosWindow cbSocios = new CbSociosWindow(this);
+		cbSocios.setModal(true);
+		cbSocios.setLocationRelativeTo(this);
+		cbSocios.setVisible(true);
 	}
 
 }
