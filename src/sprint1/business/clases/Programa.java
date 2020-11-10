@@ -1476,7 +1476,7 @@ public class Programa {
 	public void printInstalaciones() {
 		System.out.println("Lista de instalaciones");
 		for (Instalacion instalacion : instalaciones) {
-			System.out.println(instalacion.toString());
+			System.out.println(instalacion.toDebug());
 		}
 	}
 

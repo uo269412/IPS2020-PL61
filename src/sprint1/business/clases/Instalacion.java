@@ -43,8 +43,21 @@ public class Instalacion implements Comparable<Instalacion> {
 		return codigo_instalacion;
 	}
 
+	
 	@Override
 	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(getNombre() + " (" + getPrecioHora() + "€ la hora). ");
+		if(estado == DISPONIBLE) {
+			sb.append("DISPONIBLE");
+		} else {
+			sb.append("CERRADA");
+		}
+		
+		return sb.toString();
+	}
+	
+	public String toDebug() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Instalacion [codigo_instalacion=" + codigo_instalacion + ", nombre=" + nombre + ", precioHora="
 				+ precioHora);

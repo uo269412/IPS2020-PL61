@@ -50,9 +50,14 @@ public class Actividad implements Comparable<Actividad> {
 		this.nombre = nombre;
 	}
 
+	
+	public String toDebug() { // conviene imprimir tambi�n los recursos necesarios
+		return "Actividad [codigo=" + codigo + ", nombre=" + nombre + ", " + "intensidad=" + intensidad + "]";
+	}
+	
 	@Override
 	public String toString() { // conviene imprimir tambi�n los recursos necesarios
-		return "Actividad [codigo=" + codigo + ", nombre=" + nombre + ", " + "intensidad=" + intensidad + "]";
+		return nombre + ", " + "intensidad:" + intensidad;
 	}
 
 	@Override

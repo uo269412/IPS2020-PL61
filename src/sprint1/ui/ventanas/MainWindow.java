@@ -112,19 +112,16 @@ public class MainWindow extends JFrame {
 				boolean foundTercero = false;
 				for(Tercero t: programa.getTerceros()) {
 					if(t.getNombre().equals(nombre_tercero)) {
-						openTerceroWindow(t);
 						foundTercero = true;
 						break;
 					}
 				}
 				if(!foundTercero) {
 					Tercero t = new Tercero(nombre_tercero);
-					try {
-						programa.añadirTercero(t);
-					} catch (SQLException e) {
-						JOptionPane.showMessageDialog(MainWindow.this, "Ha ocurrido un error accediendo a la base de datos");
-					}
 					openTerceroWindow(t);
+				} else {
+					JOptionPane.showMessageDialog(MainWindow.this, "Por favor, introduce un id de socio válido ");
+					
 				}
 			}
 		});
