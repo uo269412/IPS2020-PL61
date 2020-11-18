@@ -249,13 +249,15 @@ public class AsignarActividadDialog extends JDialog {
 			btnAñadir.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					
-					if (checkHoraInicio() && checkHoraFin() && checkLimitePlazas()) {
-						// cuando se implemente lo de los monitores, cambiar el constructor
+					if (checkHoraInicio() && checkHoraFin() && checkLimitePlazas() == 0) {
 						updated = false;
 						cmbInstalaciones.setEnabled(false);
 						añadirAModelo(crearPlanificada());
 						adaptarActividadesAInstalacion();
 						repintar();
+					} else if(checkLimitePlazas() == 1) {
+						JOptionPane.showMessageDialog(getMe(), "La aplicación tiene menos recursos disponibles que las plazas que estás intentando añadir.\n"
+								+ "Máximos recursos disponibles ahora mismo en la instalación: " + getMinRecursos());
 					}
 					
 				}
@@ -399,32 +401,37 @@ public class AsignarActividadDialog extends JDialog {
 		return true;
 	}
 
-	private boolean checkLimitePlazas() {
+	private int checkLimitePlazas() {
 		if(txtLimitePlazas.getText().contentEquals("")) {
-			return true;
+			return 0;
 		}
 		else {
 			try {
 				int limitePlazas = Integer.parseInt(txtLimitePlazas.getText());
-				
-				int minRecursos = Integer.MAX_VALUE;
-				for(Recurso r: ((Actividad)cmbActividades.getSelectedItem()).getRecursos()) {
-					if(r.getUnidades() < minRecursos) {
-						minRecursos = r.getUnidades();
-					}
-				}
+				int minRecursos = getMinRecursos();
 				
 				if(limitePlazas > minRecursos) {
-					return false;
+					return 1;
 				}
 			} catch (NumberFormatException e) {
 				txtLimitePlazas.setBackground(Color.RED);
 				txtLimitePlazas.setForeground(Color.WHITE);
-				return false;
+				return 2;
 			}
 
-			return true;
+			return 0;
 		}
+	}
+	
+	private int getMinRecursos() {
+		int minRecursos = Integer.MAX_VALUE;
+		for(Recurso r: ((Actividad)cmbActividades.getSelectedItem()).getRecursos()) {
+			if(r.getUnidades() < minRecursos) {
+				minRecursos = r.getUnidades();
+			}
+		}
+		
+		return minRecursos;
 	}
 
 	private ActividadPlanificada crearPlanificada() {

@@ -1,4 +1,4 @@
-package sprint1.ui.ventanas.tercero;
+package sprint1.ui.ventanas.administracion;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -375,23 +375,28 @@ public class ReservarDialog extends JDialog {
 	}
 
 	private boolean checkFechaFin() {
-		if(txtFechaFin.getText().equals("") && rdbtnUnaVez.isSelected()) {
-			return true;
+		if(rdbtnUnaVez.isSelected()) {
+			if(txtFechaFin.getText().equals("")) {
+				return true;
+			} else {
+				JOptionPane.showMessageDialog(this, "La fecha de fin de reserva se debe dejar vacía para los alquileres de un solo día");
+				return false;
+			}
+		} else {
+			if (txtFechaFin.getText().split("/").length != 3) {
+				txtFechaFin.setBackground(Color.RED);
+				txtFechaFin.setForeground(Color.WHITE);
+				return false;
+			}
+			try {
+				for(String s: txtFechaFin.getText().split("/"))
+					Integer.parseInt(s);
+			} catch (NumberFormatException e) {
+				txtFechaFin.setBackground(Color.RED);
+				txtFechaFin.setForeground(Color.WHITE);
+				return false;
+			}
 		}
-		if (txtFechaFin.getText().split("/").length != 3) {
-			txtFechaFin.setBackground(Color.RED);
-			txtFechaFin.setForeground(Color.WHITE);
-			return false;
-		}
-		try {
-			for(String s: txtFechaFin.getText().split("/"))
-				Integer.parseInt(s);
-		} catch (NumberFormatException e) {
-			txtFechaFin.setBackground(Color.RED);
-			txtFechaFin.setForeground(Color.WHITE);
-			return false;
-		}
-
 		return true;
 	}
 	

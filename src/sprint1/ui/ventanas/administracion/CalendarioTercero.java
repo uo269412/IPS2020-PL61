@@ -1,4 +1,4 @@
-package sprint1.ui.ventanas.tercero;
+package sprint1.ui.ventanas.administracion;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -23,13 +23,13 @@ public class CalendarioTercero extends Calendario {
 	private Tercero t;
 	private ActionListener al;
 
-	public CalendarioTercero(TerceroWindow parent, Tercero t) {
+	public CalendarioTercero(AdminWindow parent, Tercero t) {
 		super();
 		this.p = parent.getParent().getPrograma();
 		this.t = t;
 		al = new RealizarReserva();
 		setLocationRelativeTo(parent);
-		iniciarMes("Octubre", 2020);
+		iniciarMes("Noviembre", 2020);
 		
 	}
 

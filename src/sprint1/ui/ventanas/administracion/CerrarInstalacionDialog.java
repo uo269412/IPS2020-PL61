@@ -21,6 +21,7 @@ import sprint1.business.clases.Alquiler;
 import sprint1.business.clases.Cliente;
 import sprint1.business.clases.Instalacion;
 import sprint1.business.clases.Programa;
+import sprint1.business.clases.Socio;
 import sprint1.business.clases.Tercero;
 
 import javax.swing.JComboBox;
@@ -28,6 +29,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
 
 public class CerrarInstalacionDialog extends JDialog {
@@ -90,7 +93,7 @@ public class CerrarInstalacionDialog extends JDialog {
 					Instalacion i = (Instalacion)comboBox.getSelectedItem();
 					i.setEstado(Instalacion.CERRADA);
 					try {
-						printSociosAfectados();
+						printClientesAfectados();
 						p.eliminarAlquileresNoDisponibles();
 						p.updateInstalacion(i);
 						dispose();
@@ -107,11 +110,28 @@ public class CerrarInstalacionDialog extends JDialog {
 			listAfectados = new JList<Cliente>();
 			listAfectados.setModel(clientesAfectados);
 			llenarModeloClientesAfectados();
+			listAfectados.addMouseListener(new MouseAdapter() {
+			    public void mouseClicked(MouseEvent evt) {
+			        JList<Cliente> list = (JList<Cliente>)evt.getSource();
+			        if (evt.getClickCount() == 2) {
+
+			            // Double-click detected
+			            int c = list.getSelectedIndex();
+			            Cliente client = clientesAfectados.get(c);
+			            Instalacion i = (Instalacion)comboBox.getSelectedItem();
+			            MostrarAlquileresDeClienteDialog madcd = new MostrarAlquileresDeClienteDialog(client, i, p);
+			            madcd.setLocationRelativeTo(list);
+			            madcd.setModal(true);
+			            madcd.setVisible(true);
+			        }
+			    }
+			});
 		}
 		return listAfectados;
 	}
 	
 	private void llenarModeloClientesAfectados() {
+		clientesAfectados.clear();
 		try {
 			for(Cliente c: p.clientesAfectadosPorCierre((Instalacion)comboBox.getSelectedItem())) {
 				clientesAfectados.add(clientesAfectados.size(), c);
@@ -121,7 +141,7 @@ public class CerrarInstalacionDialog extends JDialog {
 		}
 	}
 	
-	private void printSociosAfectados() {
+	private void printClientesAfectados() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("-------CLIENTES AFECTADOS POR EL CIERRE DE LA INSTALACIÓN " + ((Instalacion)comboBox.getSelectedItem()).getNombre() + "-------\n");
 		try {
@@ -130,18 +150,34 @@ public class CerrarInstalacionDialog extends JDialog {
 				Date date = new Date();
 				Calendar calendar = GregorianCalendar.getInstance();
 				calendar.setTime(date);
-				sb.append("Tercero: " + c.getId_cliente() + " Nombre: ");
-				sb.append(((Tercero)c).getNombre() + "\n");
-				List<Alquiler> alquileresTercero = p.getAlquileresQueHaHechoTerceroEnInstalacionAPartirDe((Tercero)c,
-						(Instalacion)comboBox.getSelectedItem(),
-						diaCierre.getDayOfMonth(),
-						diaCierre.getMonthValue(),
-						diaCierre.getYear(),
-						calendar.get(Calendar.HOUR_OF_DAY));
-				
-				for(Alquiler a: alquileresTercero) {
-					sb.append("\t-Alquiler:" + a.getId_alquiler() + " Fecha: " + a.getDia() + "/" + a.getMes() + "/" + a.getAño() + " Hora: " + a.getHoraInicio());
+				if(c instanceof Tercero) {
+					sb.append("Tercero: " + c.getId_cliente() + " Nombre: ");
+					sb.append(((Tercero)c).getNombre() + "\n");
+					List<Alquiler> alquileresTercero = p.getAlquileresQueHaHechoClienteEnInstalacionAPartirDe((Tercero)c,
+							(Instalacion)comboBox.getSelectedItem(),
+							diaCierre.getDayOfMonth(),
+							diaCierre.getMonthValue(),
+							diaCierre.getYear(),
+							calendar.get(Calendar.HOUR_OF_DAY));
+					
+					for(Alquiler a: alquileresTercero) {
+						sb.append("\t-Alquiler:" + a.getId_alquiler() + " Fecha: " + a.getDia() + "/" + a.getMes() + "/" + a.getAño() + " Hora: " + a.getHoraInicio());
+					}
+				} else if(c instanceof Socio) {
+					sb.append("Socio: " + c.getId_cliente() + " Nombre: ");
+					sb.append(((Socio)c).getNombre() + "\n");
+					List<Alquiler> alquileresSocio = p.getAlquileresQueHaHechoClienteEnInstalacionAPartirDe((Socio)c,
+							(Instalacion)comboBox.getSelectedItem(),
+							diaCierre.getDayOfMonth(),
+							diaCierre.getMonthValue(),
+							diaCierre.getYear(),
+							calendar.get(Calendar.HOUR_OF_DAY));
+					
+					for(Alquiler a: alquileresSocio) {
+						sb.append("\t-Alquiler:" + a.getId_alquiler() + " Fecha: " + a.getDia() + "/" + a.getMes() + "/" + a.getAño() + " Hora: " + a.getHoraInicio());
+					}
 				}
+				
 			}
 			
 			System.out.println(sb.toString());

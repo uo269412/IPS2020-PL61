@@ -49,7 +49,7 @@ public class RegistrarSalidaSocio extends JDialog {
 	public RegistrarSalidaSocio(AdminWindow adminWindow) {
 		setTitle("Administraci\u00F3n: Registrando salida del socio");
 		this.parent = adminWindow;
-		setBounds(100, 100, 881, 168);
+		setBounds(100, 100, 748, 223);
 		getContentPane().setLayout(new BorderLayout());
 		getContentPane().add(getPnBotones(), BorderLayout.SOUTH);
 		getContentPane().add(getPnSocio(), BorderLayout.NORTH);
@@ -133,7 +133,6 @@ public class RegistrarSalidaSocio extends JDialog {
 						getPrograma().registrarHoraSalidaSocio(registro);
 						JOptionPane.showMessageDialog(null,
 								"Se ha registrado la salida de la instalación correctamente");
-						generarRecibo();
 						dispose();
 
 					}
@@ -234,20 +233,5 @@ public class RegistrarSalidaSocio extends JDialog {
 		return textField;
 	}
 	
-	private void generarRecibo() {
-		Socio s = (Socio)comboBox.getSelectedItem();
-		Alquiler alquiler = getPrograma().getAlquilerSocioAhoraNoCancelado(s);
-		Registro registro = getPrograma().encontrarRegistro(alquiler.getId_alquiler());
-		double aPagar = (registro.getHora_salida() - registro.getHora_entrada()) * getPrograma().encontrarInstalacion(alquiler.getId_instalacion()).getPrecioHora();
 	
-		StringBuilder sb = new StringBuilder();
-		sb.append("-----RECIBO DE ALQUILER----\n");
-		sb.append("Socio: " + s.getNombre() + " " + s.getApellido() + "\n");
-		sb.append("Instalación: " + getPrograma().encontrarInstalacion(alquiler.getId_instalacion()).getNombre() + "\n");
-		sb.append("\t hora entrada: " + registro.getHora_entrada() + "\n");
-		sb.append("\t hora salida: " + registro.getHora_salida() + "\n");
-		sb.append("\t\t\t\timporte a pagar: " + aPagar);
-		
-		System.out.println(sb.toString());
-	}
 }
