@@ -179,6 +179,13 @@ public class CalendarioSemanalBase extends JDialog {
 					button.setHorizontalAlignment(SwingConstants.CENTER);
 					button.setBackground(Color.LIGHT_GRAY);
 				}
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(date);
+				String info = String.valueOf(cal.get(Calendar.DAY_OF_MONTH))
+						+ "/" + String.valueOf(cal.get(Calendar.MONTH))
+						+ "/" + String.valueOf(cal.get(Calendar.YEAR))
+						+ "/" + hora;
+				button.setToolTipText(info);
 				//TODO añadir funciones a los botones aqui
 				button.setToolTipText(button.getText());
 				panel.add(button);
@@ -408,6 +415,7 @@ public class CalendarioSemanalBase extends JDialog {
 	private JButton getBtnPreviousWeek() {
 		if (btnPreviousWeek == null) {
 			btnPreviousWeek = new JButton("\u25C4");
+			btnPreviousWeek.setToolTipText("Semana anterior");
 			btnPreviousWeek.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					long millis = date.getTime();
