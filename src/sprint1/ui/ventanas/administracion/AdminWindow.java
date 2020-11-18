@@ -46,6 +46,7 @@ public class AdminWindow extends JDialog {
 	private CalendarioAlquilerAdmin calendarioAlquilerAdmin;
 	private RegistrarEntradaSocio registrarEntradaSocio;
 	private RegistrarSalidaSocio registrarSalidaSocio;
+	private CalendarioSemanalPlanificar calendarioSemanalPlanificar;
 	private JButton btnReservaSocio;
 	private JButton btnVerOcupacion;
 	private JButton btnCerrarInstalación;
@@ -57,6 +58,7 @@ public class AdminWindow extends JDialog {
 	private JButton btnRegistrarSalida;
 	private JButton btnAlquilerTercero;
 	private JButton btnVerOcupacionBotones;
+	private JButton btnPlanificarActividades;
 
 	/**
 	 * Create the dialog.
@@ -139,6 +141,7 @@ public class AdminWindow extends JDialog {
 			pnAcciones.add(getBtnSociosConImpagos());
 			pnAcciones.add(getBtnAlquilerTercero());
 			pnAcciones.add(getBtnVerOcupacionBotones());
+			pnAcciones.add(getBtnPlanificarActividades());
 		}
 		return pnAcciones;
 	}
@@ -442,5 +445,23 @@ public class AdminWindow extends JDialog {
 			});
 		}
 		return btnVerOcupacionBotones;
+	}
+	
+	private void openCalendarioSemanalPlanificar() {
+		calendarioSemanalPlanificar = new CalendarioSemanalPlanificar(this);
+		calendarioSemanalPlanificar.setModal(true);
+		calendarioSemanalPlanificar.setLocationRelativeTo(this);
+		calendarioSemanalPlanificar.setVisible(true);
+	}
+	private JButton getBtnPlanificarActividades() {
+		if (btnPlanificarActividades == null) {
+			btnPlanificarActividades = new JButton("Planificar actividades para varios d\u00EDas");
+			btnPlanificarActividades.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					openCalendarioSemanalPlanificar();
+				}
+			});
+		}
+		return btnPlanificarActividades;
 	}
 }

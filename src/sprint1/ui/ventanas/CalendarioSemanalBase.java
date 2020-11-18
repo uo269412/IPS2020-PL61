@@ -42,7 +42,7 @@ public class CalendarioSemanalBase extends JDialog {
 	private static final long serialVersionUID = 1L;
 	private JPanel pnPrincipal;
 	private JPanel pnNorth;
-	private JComboBox<Instalacion> cbInstalacionSeleccionada;
+	protected JComboBox<Instalacion> cbInstalacionSeleccionada;
 	private JButton btnMostrarOcupacion;
 	private Programa programa = null;
 	private ArrayList<String> dias = new ArrayList<String>();
@@ -76,6 +76,10 @@ public class CalendarioSemanalBase extends JDialog {
 		pnPrincipal.add(getPnCentro(), BorderLayout.CENTER);
 		date = new Date();
 		generarPaneles();
+	}
+	
+	public Programa getPrograma() {
+		return this.programa;
 	}
 
 	private JPanel getPnNorth() {
@@ -141,7 +145,7 @@ public class CalendarioSemanalBase extends JDialog {
 		return panel;
 	}
 
-	private void addHorarios(JPanel panel, int col) {
+	protected void addHorarios(JPanel panel, int col) {
 		Instalacion instalacion = (Instalacion) cbInstalacionSeleccionada.getSelectedItem();
 		if (col == 0) {
 			for(int i = 8; i < 23; i++) {//i = hora
@@ -182,7 +186,7 @@ public class CalendarioSemanalBase extends JDialog {
 		}
 	}
 
-	private ActividadPlanificada hayInstalacionAEsaHoraYEseDia(int hora, Instalacion instalacion) {
+	protected ActividadPlanificada hayInstalacionAEsaHoraYEseDia(int hora, Instalacion instalacion) {
 		List<ActividadPlanificada> actividades = programa.getActividadesPlanificadas();
 		for (ActividadPlanificada ap : actividades) {
 			Calendar cal = Calendar.getInstance();
@@ -196,7 +200,7 @@ public class CalendarioSemanalBase extends JDialog {
 		return null;
 	}
 	
-	private Alquiler hayInstalacionAEsaHoraYEseDiaAlquiler(int hora, Instalacion instalacion) {
+	protected Alquiler hayInstalacionAEsaHoraYEseDiaAlquiler(int hora, Instalacion instalacion) {
 		List<Alquiler> alquileres = programa.getAlquileres();
 		for (Alquiler al : alquileres) {
 			Calendar cal = Calendar.getInstance();
@@ -210,7 +214,7 @@ public class CalendarioSemanalBase extends JDialog {
 		return null;
 	}
 	
-	private String nombreInstalacionAlquiler(Instalacion instalacion, Alquiler al) {
+	protected String nombreInstalacionAlquiler(Instalacion instalacion, Alquiler al) {
 		if (al.getId_instalacion().equals(instalacion.getCodigo()))
 			return getNombreCliente(al);
 		return null;
@@ -226,7 +230,7 @@ public class CalendarioSemanalBase extends JDialog {
 		return null;
 	}
 
-	private String nombreInstalacion(Instalacion instalacion, ActividadPlanificada ap) {
+	protected String nombreInstalacion(Instalacion instalacion, ActividadPlanificada ap) {
 		if (ap.getCodigoInstalacion().equals(instalacion.getCodigo()))
 			return nombreActividad(ap);
 		return null;
