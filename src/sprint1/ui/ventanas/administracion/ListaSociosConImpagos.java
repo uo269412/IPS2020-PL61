@@ -5,6 +5,8 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -20,6 +22,8 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import sprint1.business.clases.Cliente;
+import sprint1.business.clases.Instalacion;
 import sprint1.business.clases.Programa;
 import sprint1.business.clases.Socio;
 
@@ -80,6 +84,22 @@ public class ListaSociosConImpagos extends JDialog {
 	private JList<Socio> getList_1() {
 		if (list == null) {
 			list = new JList<Socio>(dflm);
+			list.addMouseListener(new MouseAdapter() {
+			    public void mouseClicked(MouseEvent evt) {
+			        JList<Socio> list = (JList<Socio>)evt.getSource();
+			        if (evt.getClickCount() == 2) {
+
+			            // Double-click detected
+			            int c = list.getSelectedIndex();
+			            Socio s = dflm.get(c);
+			            
+			            MostrarImpagosDeSocioDialog misd = new MostrarImpagosDeSocioDialog(s, p);
+			            misd.setLocationRelativeTo(list);
+			            misd.setModal(true);
+			            misd.setVisible(true);
+			        }
+			    }
+			});
 		}
 		return list;
 	}

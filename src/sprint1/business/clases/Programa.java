@@ -9,6 +9,7 @@ import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -79,35 +80,21 @@ public class Programa {
 	public Set<Cliente> clientesAfectadosPorCierre(Instalacion i) throws SQLException {
 		Set<Cliente> clientesAfectados = new HashSet<>();
 
-		LocalDate horacierre = LocalDate.now();
+		LocalDateTime horacierre = LocalDateTime.now();
 		Connection con = DriverManager.getConnection(URL);
-//		PreparedStatement pst1 = con.prepareStatement("SELECT id_cliente FROM reserva JOIN actividad_planificada ON reserva.codigo_actividad=actividad_planificada=codigoPlanificada WHERE codigoInstalacion=?");
-//		pst1.setString(1, i.getCodigo());
-//		ResultSet rs1 = pst1.executeQuery();
-//		while(rs1.next()) {
-//			for(Socio s: socios) {
-//				if(s.getId_cliente().equals(rs1.getString(1))) {
-//					clientesAfectados.add(s);
-//				}
-//			}
-//			//la iteración por terceros se podría quitar
-//			for(Tercero s: terceros) {
-//				if(s.getId_cliente().equals(rs1.getString(1))) {
-//					clientesAfectados.add(s);
-//				}
-//			}
-//		}
-//		rs1.close();
-//		pst1.close();
-		PreparedStatement pst2 = con.prepareStatement(
-				"SELECT id_cliente, dia, mes, año, horaInicio FROM alquiler WHERE id_instalacion = ?");
-		pst2.setString(1, i.getCodigo());
-		ResultSet rs2 = pst2.executeQuery();
-		while (rs2.next()) {
-
+		PreparedStatement pst1 = con.prepareStatement("SELECT id_cliente, dia, mes, año, horaInicio, horaFin FROM alquiler WHERE id_instalacion = ?");
+		pst1.setString(1, i.getCodigo());
+		ResultSet rs1 = pst1.executeQuery();
+		while(rs1.next()) {
+			for(Socio s: socios) {
+				if(s.getId_cliente().equals(rs1.getString(1))
+						&& horacierre.isBefore(LocalDateTime.of(rs1.getInt(4), rs1.getInt(3), rs1.getInt(2), rs1.getInt(5), 0))) {
+					clientesAfectados.add(s);
+				}
+			}
 			for (Tercero s : terceros) {
-				if (s.getId_cliente().equals(rs2.getString(1))
-						&& horacierre.isBefore(LocalDate.of(rs2.getInt(4), rs2.getInt(3), rs2.getInt(2)))) {
+				if (s.getId_cliente().equals(rs1.getString(1))
+						&& horacierre.isBefore(LocalDateTime.of(rs1.getInt(4), rs1.getInt(3), rs1.getInt(2), rs1.getInt(5), 0))) {
 					clientesAfectados.add(s);
 				}
 			}
@@ -115,6 +102,35 @@ public class Programa {
 
 		return clientesAfectados;
 
+	}
+	
+	public List<Alquiler> getAlquileresQueHaHechoClienteEnInstalacion(Cliente c, Instalacion i) {
+		List<Alquiler> alquileresCliente = new LinkedList<>();
+
+		for (Alquiler a : getAlquileres()) {
+			if (a.getId_cliente().equals(c.getId_cliente()) && a.getId_instalacion().equals(i.getCodigo())) {
+				alquileresCliente.add(a);
+			}
+		}
+
+		return alquileresCliente;
+	}
+
+	public List<Alquiler> getAlquileresQueHaHechoClienteEnInstalacionAPartirDe(Cliente c, Instalacion i, int dia,
+			int mes, int año, int hora) {
+		List<Alquiler> alquileresCliente = new LinkedList<>();
+
+		for (Alquiler a : getAlquileresQueHaHechoClienteEnInstalacion(c, i)) {
+			if (LocalDateTime.of(año, mes, dia, hora, 0).isBefore(LocalDateTime.of(a.getAño(), a.getMes(), a.getDia(), a.getHoraInicio(), 0))) {
+				alquileresCliente.add(a);
+			} else if (LocalDateTime.of(año, mes, dia, hora, 0).isEqual(LocalDateTime.of(a.getAño(), a.getMes(), a.getDia(), a.getHoraInicio(), 0))) {
+				if (hora <= a.getHoraInicio()) {
+					alquileresCliente.add(a);
+				}
+			}
+		}
+
+		return alquileresCliente;
 	}
 
 //ACTIVIDADES	
@@ -524,10 +540,8 @@ public class Programa {
 	public Set<Socio> sociosQueNoHanPagadoAlquilerMes(int mes, int año) {
 		Set<Socio> sociosSinPagar = new HashSet<>();
 		for(Alquiler a: getAlquileres(mes, año)) {
-			boolean hayRegistro = false;
 			for(Registro r: registros) {
 				if(r.getId_alquiler().equals(a.getId_alquiler())) {
-					hayRegistro = true;
 					if(!r.isAlquilerPagado()) {
 						if(encontrarSocio(a.getId_cliente()) != null) {
 							sociosSinPagar.add(encontrarSocio(a.getId_cliente()));
@@ -535,15 +549,40 @@ public class Programa {
 					}
 				}
 			}
-			if(!hayRegistro) { //no se ha presentado
-				if(encontrarSocio(a.getId_cliente()) != null) {
-					sociosSinPagar.add(encontrarSocio(a.getId_cliente()));
-				}
-			}
 		}
 		
 		return sociosSinPagar;
 	}
+	
+	public List<Alquiler> alquileresNoPagadosSocio(Socio s) throws SQLException {
+		Connection con = DriverManager.getConnection(URL);
+		List<Alquiler> alquileresNoPagados = new ArrayList<>();
+		PreparedStatement pst = con.prepareStatement("SELECT * FROM registro "
+				+ "JOIN alquiler ON registro.id_alquiler = alquiler.id_alquiler "
+				+ "WHERE alquilerPagado = 0 AND id_cliente = ?");
+		pst.setString(1, s.id_cliente);
+		ResultSet rs = pst.executeQuery();
+		while(rs.next()) {
+			alquileresNoPagados.add(encontrarAlquileres(rs.getString(2)));
+		}
+		rs.close();
+		pst.close();
+		con.close();
+		
+		return alquileresNoPagados;
+	}
+	
+	public double getCuotaSocio(Socio s) throws SQLException {
+		List<Alquiler> alquileresNoPagados = alquileresNoPagadosSocio(s);
+		double precioTotal = 0;
+		for(Alquiler a: alquileresNoPagados) {
+			precioTotal += (a.getHoraFin() - a.getHoraInicio()) * encontrarInstalacion(a.getId_instalacion()).getPrecioHora();
+		}
+		
+		return precioTotal;
+	}
+	
+	
 
 //TERCEROS
 
@@ -581,35 +620,6 @@ public class Programa {
 		String id_cliente = rs.getString(1);
 		String nombre = rs.getString(2);
 		return new Tercero(id_cliente, nombre);
-	}
-
-	public List<Alquiler> getAlquileresQueHaHechoTerceroEnInstalacion(Tercero tercero, Instalacion i) {
-		List<Alquiler> alquileresSocio = new LinkedList<>();
-
-		for (Alquiler a : getAlquileres()) {
-			if (a.getId_cliente().equals(tercero.getId_cliente()) && a.getId_instalacion().equals(i.getCodigo())) {
-				alquileresSocio.add(a);
-			}
-		}
-
-		return alquileresSocio;
-	}
-
-	public List<Alquiler> getAlquileresQueHaHechoTerceroEnInstalacionAPartirDe(Tercero tercero, Instalacion i, int dia,
-			int mes, int año, int hora) {
-		List<Alquiler> alquileresSocio = new LinkedList<>();
-
-		for (Alquiler a : getAlquileresQueHaHechoTerceroEnInstalacion(tercero, i)) {
-			if (LocalDate.of(año, mes, dia).isBefore(LocalDate.of(a.getAño(), a.getMes(), a.getDia()))) {
-				alquileresSocio.add(a);
-			} else if (LocalDate.of(año, mes, dia).isEqual(LocalDate.of(a.getAño(), a.getMes(), a.getDia()))) {
-				if (hora <= a.getHoraInicio()) {
-					alquileresSocio.add(a);
-				}
-			}
-		}
-
-		return alquileresSocio;
 	}
 
 	public List<Tercero> getTerceros() {
@@ -1218,7 +1228,7 @@ public class Programa {
 	
 	
 
-	public void crearRegistro(Alquiler alquiler) {
+	public void crearRegistro(Alquiler alquiler, boolean haPagado) {
 		Registro registro = new Registro(alquiler.getId_alquiler());
 		int[] fecha = obtenerHoraDiaMesAño();
 		int hora = fecha[0];
@@ -1229,7 +1239,7 @@ public class Programa {
 			pst.setString(1, registro.getId_registro());
 			pst.setString(2, registro.getId_alquiler());
 			pst.setInt(3, hora);
-			pst.setBoolean(4, false);
+			pst.setBoolean(4, haPagado);
 			pst.setBoolean(5, true);
 			pst.execute();
 			pst.close();

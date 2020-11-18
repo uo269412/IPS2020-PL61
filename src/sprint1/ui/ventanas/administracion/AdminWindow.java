@@ -6,6 +6,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +19,7 @@ import javax.swing.SwingConstants;
 
 import sprint1.business.clases.ActividadPlanificada;
 import sprint1.business.clases.Socio;
+import sprint1.business.clases.Tercero;
 import sprint1.ui.ventanas.MainWindow;
 
 public class AdminWindow extends JDialog {
@@ -49,9 +51,10 @@ public class AdminWindow extends JDialog {
 	private JButton btnAlquilarSocioMomento;
 	private JButton btnAlquilarSocio;
 	private JButton btnRegistrarEntrada;
-	private JButton btnNewButton;
+	private JButton btnSociosConImpagos;
 	private JButton btnCobrarAlquileres;
 	private JButton btnRegistrarSalida;
+	private JButton btnAlquilerTercero;
 
 	/**
 	 * Create the dialog.
@@ -131,7 +134,8 @@ public class AdminWindow extends JDialog {
 			pnAcciones.add(getBtnCobrarAlquileres());
 			pnAcciones.add(getBtnRegistrarSalida());
 			pnAcciones.add(getBtnRegistrarEntrada());
-			pnAcciones.add(getBtnNewButton());
+			pnAcciones.add(getBtnSociosConImpagos());
+			pnAcciones.add(getBtnAlquilerTercero());
 		}
 		return pnAcciones;
 	}
@@ -334,10 +338,10 @@ public class AdminWindow extends JDialog {
 		registrarEntradaSocio.setVisible(true);
 	}
 	
-	private JButton getBtnNewButton() {
-		if (btnNewButton == null) {
-			btnNewButton = new JButton("Ver socios que no han pagado sus alquileres");
-			btnNewButton.addActionListener(new ActionListener() {
+	private JButton getBtnSociosConImpagos() {
+		if (btnSociosConImpagos == null) {
+			btnSociosConImpagos = new JButton("Ver socios que no han pagado sus alquileres");
+			btnSociosConImpagos.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					ListaSociosConImpagos lsci = new ListaSociosConImpagos(parent.getPrograma());
 					lsci.setLocationRelativeTo(getMe());
@@ -346,7 +350,7 @@ public class AdminWindow extends JDialog {
 				}
 			});
 		}
-		return btnNewButton;
+		return btnSociosConImpagos;
 	}
 	private JButton getBtnCobrarAlquileres() {
 		if (btnCobrarAlquileres == null) {
@@ -377,5 +381,49 @@ public class AdminWindow extends JDialog {
 		registrarSalidaSocio.setModal(true);
 		registrarSalidaSocio.setLocationRelativeTo(this);
 		registrarSalidaSocio.setVisible(true);
+	}
+	private JButton getBtnAlquilerTercero() {
+		if (btnAlquilerTercero == null) {
+			btnAlquilerTercero = new JButton("Alquilar a un tercero");
+			btnAlquilerTercero.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					String nombre_tercero;
+					nombre_tercero = JOptionPane.showInputDialog("Por favor, introduce un nombre");
+					boolean foundTercero = false;
+					Tercero t = null;
+					for(Tercero ter: parent.getPrograma().getTerceros()) {
+						if(ter.getNombre().equals(nombre_tercero)) {
+							foundTercero = true;
+							t = ter;
+							break;
+						}
+					}
+					if(!foundTercero) {
+						t = new Tercero(nombre_tercero);
+						if (t.getNombre() != null && !t.getNombre().isEmpty()) {
+							openCalendarioTercero(t);
+							try {
+								parent.getPrograma().añadirTercero(t);
+							} catch (SQLException e) {
+								System.out.println("Ha ocurrido un problema añadiendo un nuevo tercero, por favor póngase en contacto con el admin");
+							}
+						}
+						else {
+							JOptionPane.showMessageDialog(AdminWindow.this, "Por favor, introduce un nombre de tercero válido ");
+						}
+					} else if(foundTercero) {
+						openCalendarioTercero(t);
+					}
+				}
+			});
+		}
+		return btnAlquilerTercero;
+	}
+	
+	private void openCalendarioTercero(Tercero t) {
+		CalendarioTercero ct = new CalendarioTercero(this, t);
+		ct.setLocationRelativeTo(this);
+		ct.setModal(true);
+		ct.setVisible(true);
 	}
 }

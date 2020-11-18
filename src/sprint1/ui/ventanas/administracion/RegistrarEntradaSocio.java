@@ -20,6 +20,7 @@ import javax.swing.SwingConstants;
 import sprint1.business.clases.Alquiler;
 import sprint1.business.clases.Instalacion;
 import sprint1.business.clases.Programa;
+import sprint1.business.clases.Registro;
 import sprint1.business.clases.Socio;
 
 public class RegistrarEntradaSocio extends JDialog {
@@ -49,7 +50,7 @@ public class RegistrarEntradaSocio extends JDialog {
 	public RegistrarEntradaSocio(AdminWindow adminWindow) {
 		setTitle("Administraci\u00F3n: Registrando entrada del socio");
 		this.parent = adminWindow;
-		setBounds(100, 100, 620, 169);
+		setBounds(100, 100, 748, 224);
 		getContentPane().setLayout(new BorderLayout());
 		getContentPane().add(getPnBotones(), BorderLayout.SOUTH);
 		getContentPane().add(getPnSocio(), BorderLayout.NORTH);
@@ -102,11 +103,19 @@ public class RegistrarEntradaSocio extends JDialog {
 							"¿Seguro de que quieres registrar la asistencia del cliente "
 									+ ((Socio) comboBox.getSelectedItem()).getNombre() + " ?");
 					if (yesNo == JOptionPane.YES_OPTION) {
-						getPrograma()
-								.crearRegistro(getPrograma().getAlquilerSocioAhora((Socio) comboBox.getSelectedItem()));
+						
+						int answer = JOptionPane.showConfirmDialog(RegistrarEntradaSocio.this, "¿Desea el cliente pagar el alquiler ahora?");
+						if(answer == JOptionPane.YES_OPTION) {
+							getPrograma()
+							.crearRegistro(getPrograma().getAlquilerSocioAhora((Socio) comboBox.getSelectedItem()), true);
+							generarRecibo();
+						} else {
+							getPrograma()
+							.crearRegistro(getPrograma().getAlquilerSocioAhora((Socio) comboBox.getSelectedItem()), false);
+							JOptionPane.showMessageDialog(RegistrarEntradaSocio.this, "Se ha añadido el importe de la reserva a la cuota del socio");
+						}
 						JOptionPane.showMessageDialog(null, "Se ha registrado la asistencia correctamente");
-						dispose();
-
+					dispose();
 					}
 				}
 			});
@@ -203,5 +212,21 @@ public class RegistrarEntradaSocio extends JDialog {
 			textField.setColumns(10);
 		}
 		return textField;
+	}
+	
+	private void generarRecibo() {
+		Socio s = (Socio)comboBox.getSelectedItem();
+		Alquiler alquiler = getPrograma().getAlquilerSocioAhoraNoCancelado(s);
+		double aPagar = (alquiler.getHoraFin() - alquiler.getHoraInicio()) * getPrograma().encontrarInstalacion(alquiler.getId_instalacion()).getPrecioHora();
+	
+		StringBuilder sb = new StringBuilder();
+		sb.append("-----RECIBO DE ALQUILER----\n");
+		sb.append("Socio: " + s.getNombre() + " " + s.getApellido() + "\n");
+		sb.append("Instalación: " + getPrograma().encontrarInstalacion(alquiler.getId_instalacion()).getNombre() + "\n");
+		sb.append("\t hora entrada: " + alquiler.getHoraInicio() + "\n");
+		sb.append("\t hora salida: " + alquiler.getHoraFin() + "\n");
+		sb.append("\t\t\t\timporte a pagar: " + aPagar);
+		
+		System.out.println(sb.toString());
 	}
 }
