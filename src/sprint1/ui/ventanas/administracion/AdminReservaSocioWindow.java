@@ -20,7 +20,9 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 
 import sprint1.business.clases.ActividadPlanificada;
+import sprint1.business.clases.Alquiler;
 import sprint1.business.clases.Programa;
+import sprint1.business.clases.Reserva;
 import sprint1.business.clases.Socio;
 import javax.swing.JComboBox;
 import javax.swing.ListModel;
@@ -63,56 +65,78 @@ public class AdminReservaSocioWindow extends JDialog {
 		cargarSocio();
 	}
 
+
 	private void cargarActividades() {
 		modeloActividades.clear();
 		int fecha[] = getPrograma().obtenerHoraDiaMesAño();
 		int dia = fecha[1];
 		int mes = fecha[2];
 		int año = fecha[3];
-		List<ActividadPlanificada> actividadesYaReservadasPorSocio = new ArrayList<ActividadPlanificada>();
-		actividadesYaReservadasPorSocio = getPrograma()
+		List<ActividadPlanificada> actividadesReservadasSocio = getPrograma()
 				.getActividadesPlanificadasQueHaReservadoSocioEnUnDiaEspecifico(socio, dia, mes, año);
-		for (ActividadPlanificada actividadPosible : getPrograma().getActividadesPlanificadas(dia, mes, año)) {
-			if (actividadPosible.getHoraInicio() > fecha[0] && actividadPosible.getLimitePlazas() != 0) {
-				if (actividadesYaReservadasPorSocio.isEmpty()) {
-					modeloActividades.addElement(actividadPosible);
-				} else if (!actividadesYaReservadasPorSocio.contains(actividadPosible)) {
-					for (ActividadPlanificada actividadYaReservada : actividadesYaReservadasPorSocio) {
-						if (!getPrograma().comprobarTiempoActividadesColisiona(actividadPosible,
-								actividadYaReservada)) {
-							modeloActividades.addElement(actividadPosible);
-						}
-					}
+		List<Alquiler> alquileresSocio = getPrograma().getAlquileres(dia, mes, año);
+		List<ActividadPlanificada> actividadesParaHoy = getPrograma().getActividadesPlanificadas(dia, mes, año);
+
+		boolean actividadDisponible = true;
+
+		for (ActividadPlanificada actividad : actividadesParaHoy) {
+			actividadDisponible = true;
+			for (ActividadPlanificada actividadSocio : actividadesReservadasSocio) {
+				if (actividad.equals(actividadSocio)) {
+					actividadDisponible = false;
+				} else if (getPrograma().comprobarTiempoActividadesColisiona(actividad, actividadSocio)) {
+					actividadDisponible = false;
 				}
 			}
+			for (Alquiler alquiler : alquileresSocio) {
+				if (socio.getId_cliente().equals(alquiler.getId_cliente())) {
+					if (getPrograma().comprobarTiempoActividadyAlquilerColisiona(actividad, alquiler)) {
+						actividadDisponible = false;
+					}
+				}
+			}		
+			if (actividadDisponible) {
+				modeloActividades.addElement(actividad);
+			}
 		}
+
 	}
 
-	public boolean comprobarSiSocioPuedeReservar(Socio socio) {
+	private boolean comprobarSiSocioPuedeReservar() {
 		int fecha[] = getPrograma().obtenerHoraDiaMesAño();
 		int dia = fecha[1];
 		int mes = fecha[2];
 		int año = fecha[3];
-		List<ActividadPlanificada> actividadesYaReservadasPorSocio = new ArrayList<ActividadPlanificada>();
-		actividadesYaReservadasPorSocio = getPrograma()
+		List<ActividadPlanificada> actividadesReservadasSocio = getPrograma()
 				.getActividadesPlanificadasQueHaReservadoSocioEnUnDiaEspecifico(socio, dia, mes, año);
-		for (ActividadPlanificada actividadPosible : getPrograma().getActividadesPlanificadas(dia, mes, año)) {
-			if (actividadPosible.getHoraInicio() > fecha[0] && actividadPosible.getLimitePlazas() != 0) {
-				if (actividadesYaReservadasPorSocio.isEmpty()) {
-					return true;
-				} else if (!actividadesYaReservadasPorSocio.contains(actividadPosible)) {
-					for (ActividadPlanificada actividadYaReservada : actividadesYaReservadasPorSocio) {
-						if (!getPrograma().comprobarTiempoActividadesColisiona(actividadPosible,
-								actividadYaReservada)) {
-							return true;
+		List<Alquiler> alquileresSocio = getPrograma().getAlquileres(dia, mes, año);
+		List<ActividadPlanificada> actividadesParaHoy = getPrograma().getActividadesPlanificadas(dia, mes, año);
 
-						}
+		boolean actividadDisponible = true;
+
+		for (ActividadPlanificada actividad : actividadesParaHoy) {
+			actividadDisponible = true;
+			for (ActividadPlanificada actividadSocio : actividadesReservadasSocio) {
+				if (actividad.equals(actividadSocio)) {
+					actividadDisponible = false;
+				} else if (getPrograma().comprobarTiempoActividadesColisiona(actividad, actividadSocio)) {
+					actividadDisponible = false;
+				}
+			}
+			for (Alquiler alquiler : alquileresSocio) {
+				if (socio.getId_cliente().equals(alquiler.getId_cliente())) {
+					if (getPrograma().comprobarTiempoActividadyAlquilerColisiona(actividad, alquiler)) {
+						actividadDisponible = false;
 					}
 				}
+			}		
+			if (actividadDisponible) {
+				return true;
 			}
 		}
 		return false;
 	}
+
 
 	private void cargarSocio() {
 		for (Socio socio : getPrograma().getSocios()) {
@@ -262,7 +286,7 @@ public class AdminReservaSocioWindow extends JDialog {
 
 	private void actualizarSocios() {
 		setSocio((Socio) comboBox.getSelectedItem());
-		if (!comprobarSiSocioPuedeReservar(socio)) {
+		if (!comprobarSiSocioPuedeReservar()) {
 			btnReservar.setEnabled(false);
 			lblEstadoSocio.setText("No se puede reservar para este socio");
 			cargarActividades();
@@ -277,9 +301,10 @@ public class AdminReservaSocioWindow extends JDialog {
 		this.socio = selectedItem;
 
 	}
+
 	private JLabel getLblEstadoSocio() {
 		if (lblEstadoSocio == null) {
-			lblEstadoSocio = new JLabel("No se puede reservar para este socio");			
+			lblEstadoSocio = new JLabel("No se puede reservar para este socio");
 			lblEstadoSocio.setFont(new Font("Tahoma", Font.ITALIC, 11));
 			lblEstadoSocio.setForeground(Color.RED);
 		}

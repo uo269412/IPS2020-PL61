@@ -32,13 +32,15 @@ public class Programa {
 	private List<Registro> registros;
 
 	// Conexión Javi
-	//public static String URL = "jdbc:sqlite:C:\\Users\\javie\\git\\IPS2020-PL61\\resources\\bdProject.db";
+	public static String URL = "jdbc:sqlite:C:\\Users\\javie\\git\\IPS2020-PL61\\resources\\bdProject.db";
 
 	// Conexión Dani
- 	public static String URL = "jdbc:sqlite:C:\\Users\\Dani\\git\\IPS2020-PL61_sprint2\\resources\\bdProject.db";
+	// public static String URL =
+	// "jdbc:sqlite:C:\\Users\\Dani\\git\\IPS2020-PL61_sprint2\\resources\\bdProject.db";
 
 	// Conexión Juan.elo
-	//public static String URL = "jdbc:sqlite:C:\\Users\\Usuario\\git\\IPS2020-PL61\\resources\\bdProject.db";
+	// public static String URL =
+	// "jdbc:sqlite:C:\\Users\\Usuario\\git\\IPS2020-PL61\\resources\\bdProject.db";
 
 	public Programa() throws SQLException {
 		cargarBaseDatos();
@@ -324,6 +326,29 @@ public class Programa {
 						&& (actividadSeleccionada.getHoraFin() > actividad.getHoraFin()))
 				|| ((actividadSeleccionada.getHoraInicio() > actividad.getHoraInicio())
 						&& (actividadSeleccionada.getHoraFin() < actividad.getHoraFin())));
+		
+//		
+//		for (int hora = actividadSeleccionada.getHoraInicio(); hora < actividadSeleccionada.getHoraFin(); hora++) {
+//			if (hora >= actividad.getHoraInicio() && hora < actividad.getHoraFin())
+//				return true;
+//		}
+//		return false;
+	}
+
+	public boolean comprobarTiempoActividadyAlquilerColisiona(ActividadPlanificada actividadSeleccionada,
+			Alquiler actividad) {
+		return ((actividadSeleccionada.getHoraInicio() == actividad.getHoraInicio())
+				|| (actividadSeleccionada.getHoraFin() == actividad.getHoraFin())
+				|| ((actividadSeleccionada.getHoraInicio() < actividad.getHoraInicio())
+						&& (actividadSeleccionada.getHoraFin() < actividad.getHoraFin())
+						&& (actividadSeleccionada.getHoraFin() > actividad.getHoraInicio()))
+				|| ((actividadSeleccionada.getHoraInicio() > actividad.getHoraInicio())
+						&& (actividadSeleccionada.getHoraFin() > actividad.getHoraFin())
+						&& (actividadSeleccionada.getHoraFin() < actividad.getHoraInicio()))
+				|| ((actividadSeleccionada.getHoraInicio() < actividad.getHoraInicio())
+						&& (actividadSeleccionada.getHoraFin() > actividad.getHoraFin()))
+				|| ((actividadSeleccionada.getHoraInicio() > actividad.getHoraInicio())
+						&& (actividadSeleccionada.getHoraFin() < actividad.getHoraFin())));
 	}
 
 	public void ordenarActividadesPlanificadasPorFecha() {
@@ -488,14 +513,30 @@ public class Programa {
 		return actividadesQueYaTieneReservadasElSocio;
 	}
 
+//	public List<ActividadPlanificada> getActividadesPlanificadasQueHaReservadoSocioEnUnDiaEspecifico(Socio socio,
+//			int dia, int mes, int año) {
+//		List<ActividadPlanificada> actividadesQueYaTieneReservadasElSocio = new ArrayList<ActividadPlanificada>();
+//		for (Reserva reserva : getReservas()) {
+//			if (reserva.getId_cliente().equals(socio.getId_cliente())) {
+//				for (ActividadPlanificada ap : getActividadesPlanificadas()) {
+//					if (ap.getDia() == dia || ap.getDia() == dia + 1 && ap.getMes() == mes && ap.getAño() == año
+//							&& reserva.getCodigo_actividad().equals(ap.getCodigoPlanificada())) {
+//						actividadesQueYaTieneReservadasElSocio.add(ap);
+//					}
+//				}
+//			}
+//		}
+//		return actividadesQueYaTieneReservadasElSocio;
+//	}
+
 	public List<ActividadPlanificada> getActividadesPlanificadasQueHaReservadoSocioEnUnDiaEspecifico(Socio socio,
 			int dia, int mes, int año) {
 		List<ActividadPlanificada> actividadesQueYaTieneReservadasElSocio = new ArrayList<ActividadPlanificada>();
-		for (Reserva reserva : getReservas()) {
+		for (Reserva reserva : getReservas(dia, mes, año)) {
 			if (reserva.getId_cliente().equals(socio.getId_cliente())) {
-				for (ActividadPlanificada ap : getActividadesPlanificadas()) {
-					if (ap.getDia() == dia || ap.getDia() == dia + 1 && ap.getMes() == mes && ap.getAño() == año
-							&& reserva.getCodigo_actividad().equals(ap.getCodigoPlanificada())) {
+				for (ActividadPlanificada ap : getActividadesPlanificadas(dia, mes, año)) {
+					if (ap.getCodigoPlanificada().equals(reserva.getCodigo_actividad())
+							&& reserva.getId_cliente().equals(socio.getId_cliente())) {
 						actividadesQueYaTieneReservadasElSocio.add(ap);
 					}
 				}
@@ -520,28 +561,28 @@ public class Programa {
 	public void ordenarSocios() {
 		Collections.sort(this.socios);
 	}
-	
+
 	public Set<Socio> sociosQueNoHanPagadoAlquilerMes(int mes, int año) {
 		Set<Socio> sociosSinPagar = new HashSet<>();
-		for(Alquiler a: getAlquileres(mes, año)) {
+		for (Alquiler a : getAlquileres(mes, año)) {
 			boolean hayRegistro = false;
-			for(Registro r: registros) {
-				if(r.getId_alquiler().equals(a.getId_alquiler())) {
+			for (Registro r : registros) {
+				if (r.getId_alquiler().equals(a.getId_alquiler())) {
 					hayRegistro = true;
-					if(!r.isAlquilerPagado()) {
-						if(encontrarSocio(a.getId_cliente()) != null) {
+					if (!r.isAlquilerPagado()) {
+						if (encontrarSocio(a.getId_cliente()) != null) {
 							sociosSinPagar.add(encontrarSocio(a.getId_cliente()));
 						}
 					}
 				}
 			}
-			if(!hayRegistro) { //no se ha presentado
-				if(encontrarSocio(a.getId_cliente()) != null) {
+			if (!hayRegistro) { // no se ha presentado
+				if (encontrarSocio(a.getId_cliente()) != null) {
 					sociosSinPagar.add(encontrarSocio(a.getId_cliente()));
 				}
 			}
 		}
-		
+
 		return sociosSinPagar;
 	}
 
@@ -758,6 +799,18 @@ public class Programa {
 		return listaSort;
 	}
 
+	public List<Reserva> getReservas(int dia, int mes, int año) {
+		List<Reserva> listaSort = new ArrayList<Reserva>();
+		for (Reserva reserva : getReservas()) {
+			for (ActividadPlanificada ap : getActividadesPlanificadas(dia, mes, año)) {
+				if (ap.getCodigoPlanificada().equals(reserva.getCodigo_actividad())) {
+					listaSort.add(reserva);
+				}
+			}
+		}
+		return listaSort;
+	}
+
 	public List<Reserva> getReservas(String codigo_instalacion, int hora, int dia, int mes, int año) {
 		List<Reserva> listaSort = new ArrayList<Reserva>();
 		for (Reserva reserva : getReservas()) {
@@ -797,7 +850,7 @@ public class Programa {
 			System.out.println("Error añadiendo el alquier");
 		}
 	}
-	
+
 	public List<Alquiler> getAlquileres(int mes, int año) {
 		List<Alquiler> listaSort = new ArrayList<Alquiler>();
 		for (Alquiler ap : getAlquileres()) {
@@ -807,7 +860,7 @@ public class Programa {
 		}
 		return listaSort;
 	}
-	
+
 	private void cargarAlquileres() throws SQLException {
 		Connection con = DriverManager.getConnection(URL);
 		Statement st = con.createStatement();
@@ -1086,11 +1139,11 @@ public class Programa {
 		}
 		return false;
 	}
-	
+
 	public List<Alquiler> getAlquileresSocio(Socio socio) {
 		List<Alquiler> listaSort = new ArrayList<Alquiler>();
 		for (Alquiler al : getAlquileres()) {
-			if(al.getId_cliente().equals(socio.getId_cliente()))
+			if (al.getId_cliente().equals(socio.getId_cliente()))
 				listaSort.add(al);
 		}
 		return listaSort;
@@ -1136,9 +1189,10 @@ public class Programa {
 		}
 	}
 
-	public void añadirAlquiler(Cliente cliente, Instalacion instalacion, int horaInicio, int horaFin, int dia, int mes, int año) {
-		Alquiler alquiler = new Alquiler(instalacion.getCodigoInstalacion(), cliente.getId_cliente(), dia,
-				mes, año, horaInicio, horaFin);
+	public void añadirAlquiler(Cliente cliente, Instalacion instalacion, int horaInicio, int horaFin, int dia, int mes,
+			int año) {
+		Alquiler alquiler = new Alquiler(instalacion.getCodigoInstalacion(), cliente.getId_cliente(), dia, mes, año,
+				horaInicio, horaFin);
 		try {
 			Connection con = DriverManager.getConnection(Programa.URL);
 			PreparedStatement pst = con.prepareStatement(
@@ -1159,7 +1213,7 @@ public class Programa {
 			System.out.println("Error añadiendo el alquier");
 		}
 	}
-	
+
 //REGISTROS
 
 	public void cargarRegistros() throws SQLException {
@@ -1215,8 +1269,6 @@ public class Programa {
 		}
 		return null;
 	}
-	
-	
 
 	public void crearRegistro(Alquiler alquiler) {
 		Registro registro = new Registro(alquiler.getId_alquiler());
@@ -1368,23 +1420,24 @@ public class Programa {
 		}
 
 	}
-	
+
 	public List<Recurso> getRecursosSinActividad() {
 		List<Recurso> recursosSinActividad = new ArrayList<>();
-		for(Recurso r: recursos) {
-			if(r.getActividad() == null) {
+		for (Recurso r : recursos) {
+			if (r.getActividad() == null) {
 				recursosSinActividad.add(r);
 			}
 		}
-		
+
 		return recursosSinActividad;
 	}
-	
+
 	public Recurso obtenerRecursoPorNombre(String nombreRecurso) throws SQLException {
 		// no hay que hacer check aqui porque se supone que ya hemos checkeado los
 		// nombres usando el otro método antes que este
 		Connection con = DriverManager.getConnection(URL);
-		PreparedStatement pst = con.prepareStatement("SELECT codigo_instalacion, codigo_recurso FROM recurso WHERE nombre_recurso = ?");
+		PreparedStatement pst = con
+				.prepareStatement("SELECT codigo_instalacion, codigo_recurso FROM recurso WHERE nombre_recurso = ?");
 		pst.setString(1, nombreRecurso);
 		ResultSet rs = pst.executeQuery();
 		rs.next();
@@ -1396,7 +1449,7 @@ public class Programa {
 		con.close();
 		return new Recurso(codigoRecurso, nombreRecurso, codigo_instalacion, unidades);
 	}
-	
+
 	public List<Recurso> getRecursos() {
 		return this.recursos;
 	}

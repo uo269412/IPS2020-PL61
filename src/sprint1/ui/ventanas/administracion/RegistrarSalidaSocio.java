@@ -49,7 +49,7 @@ public class RegistrarSalidaSocio extends JDialog {
 	public RegistrarSalidaSocio(AdminWindow adminWindow) {
 		setTitle("Administraci\u00F3n: Registrando salida del socio");
 		this.parent = adminWindow;
-		setBounds(100, 100, 620, 169);
+		setBounds(100, 100, 881, 168);
 		getContentPane().setLayout(new BorderLayout());
 		getContentPane().add(getPnBotones(), BorderLayout.SOUTH);
 		getContentPane().add(getPnSocio(), BorderLayout.NORTH);
