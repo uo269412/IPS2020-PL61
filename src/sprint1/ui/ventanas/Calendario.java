@@ -1,4 +1,4 @@
-package sprint1.ui;
+package sprint1.ui.ventanas;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;

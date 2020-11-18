@@ -20,6 +20,7 @@ import javax.swing.SwingConstants;
 import sprint1.business.clases.ActividadPlanificada;
 import sprint1.business.clases.Socio;
 import sprint1.business.clases.Tercero;
+import sprint1.ui.ventanas.CalendarioSemanalBase;
 import sprint1.ui.ventanas.MainWindow;
 
 public class AdminWindow extends JDialog {
@@ -55,6 +56,7 @@ public class AdminWindow extends JDialog {
 	private JButton btnCobrarAlquileres;
 	private JButton btnRegistrarSalida;
 	private JButton btnAlquilerTercero;
+	private JButton btnVerOcupacionBotones;
 
 	/**
 	 * Create the dialog.
@@ -136,6 +138,7 @@ public class AdminWindow extends JDialog {
 			pnAcciones.add(getBtnRegistrarEntrada());
 			pnAcciones.add(getBtnSociosConImpagos());
 			pnAcciones.add(getBtnAlquilerTercero());
+			pnAcciones.add(getBtnVerOcupacionBotones());
 		}
 		return pnAcciones;
 	}
@@ -425,5 +428,19 @@ public class AdminWindow extends JDialog {
 		ct.setLocationRelativeTo(this);
 		ct.setModal(true);
 		ct.setVisible(true);
+	}
+	private JButton getBtnVerOcupacionBotones() {
+		if (btnVerOcupacionBotones == null) {
+			btnVerOcupacionBotones = new JButton("Ver Ocupacion (Botones)");
+			btnVerOcupacionBotones.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					CalendarioSemanalBase vowb = new CalendarioSemanalBase(parent.getPrograma());
+					vowb.setLocationRelativeTo(AdminWindow.this);
+					vowb.setModal(true);
+					vowb.setVisible(true);
+				}
+			});
+		}
+		return btnVerOcupacionBotones;
 	}
 }
