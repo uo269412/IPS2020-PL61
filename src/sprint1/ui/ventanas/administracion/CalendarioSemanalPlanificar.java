@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.Calendar;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -23,13 +24,13 @@ public class CalendarioSemanalPlanificar extends CalendarioSemanalBase {
 	
 	private static final long serialVersionUID = 1L;
 	private Programa p;
-	private ActionListener al;
+	private ActionListener listener;
 
 	public CalendarioSemanalPlanificar(AdminWindow parent) {
 		super(parent.getParent().getPrograma());
 		setTitle("Calendario Semanal");
 		this.p = parent.getParent().getPrograma();
-		al = new AsignarActividades();
+		listener = new AsignarActividades();
 		setLocationRelativeTo(parent);
 	}
 	
@@ -42,14 +43,11 @@ public class CalendarioSemanalPlanificar extends CalendarioSemanalBase {
 				label.setFont(new Font("Tahoma", Font.BOLD, 15));
 				label.setText(String.valueOf(i) + ":00 - " + String.valueOf(i+1) + ":00");
 				panel.add(label);
-//				if (i < 22)
-//					panel.add(crearSeparador());
 			}
 		}
 		else {
 			for (int hora = 8; hora < 23; hora++) {
 				JButton button = new JButton();
-				button.addActionListener(al);
 				ActividadPlanificada ap = hayInstalacionAEsaHoraYEseDia(hora, instalacion);
 				if ( ap != null) {
 					button.setText(nombreInstalacion(instalacion, ap));
@@ -69,8 +67,14 @@ public class CalendarioSemanalPlanificar extends CalendarioSemanalBase {
 					button.setHorizontalAlignment(SwingConstants.CENTER);
 					button.setBackground(Color.LIGHT_GRAY);
 				}
-				//TODO añadir funciones a los botones aqui
-				button.setToolTipText(button.getText());
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(getDate());
+				String info = String.valueOf(cal.get(Calendar.DAY_OF_MONTH))
+						+ "/" + String.valueOf(cal.get(Calendar.MONTH))
+						+ "/" + String.valueOf(cal.get(Calendar.YEAR))
+						+ "/" + hora;
+				button.setToolTipText(info);
+				button.addActionListener(listener);
 				panel.add(button);
 			}
 		}
@@ -82,15 +86,14 @@ public class CalendarioSemanalPlanificar extends CalendarioSemanalBase {
 		public void actionPerformed(ActionEvent arg0) {
 			JButton button = (JButton) arg0.getSource();
 			int[] fecha = parseFecha(button);
-			int dia = fecha[0];
-			int mes = fecha[1];
-			int año = fecha[2];
-			AsignarActividadDialog aad = new AsignarActividadDialog(getMe(), getPrograma(), dia, mes, año);
+			int horaInicio = fecha[0];
+			int dia = fecha[1];
+			int mes = fecha[2];
+			int año = fecha[3];
+			AsignarActividadVariosDiasDialog aad = new AsignarActividadVariosDiasDialog(getMe(), getPrograma(), dia, mes, año, horaInicio);
 			aad.setLocationRelativeTo(getMe());
 			aad.setModal(true);
-			aad.setVisible(true);
-			aad.mostrarActividadesPlanificadasDia();
-			
+			aad.setVisible(true);			
 		}
 	}
 	
@@ -99,10 +102,12 @@ public class CalendarioSemanalPlanificar extends CalendarioSemanalBase {
 	}
 
 	private int[] parseFecha(JButton b) {
-		int[] fecha = new int[3];
-		fecha[0] = Integer.parseInt(b.getText());
-		fecha[1] = cbMeses.getSelectedIndex() + 1;
-		fecha[2] = (Integer) cbAños.getSelectedItem();
+		String[] dateInfo = b.getToolTipText().split("/");
+		int[] fecha = new int[4];
+		fecha[0] = Integer.parseInt(dateInfo[0]);
+		fecha[1] = Integer.parseInt(dateInfo[1]);
+		fecha[2] = Integer.parseInt(dateInfo[2]);
+		fecha[3] = Integer.parseInt(dateInfo[3]);
 
 		return fecha;
 	}

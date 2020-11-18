@@ -51,18 +51,6 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 	private JButton btnAñadir;
 	private JPanel pnBotones;
 	private JButton btnVolver;
-
-	private Programa programa;
-	private DefaultListModel<ActividadPlanificada> modeloLista;
-	private int dia;
-	private int mes;
-	private int año;
-	private int horaInicio;
-
-	private List<ActividadPlanificada> aEliminar;
-
-	private boolean updated = true;
-	DefaultComboBoxModel<Actividad> modeloBaseComboActividades;
 	private JPanel pnSemana;
 	private JLabel lblDias;
 	private JPanel pnPrimera;
@@ -83,39 +71,34 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 	private JCheckBox chckbxDomingo;
 	private JPanel pnActividad;
 	private JLabel lblActividad;
-	private JComboBox<Actividad> cmbActividades;
+
 	private JPanel pnInstalacion;
 	private JLabel lblInstalacion;
+	private JComboBox<Actividad> cmbActividades;
 	private JComboBox<Instalacion> cmbInstalaciones;
 	private JPanel pnFechaFin;
 	private JLabel lblFechaFin;
 	private JTextField txtFechaFin;
 
-//	/**
-//	 * Launch the application.
-//	 */
-//	public static void main(String[] args) {
-//		try {
-//			AsignarActividadDialog dialog = new AsignarActividadDialog();
-//			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-//			dialog.setVisible(true);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
+	private Programa programa;
+	private int dia;
+	private int mes;
+	private int año;
+	private int horaInicio;
+
+	DefaultComboBoxModel<Actividad> modeloActividades = new DefaultComboBoxModel<>();
+	private DefaultComboBoxModel<Instalacion> modeloInstalaciones = new DefaultComboBoxModel<>();
 
 	/**
 	 * Create the dialog.
 	 */
-	public AsignarActividadVariosDiasDialog(CalendarioAdmin parent, Programa p, int dia, int mes, int año, int horaInicio) {
+	public AsignarActividadVariosDiasDialog(CalendarioSemanalPlanificar parent, Programa p, int dia, int mes, int año,
+			int horaInicio) {
 		setTitle("Centro de deportes: Planificando actividades");
 		this.programa = p;
 		this.dia = dia;
 		this.mes = mes;
 		this.año = año;
-		this.modeloLista = new DefaultListModel<ActividadPlanificada>();
-		this.modeloBaseComboActividades = new DefaultComboBoxModel<Actividad>(
-				programa.getActividades().toArray(new Actividad[programa.getActividades().size()]));
 		setBounds(100, 100, 455, 569);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -123,7 +106,26 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 		contentPanel.setLayout(new GridLayout(0, 1, 0, 0));
 		contentPanel.add(getPnProgramarActividad());
 		getContentPane().add(getPnBotones(), BorderLayout.SOUTH);
-		aEliminar = new LinkedList<>();
+		cargarActividades();
+		cargarInstalaciones();
+	}
+
+	private void cargarActividades() {
+		for (Actividad actividad : getPrograma().getActividades()) {
+			modeloActividades.addElement(actividad);
+		}
+	}
+
+	private void cargarInstalaciones() {
+		for (Instalacion instalacion : getPrograma().getInstalaciones()) {
+			if (instalacion.getEstado() == Instalacion.DISPONIBLE) {
+				modeloInstalaciones.addElement(instalacion);
+			}
+		}
+	}
+
+	private Programa getPrograma() {
+		return this.programa;
 	}
 
 	private JPanel getPnProgramarActividad() {
@@ -156,23 +158,6 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 			} else {
 				btnAñadir.setEnabled(true);
 			}
-//			btnAñadir.addActionListener(new ActionListener() {
-//				public void actionPerformed(ActionEvent arg0) {
-//
-//					if (checkHoraInicio() && checkHoraFin() && checkLimitePlazas() == 0) {
-//						updated = false;
-//						cmbInstalaciones.setEnabled(false);
-//						añadirAModelo(crearPlanificada());
-//						adaptarActividadesAInstalacion();
-//					} else if (checkLimitePlazas() == 1) {
-//						JOptionPane.showMessageDialog(getMe(),
-//								"La aplicación tiene menos recursos disponibles que las plazas que estás intentando añadir.\n"
-//										+ "Máximos recursos disponibles ahora mismo en la instalación: "
-//										+ getMinRecursos());
-//					}
-//
-//				}
-//			});
 			btnAñadir.setForeground(Color.WHITE);
 			btnAñadir.setBackground(new Color(60, 179, 113));
 		}
@@ -206,21 +191,6 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 
 	private AsignarActividadVariosDiasDialog getMe() {
 		return this;
-	}
-
-	private void añadirAModelo(ActividadPlanificada a) {
-		List<ActividadPlanificada> lista = new LinkedList<>();
-		for (int i = 0; i < modeloLista.getSize(); i++) {
-			lista.add(modeloLista.getElementAt(i));
-		}
-
-		lista.add(a);
-		lista.sort(new ComparePlanificadas());
-		modeloLista.clear();
-		for (ActividadPlanificada actividad : lista) {
-			modeloLista.add(modeloLista.size(), actividad);
-		}
-
 	}
 
 	private int getMinRecursos() {
@@ -300,6 +270,7 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 		}
 
 	}
+
 	private JPanel getPnSemana() {
 		if (pnSemana == null) {
 			pnSemana = new JPanel();
@@ -309,6 +280,7 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 		}
 		return pnSemana;
 	}
+
 	private JLabel getLblDias() {
 		if (lblDias == null) {
 			lblDias = new JLabel("D\u00EDas:");
@@ -316,6 +288,7 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 		}
 		return lblDias;
 	}
+
 	private JPanel getPnPrimera() {
 		if (pnPrimera == null) {
 			pnPrimera = new JPanel();
@@ -327,6 +300,7 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 		}
 		return pnPrimera;
 	}
+
 	private JPanel getPnSegunda() {
 		if (pnSegunda == null) {
 			pnSegunda = new JPanel();
@@ -337,6 +311,7 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 		}
 		return pnSegunda;
 	}
+
 	private JPanel getPnLunes_1() {
 		if (pnLunes == null) {
 			pnLunes = new JPanel();
@@ -344,12 +319,14 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 		}
 		return pnLunes;
 	}
+
 	private JCheckBox getChckbxLunes_1() {
 		if (chckbxLunes == null) {
 			chckbxLunes = new JCheckBox("L");
 		}
 		return chckbxLunes;
 	}
+
 	private JPanel getPnMartes_1() {
 		if (pnMartes == null) {
 			pnMartes = new JPanel();
@@ -357,12 +334,14 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 		}
 		return pnMartes;
 	}
+
 	private JCheckBox getChckbxMartes_1() {
 		if (chckbxMartes == null) {
 			chckbxMartes = new JCheckBox("M");
 		}
 		return chckbxMartes;
 	}
+
 	private JPanel getPnMiercoles_1() {
 		if (pnMiercoles == null) {
 			pnMiercoles = new JPanel();
@@ -370,12 +349,14 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 		}
 		return pnMiercoles;
 	}
+
 	private JCheckBox getChckbxMiercoles_1() {
 		if (chckbxMiercoles == null) {
 			chckbxMiercoles = new JCheckBox("X");
 		}
 		return chckbxMiercoles;
 	}
+
 	private JPanel getPnJueves_1() {
 		if (pnJueves == null) {
 			pnJueves = new JPanel();
@@ -383,12 +364,14 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 		}
 		return pnJueves;
 	}
+
 	private JCheckBox getChckbxJueves_1() {
 		if (chckbxJueves == null) {
 			chckbxJueves = new JCheckBox("J");
 		}
 		return chckbxJueves;
 	}
+
 	private JPanel getPnViernes_1() {
 		if (pnViernes == null) {
 			pnViernes = new JPanel();
@@ -396,12 +379,14 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 		}
 		return pnViernes;
 	}
+
 	private JCheckBox getChckbxViernes_1() {
 		if (chckbxViernes == null) {
 			chckbxViernes = new JCheckBox("V");
 		}
 		return chckbxViernes;
 	}
+
 	private JPanel getPnSabado_1() {
 		if (pnSabado == null) {
 			pnSabado = new JPanel();
@@ -409,12 +394,14 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 		}
 		return pnSabado;
 	}
+
 	private JCheckBox getChckbxSabado_1() {
 		if (chckbxSabado == null) {
 			chckbxSabado = new JCheckBox("S");
 		}
 		return chckbxSabado;
 	}
+
 	private JPanel getPnDomingo_1() {
 		if (pnDomingo == null) {
 			pnDomingo = new JPanel();
@@ -422,12 +409,14 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 		}
 		return pnDomingo;
 	}
+
 	private JCheckBox getChckbxDomingo_1() {
 		if (chckbxDomingo == null) {
 			chckbxDomingo = new JCheckBox("D");
 		}
 		return chckbxDomingo;
 	}
+
 	private JPanel getPnActividad() {
 		if (pnActividad == null) {
 			pnActividad = new JPanel();
@@ -437,6 +426,7 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 		}
 		return pnActividad;
 	}
+
 	private JLabel getLblActividad_1() {
 		if (lblActividad == null) {
 			lblActividad = new JLabel("Actividad a asignar:");
@@ -444,13 +434,15 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 		}
 		return lblActividad;
 	}
+
 	private JComboBox<Actividad> getCmbActividades_1() {
 		if (cmbActividades == null) {
-			cmbActividades = new JComboBox<Actividad>();
+			cmbActividades = new JComboBox<Actividad>(modeloActividades);
 			cmbActividades.setFont(new Font("Tahoma", Font.PLAIN, 8));
 		}
 		return cmbActividades;
 	}
+
 	private JPanel getPnInstalacion() {
 		if (pnInstalacion == null) {
 			pnInstalacion = new JPanel();
@@ -460,6 +452,7 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 		}
 		return pnInstalacion;
 	}
+
 	private JLabel getLblInstalacion_1() {
 		if (lblInstalacion == null) {
 			lblInstalacion = new JLabel("Instalaci\u00F3n:");
@@ -467,13 +460,15 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 		}
 		return lblInstalacion;
 	}
+
 	private JComboBox<Instalacion> getCmbInstalaciones_1() {
 		if (cmbInstalaciones == null) {
-			cmbInstalaciones = new JComboBox<Instalacion>();
+			cmbInstalaciones = new JComboBox<Instalacion>(modeloInstalaciones);
 			cmbInstalaciones.setEnabled(true);
 		}
 		return cmbInstalaciones;
 	}
+
 	private JPanel getPnFechaFin() {
 		if (pnFechaFin == null) {
 			pnFechaFin = new JPanel();
@@ -483,6 +478,7 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 		}
 		return pnFechaFin;
 	}
+
 	private JLabel getLblFechaFin() {
 		if (lblFechaFin == null) {
 			lblFechaFin = new JLabel("Fecha fin:");
@@ -490,6 +486,7 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 		}
 		return lblFechaFin;
 	}
+
 	private JTextField getTxtFechaFin() {
 		if (txtFechaFin == null) {
 			txtFechaFin = new JTextField();

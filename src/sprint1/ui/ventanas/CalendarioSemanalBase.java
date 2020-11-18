@@ -81,6 +81,10 @@ public class CalendarioSemanalBase extends JDialog {
 	public Programa getPrograma() {
 		return this.programa;
 	}
+	
+	public Date getDate() {
+		return this.date;
+	}
 
 	private JPanel getPnNorth() {
 		if (pnNorth == null) {
