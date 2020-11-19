@@ -113,7 +113,7 @@ public class VerAlquileresSocio extends JDialog {
 		int diaDeHoy = cal.get(Calendar.DAY_OF_MONTH);
 		int mesActual = cal.get(Calendar.MONTH) + 1;
 		int añoActual = cal.get(Calendar.YEAR);
-		int hora = cal.get(Calendar.HOUR);
+		int hora = cal.get(Calendar.HOUR_OF_DAY);
 		List<Alquiler> alquileres = parent.getParent().getPrograma().getAlquileresSocio(socio);
 		alquileres.sort(new ComparadorPorDiaAlquiler());
 		for (Alquiler a : alquileres) {
@@ -144,7 +144,7 @@ public class VerAlquileresSocio extends JDialog {
 		}
 		if ((a.getAño() < añoActual || a.getAño() == añoActual && a.getMes() < mesActual ||
 				a.getAño() == añoActual && a.getMes() == mesActual && a.getDia() < diaDeHoy ||
-				a.getAño() == añoActual && a.getMes() == mesActual && a.getDia() == diaDeHoy && hora < a.getHoraInicio())) {
+				a.getAño() == añoActual && a.getMes() == mesActual && a.getDia() == diaDeHoy && a.getHoraInicio() <= hora)) {
 			if (!tituloPuesto) {
 				añadirLabelTituloDia(a.getDia(), a.getMes(), a.getAño());
 				tituloPuesto = true;
@@ -160,7 +160,7 @@ public class VerAlquileresSocio extends JDialog {
 		}
 		if ((a.getAño() > añoActual || a.getAño() == añoActual && a.getMes() > mesActual ||
 				a.getAño() == añoActual && a.getMes() == mesActual && a.getDia() > diaDeHoy ||
-				a.getAño() == añoActual && a.getMes() == mesActual && a.getDia() == diaDeHoy && hora >= a.getHoraInicio())) {
+				a.getAño() == añoActual && a.getMes() == mesActual && a.getDia() == diaDeHoy && a.getHoraInicio() > hora)) {
 			if (!tituloPuesto) {
 				añadirLabelTituloDia(a.getDia(), a.getMes(), a.getAño());
 				tituloPuesto = true;
