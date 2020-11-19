@@ -50,6 +50,19 @@ public class ActividadPlanificada implements Comparable<ActividadPlanificada> {
 			int horaInicio, int horaFin, int limitePlazas, String codigoInstalacion) {
 		this(dia, mes, año, limitePlazas, horaInicio, horaFin, null, codigoActividad, codigoInstalacion);
 	}
+	
+	public ActividadPlanificada(String codigoActividad, String codigoInstalacion, int horaInicio, int horaFin, int dia, int mes, int año) {
+		this.codigoPlanificada = UUID.randomUUID().toString();
+		this.dia = dia;
+		this.mes = mes;
+		this.año = año;
+		this.limitePlazas = 10;
+		this.horaInicio = horaInicio;
+		this.horaFin = horaFin;
+		this.codigoMonitor = "";
+		this.codigoActividad = codigoActividad;
+		this.codigoInstalacion = codigoInstalacion;
+	}
 
 	public String getCodigoPlanificada() {
 		return codigoPlanificada;

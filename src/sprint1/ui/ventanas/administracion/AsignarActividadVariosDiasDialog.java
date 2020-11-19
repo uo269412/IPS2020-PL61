@@ -11,6 +11,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -85,9 +86,13 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 	private int mes;
 	private int año;
 	private int horaInicio;
+	private CalendarioSemanalPlanificar parent;
 
 	DefaultComboBoxModel<Actividad> modeloActividades = new DefaultComboBoxModel<>();
 	private DefaultComboBoxModel<Instalacion> modeloInstalaciones = new DefaultComboBoxModel<>();
+	private JPanel pnHoraFin;
+	private JLabel lblHoraFin;
+	private JTextField txtHoraFin;
 
 	/**
 	 * Create the dialog.
@@ -95,11 +100,13 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 	public AsignarActividadVariosDiasDialog(CalendarioSemanalPlanificar parent, Programa p, int dia, int mes, int año,
 			int horaInicio) {
 		setTitle("Centro de deportes: Planificando actividades");
+		this.parent = parent;
 		this.programa = p;
 		this.dia = dia;
-		this.mes = mes;
+		this.mes = mes + 1;
 		this.año = año;
-		setBounds(100, 100, 455, 569);
+		this.horaInicio = horaInicio;
+		setBounds(100, 100, 455, 690);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
@@ -124,6 +131,10 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 		}
 	}
 
+	public CalendarioSemanalPlanificar getParent() {
+		return parent;
+	}
+
 	private Programa getPrograma() {
 		return this.programa;
 	}
@@ -134,8 +145,9 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 			pnProgramarActividad.setLayout(new GridLayout(0, 1, 0, 0));
 			pnProgramarActividad.add(getPnActividad());
 			pnProgramarActividad.add(getPnInstalacion());
-			pnProgramarActividad.add(getPnDias());
+			pnProgramarActividad.add(getPnHoraFin());
 			pnProgramarActividad.add(getPnFechaFin());
+			pnProgramarActividad.add(getPnDias());
 		}
 		return pnProgramarActividad;
 	}
@@ -153,15 +165,33 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 	private JButton getBtnAñadir() {
 		if (btnAñadir == null) {
 			btnAñadir = new JButton("Planificar");
-			if (cmbInstalaciones.getModel().getSize() == 0) {
-				btnAñadir.setEnabled(false);
-			} else {
-				btnAñadir.setEnabled(true);
-			}
+			btnAñadir.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					try {
+						checkCampos();
+						crearActividades();
+						JOptionPane.showMessageDialog(getMe(), "Se han añadido las actividades correctamente");
+						getParent().generarPaneles();
+						dispose();
+					} catch (SQLException e) {
+						System.out.println(
+								"Ha habido un error creando las nuevas actividades, refresca el calendario para ver los cambios");
+					}
+				}
+			});
 			btnAñadir.setForeground(Color.WHITE);
 			btnAñadir.setBackground(new Color(60, 179, 113));
 		}
 		return btnAñadir;
+	}
+
+	protected void checkCampos() {
+		try {
+			int horaFin = Integer.parseInt(txtHoraFin.getText());
+		} catch (Exception ex) {
+			JOptionPane.showMessageDialog(getMe(), "Introduce un campo válido para la hora de fin");
+		}
+
 	}
 
 	private JPanel getPnBotones() {
@@ -193,82 +223,106 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 		return this;
 	}
 
-	private int getMinRecursos() {
-		int minRecursos = Integer.MAX_VALUE;
-		for (Recurso r : ((Actividad) cmbActividades.getSelectedItem()).getRecursos()) {
-			if (r.getUnidades() < minRecursos) {
-				minRecursos = r.getUnidades();
-			}
+	private void crearActividades() throws SQLException {
+		int añoUltimaReserva = año;
+		int mesUltimaReserva = mes;
+		int diaUltimaReserva = dia;
+
+		int diaFin = 0;
+		int mesFin = 0;
+		int añoFin = 0;
+
+		if (!txtFechaFin.getText().equals("")) {
+			diaFin = Integer.parseInt(txtFechaFin.getText().split("/")[0]);
+			mesFin = Integer.parseInt(txtFechaFin.getText().split("/")[1]);
+			añoFin = Integer.parseInt(txtFechaFin.getText().split("/")[2]);
 		}
 
-		return minRecursos;
-	}
+		while (LocalDate.of(añoUltimaReserva, mesUltimaReserva, diaUltimaReserva)
+				.isBefore(LocalDate.of(añoFin, mesFin, diaFin))) {
 
-	private ActividadPlanificada crearPlanificada() {
-//		String codigoAAsignar = ((Actividad) cmbActividades.getSelectedItem()).getCodigo();
-//		int limitePlazas;
-//		if(txtLimitePlazas.getText().equals("")){
-//			limitePlazas = Integer.MAX_VALUE;
-//		}
-//		else {
-//			limitePlazas = Integer.parseInt(txtLimitePlazas.getText());
-//		}
-//		int horaInicio = Integer.parseInt(txtHoraInicio.getText());
-//		int horaFin = Integer.parseInt(txtHoraFin.getText());
-//		String codigoInstalacion = ((Instalacion)cmbInstalaciones.getSelectedItem()).getCodigoInstalacion();
-//		return new ActividadPlanificada(codigoAAsignar, dia, mes, año, limitePlazas, horaInicio, horaFin, codigoInstalacion);
-		return null;
-	}
+			LocalDate diaIterable = LocalDate.of(añoUltimaReserva, mesUltimaReserva, diaUltimaReserva);
+			String codigoActividad = ((Actividad) cmbActividades.getSelectedItem()).getCodigo();
+			String codigoInstalacion = ((Instalacion) cmbInstalaciones.getSelectedItem()).getCodigoInstalacion();
+			ActividadPlanificada actividadACrear;
 
-	private void rellenarInstalacion() {
-		cmbInstalaciones.setEnabled(true);
-		Actividad a = programa.getActividades().get(cmbActividades.getSelectedIndex());
-		if (a.requiresRecursos()) {
-			boolean todosIguales = true;
-			String i = a.getRecursos().get(0).getInstalacion();
-			for (Recurso r : a.getRecursos()) {
-				if (r.getInstalacion().equals(i)) {
-					todosIguales = true;
-				} else {
-					todosIguales = false;
-					break;
+			if (diaIterable.getDayOfWeek().getValue() == 1) {
+				if (chckbxLunes.isSelected()) {
+					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio,
+							Integer.parseInt(txtHoraFin.getText()), diaUltimaReserva, mesUltimaReserva,
+							añoUltimaReserva);
+					getPrograma().añadirActividadPlanificada(actividadACrear);
 				}
 			}
-			if (todosIguales) {
-				try {
-					Instalacion inst = programa.obtenerInstalacionPorId(a.getRecursos().get(0).getInstalacion());
-					Instalacion[] arrayInst = new Instalacion[1];
-					arrayInst[0] = inst;
-					cmbInstalaciones.setModel(new DefaultComboBoxModel<Instalacion>(arrayInst));
-				} catch (SQLException e) {
-					JOptionPane.showMessageDialog(this,
-							"Ha habido un problema con la base de datos asignando la instalacion"
-									+ ", póngase en contacto con el desarrollador");
+			if (diaIterable.getDayOfWeek().getValue() == 2) {
+				if (chckbxMartes.isSelected()) {
+					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio,
+							Integer.parseInt(txtHoraFin.getText()), diaUltimaReserva, mesUltimaReserva,
+							añoUltimaReserva);
+					getPrograma().añadirActividadPlanificada(actividadACrear);
+				}
+			}
+			if (diaIterable.getDayOfWeek().getValue() == 3) {
+				if (chckbxMiercoles.isSelected()) {
+					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio,
+							Integer.parseInt(txtHoraFin.getText()), diaUltimaReserva, mesUltimaReserva,
+							añoUltimaReserva);
+					getPrograma().añadirActividadPlanificada(actividadACrear);
+				}
+			}
+			if (diaIterable.getDayOfWeek().getValue() == 4) {
+				if (chckbxJueves.isSelected()) {
+					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio,
+							Integer.parseInt(txtHoraFin.getText()), diaUltimaReserva, mesUltimaReserva,
+							añoUltimaReserva);
+					getPrograma().añadirActividadPlanificada(actividadACrear);
+				}
+			}
+			if (diaIterable.getDayOfWeek().getValue() == 5) {
+				if (chckbxViernes.isSelected()) {
+					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio,
+							Integer.parseInt(txtHoraFin.getText()), diaUltimaReserva, mesUltimaReserva,
+							añoUltimaReserva);
+					getPrograma().añadirActividadPlanificada(actividadACrear);
+				}
+			}
+			if (diaIterable.getDayOfWeek().getValue() == 6) {
+				if (chckbxSabado.isSelected()) {
+					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio,
+							Integer.parseInt(txtHoraFin.getText()), diaUltimaReserva, mesUltimaReserva,
+							añoUltimaReserva);
+					getPrograma().añadirActividadPlanificada(actividadACrear);
+				}
+			}
+			if (diaIterable.getDayOfWeek().getValue() == 7) {
+				if (chckbxDomingo.isSelected()) {
+					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio,
+							Integer.parseInt(txtHoraFin.getText()), diaUltimaReserva, mesUltimaReserva,
+							añoUltimaReserva);
+					getPrograma().añadirActividadPlanificada(actividadACrear);
+				}
+			}
+			diaUltimaReserva += 1;
+			if (mesUltimaReserva % 2 == 1 || mesUltimaReserva == 12) {
+				if (diaUltimaReserva > 31) {
+					mesUltimaReserva++;
+					diaUltimaReserva = 1;
+					if (mesUltimaReserva > 12) {
+						mesUltimaReserva -= 12;
+						añoUltimaReserva++;
+					}
 				}
 			} else {
-				cmbInstalaciones.setEnabled(false);
-				cmbInstalaciones.setToolTipText("No hay ninguna instalación que tenga recursos para esta actividad");
-				btnAñadir.setEnabled(false);
+				if (diaUltimaReserva > 30) {
+					mesUltimaReserva++;
+					diaUltimaReserva = 1;
+					if (mesUltimaReserva > 12) {
+						mesUltimaReserva -= 12;
+						añoUltimaReserva++;
+					}
+				}
 			}
-		} else {
-			cmbInstalaciones.setModel(new DefaultComboBoxModel<Instalacion>(programa.getInstalacionesDisponibles()
-					.toArray(new Instalacion[programa.getInstalacionesDisponibles().size()])));
 		}
-	}
-
-	private void adaptarActividadesAInstalacion() {
-		Instalacion i = (Instalacion) cmbInstalaciones.getSelectedItem();
-		cmbActividades.setModel(new DefaultComboBoxModel<Actividad>(programa.actividadesPorInstalacion(i.getCodigo())
-				.toArray(new Actividad[programa.actividadesPorInstalacion(i.getCodigo()).size()])));
-	}
-
-	private class ComparePlanificadas implements Comparator<ActividadPlanificada> {
-
-		@Override
-		public int compare(ActividadPlanificada arg0, ActividadPlanificada arg1) {
-			return arg0.compareTo(arg1);
-		}
-
 	}
 
 	private JPanel getPnSemana() {
@@ -420,7 +474,7 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 	private JPanel getPnActividad() {
 		if (pnActividad == null) {
 			pnActividad = new JPanel();
-			pnActividad.setLayout(new GridLayout(0, 1, 0, 0));
+			pnActividad.setLayout(new GridLayout(2, 2, 0, 0));
 			pnActividad.add(getLblActividad_1());
 			pnActividad.add(getCmbActividades_1());
 		}
@@ -493,5 +547,31 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 			txtFechaFin.setColumns(10);
 		}
 		return txtFechaFin;
+	}
+
+	private JPanel getPnHoraFin() {
+		if (pnHoraFin == null) {
+			pnHoraFin = new JPanel();
+			pnHoraFin.setLayout(new GridLayout(0, 1, 0, 0));
+			pnHoraFin.add(getLblHoraFin());
+			pnHoraFin.add(getTxtHoraFin());
+		}
+		return pnHoraFin;
+	}
+
+	private JLabel getLblHoraFin() {
+		if (lblHoraFin == null) {
+			lblHoraFin = new JLabel("Hora fin:");
+			lblHoraFin.setHorizontalAlignment(SwingConstants.CENTER);
+		}
+		return lblHoraFin;
+	}
+
+	private JTextField getTxtHoraFin() {
+		if (txtHoraFin == null) {
+			txtHoraFin = new JTextField();
+			txtHoraFin.setColumns(10);
+		}
+		return txtHoraFin;
 	}
 }

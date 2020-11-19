@@ -86,10 +86,10 @@ public class CalendarioSemanalPlanificar extends CalendarioSemanalBase {
 		public void actionPerformed(ActionEvent arg0) {
 			JButton button = (JButton) arg0.getSource();
 			int[] fecha = parseFecha(button);
-			int horaInicio = fecha[0];
-			int dia = fecha[1];
-			int mes = fecha[2];
-			int año = fecha[3];
+			int dia = fecha[0];
+			int mes = fecha[1];
+			int año = fecha[2];
+			int horaInicio = fecha[3];
 			AsignarActividadVariosDiasDialog aad = new AsignarActividadVariosDiasDialog(getMe(), getPrograma(), dia, mes, año, horaInicio);
 			aad.setLocationRelativeTo(getMe());
 			aad.setModal(true);
@@ -104,10 +104,10 @@ public class CalendarioSemanalPlanificar extends CalendarioSemanalBase {
 	private int[] parseFecha(JButton b) {
 		String[] dateInfo = b.getToolTipText().split("/");
 		int[] fecha = new int[4];
-		fecha[0] = Integer.parseInt(dateInfo[0]);
-		fecha[1] = Integer.parseInt(dateInfo[1]);
-		fecha[2] = Integer.parseInt(dateInfo[2]);
-		fecha[3] = Integer.parseInt(dateInfo[3]);
+		fecha[0] = Integer.parseInt(dateInfo[0]); //dia
+		fecha[1] = Integer.parseInt(dateInfo[1]); //mes
+		fecha[2] = Integer.parseInt(dateInfo[2]); //año
+		fecha[3] = Integer.parseInt(dateInfo[3]); //horaInicio
 
 		return fecha;
 	}

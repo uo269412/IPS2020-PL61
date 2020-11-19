@@ -122,7 +122,7 @@ public class CalendarioSemanalBase extends JDialog {
 		return btnMostrarOcupacion;
 	}
 	
-	private void generarPaneles() {
+	public void generarPaneles() {
 		pnCentralDias.removeAll();
 		for (int i = 0; i <= 7; i++) {
 			pnCentralDias.add(newDay(i));
