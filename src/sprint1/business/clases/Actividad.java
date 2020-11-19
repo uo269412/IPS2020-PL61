@@ -2,7 +2,6 @@ package sprint1.business.clases;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.UUID;
 
 public class Actividad implements Comparable<Actividad> {
 
