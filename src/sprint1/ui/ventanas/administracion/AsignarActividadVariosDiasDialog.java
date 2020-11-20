@@ -292,61 +292,88 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 
 			LocalDate diaIterable = LocalDate.of(añoUltimaReserva, mesUltimaReserva, diaUltimaReserva);
 			String codigoActividad = ((Actividad) cmbActividades.getSelectedItem()).getCodigo();
-			String codigoInstalacion = ((Instalacion) cmbInstalaciones.getSelectedItem()).getCodigoInstalacion();
+			String codigoInstalacion = "";
+			int horaFin = 0;
+			if (rdbtnUnaInstalacion.isSelected()) {
+				codigoInstalacion = ((Instalacion) cmbInstalaciones.getSelectedItem()).getCodigoInstalacion();
+			}
+
+			horaFin = Integer.parseInt(txtHoraFin.getText());
 			ActividadPlanificada actividadACrear;
 
 			if (diaIterable.getDayOfWeek().getValue() == 1) {
 				if (chckbxLunes.isSelected()) {
+					if (rdbtnVariasInstalaciones.isSelected()) {
+						codigoInstalacion = ((Instalacion) cmbInstalacionesLunes.getSelectedItem()).getCodigoInstalacion();
+					} 
 					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio,
-							Integer.parseInt(txtHoraFin.getText()), diaUltimaReserva, mesUltimaReserva,
+							horaFin, diaUltimaReserva, mesUltimaReserva,
 							añoUltimaReserva);
 					getPrograma().añadirActividadPlanificada(actividadACrear);
 				}
 			}
 			if (diaIterable.getDayOfWeek().getValue() == 2) {
 				if (chckbxMartes.isSelected()) {
+					if (rdbtnVariasInstalaciones.isSelected()) {
+						codigoInstalacion = ((Instalacion) cmbInstalacionesMartes.getSelectedItem()).getCodigoInstalacion();
+					} 
 					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio,
-							Integer.parseInt(txtHoraFin.getText()), diaUltimaReserva, mesUltimaReserva,
+							horaFin, diaUltimaReserva, mesUltimaReserva,
 							añoUltimaReserva);
 					getPrograma().añadirActividadPlanificada(actividadACrear);
 				}
 			}
 			if (diaIterable.getDayOfWeek().getValue() == 3) {
 				if (chckbxMiercoles.isSelected()) {
+					if (rdbtnVariasInstalaciones.isSelected()) {
+						codigoInstalacion = ((Instalacion) cmbInstalacionesMiercoles.getSelectedItem()).getCodigoInstalacion();
+					} 
 					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio,
-							Integer.parseInt(txtHoraFin.getText()), diaUltimaReserva, mesUltimaReserva,
+							horaFin, diaUltimaReserva, mesUltimaReserva,
 							añoUltimaReserva);
 					getPrograma().añadirActividadPlanificada(actividadACrear);
 				}
 			}
 			if (diaIterable.getDayOfWeek().getValue() == 4) {
 				if (chckbxJueves.isSelected()) {
+					if (rdbtnVariasInstalaciones.isSelected()) {
+						codigoInstalacion = ((Instalacion) cmbInstalacionesJueves.getSelectedItem()).getCodigoInstalacion();
+					} 
 					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio,
-							Integer.parseInt(txtHoraFin.getText()), diaUltimaReserva, mesUltimaReserva,
+							horaFin, diaUltimaReserva, mesUltimaReserva,
 							añoUltimaReserva);
 					getPrograma().añadirActividadPlanificada(actividadACrear);
 				}
 			}
 			if (diaIterable.getDayOfWeek().getValue() == 5) {
 				if (chckbxViernes.isSelected()) {
+					if (rdbtnVariasInstalaciones.isSelected()) {
+						codigoInstalacion = ((Instalacion) cmbInstalacionesViernes.getSelectedItem()).getCodigoInstalacion();
+					} 
 					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio,
-							Integer.parseInt(txtHoraFin.getText()), diaUltimaReserva, mesUltimaReserva,
+							horaFin, diaUltimaReserva, mesUltimaReserva,
 							añoUltimaReserva);
 					getPrograma().añadirActividadPlanificada(actividadACrear);
 				}
 			}
 			if (diaIterable.getDayOfWeek().getValue() == 6) {
 				if (chckbxSabado.isSelected()) {
+					if (rdbtnVariasInstalaciones.isSelected()) {
+						codigoInstalacion = ((Instalacion) cmbInstalacionesSabado.getSelectedItem()).getCodigoInstalacion();
+					} 
 					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio,
-							Integer.parseInt(txtHoraFin.getText()), diaUltimaReserva, mesUltimaReserva,
+							horaFin, diaUltimaReserva, mesUltimaReserva,
 							añoUltimaReserva);
 					getPrograma().añadirActividadPlanificada(actividadACrear);
 				}
 			}
 			if (diaIterable.getDayOfWeek().getValue() == 7) {
 				if (chckbxDomingo.isSelected()) {
+					if (rdbtnVariasInstalaciones.isSelected()) {
+						codigoInstalacion = ((Instalacion) cmbInstalacionesDomingo.getSelectedItem()).getCodigoInstalacion();
+					} 
 					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio,
-							Integer.parseInt(txtHoraFin.getText()), diaUltimaReserva, mesUltimaReserva,
+							horaFin, diaUltimaReserva, mesUltimaReserva,
 							añoUltimaReserva);
 					getPrograma().añadirActividadPlanificada(actividadACrear);
 				}
