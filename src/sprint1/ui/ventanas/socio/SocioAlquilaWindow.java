@@ -17,6 +17,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 
 import sprint1.business.clases.ActividadPlanificada;
 import sprint1.business.clases.Alquiler;
@@ -24,6 +25,7 @@ import sprint1.business.clases.Instalacion;
 import sprint1.business.clases.Programa;
 import sprint1.business.clases.Reserva;
 import sprint1.business.clases.Socio;
+import javax.swing.SwingConstants;
 
 public class SocioAlquilaWindow extends JDialog {
 
@@ -38,14 +40,14 @@ public class SocioAlquilaWindow extends JDialog {
 	private JPanel pnHoras;
 	private JTextField txtHoraInicio;
 	private JTextField txtHoraFin;
-	private JButton btnAñadir;
+	private JButton btnñadir;
 	private JPanel pnBotones;
 	private JButton btnVolver;
 
 	private CalendarioAlquilerSocio parent;
 	private int dia;
 	private int mes;
-	private int año;
+	private int ño;
 	private Socio socio;
 
 	private JLabel lblInstalacion;
@@ -53,18 +55,19 @@ public class SocioAlquilaWindow extends JDialog {
 
 	private DefaultComboBoxModel<Instalacion> modeloInstalaciones = new DefaultComboBoxModel<>();
 	private DefaultComboBoxModel<Socio> modeloSocios = new DefaultComboBoxModel<>();
+	private JPanel pnDisponibilidad;
 
 	/**
 	 * Create the dialog.
 	 */
-	public SocioAlquilaWindow(CalendarioAlquilerSocio parent, int dia, int mes, int año, Socio socio) {
+	public SocioAlquilaWindow(CalendarioAlquilerSocio parent, int dia, int mes, int ño, Socio socio) {
 		setTitle("Centro de deportes: Alquilar instalaci\u00F3n");
 		this.dia = dia;
 		this.mes = mes;
-		this.año = año;
+		this.ño = ño;
 		this.parent = parent;
 		this.socio = socio;
-		setBounds(100, 100, 707, 342);
+		setBounds(100, 100, 707, 340);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
@@ -73,6 +76,7 @@ public class SocioAlquilaWindow extends JDialog {
 		getContentPane().add(getPnBotones(), BorderLayout.SOUTH);
 		cargarSocios();
 		cargarInstalaciones();
+		añadirLabels();
 	}
 
 	private void cargarInstalaciones() {
@@ -121,7 +125,7 @@ public class SocioAlquilaWindow extends JDialog {
 
 	private boolean checkMenosDeUnaHoraAntes() {
 		int[] fecha = getPrograma().obtenerHoraDiaMesAño();
-		if (dia == fecha[1] && mes == fecha[2] && año == fecha[3]) {
+		if (dia == fecha[1] && mes == fecha[2] && ño == fecha[3]) {
 			if (fecha[0] >= Integer.parseInt(txtHoraInicio.getText() ) - 1) {
 				return false;
 			}
@@ -152,8 +156,8 @@ public class SocioAlquilaWindow extends JDialog {
 	private boolean checkSocioLibre() {
 		int horaInicio = Integer.parseInt(txtHoraInicio.getText());
 		int horaFin = Integer.parseInt(txtHoraFin.getText());
-		List<Reserva> reservasSocio = getPrograma().getReservas(horaInicio, dia, mes, año);
-		List<Alquiler> alquileresSocio = getPrograma().getAlquileres(horaInicio, dia, mes, año);
+		List<Reserva> reservasSocio = getPrograma().getReservas(horaInicio, dia, mes, ño);
+		List<Alquiler> alquileresSocio = getPrograma().getAlquileres(horaInicio, dia, mes, ño);
 		for (Reserva reserva : reservasSocio) {
 			if (socio.getId_cliente().equals(reserva.getId_cliente())) {
 				return false;
@@ -165,7 +169,7 @@ public class SocioAlquilaWindow extends JDialog {
 			}
 		}
 		reservasSocio = getPrograma().getReservas();
-		alquileresSocio = getPrograma().getAlquileresSocioEnUnDiaEspecifico(socio, dia, mes, año);
+		alquileresSocio = getPrograma().getAlquileresSocioEnUnDiaEspecifico(socio, dia, mes, ño);
 		for (Reserva reserva : reservasSocio) {
 			if (socio.getId_cliente().equals(reserva.getId_cliente())) {
 				if (chocaHoras(reserva, horaInicio, horaFin))
@@ -206,8 +210,8 @@ public class SocioAlquilaWindow extends JDialog {
 		int horaInicio = Integer.parseInt(txtHoraInicio.getText());
 		Instalacion instalacion = (Instalacion) cmbInstalaciones.getSelectedItem();
 		List<ActividadPlanificada> actividadesInstalacion = getPrograma().getActividadesPlanificadas(horaInicio, dia,
-				mes, año);
-		List<Alquiler> alquileresInstalacion = getPrograma().getAlquileres(horaInicio, dia, mes, año);
+				mes, ño);
+		List<Alquiler> alquileresInstalacion = getPrograma().getAlquileres(horaInicio, dia, mes, ño);
 		for (ActividadPlanificada actividadPlanificada : actividadesInstalacion) {
 			if (instalacion.getCodigoInstalacion().equals(actividadPlanificada.getCodigoInstalacion())) {
 				return false;
@@ -236,7 +240,7 @@ public class SocioAlquilaWindow extends JDialog {
 	private boolean checkHoraInicioMayorHoraActual() {
 		int horaInicio = Integer.parseInt(txtHoraInicio.getText());
 		int[] fecha = getPrograma().obtenerHoraDiaMesAño();
-		if (año == fecha[3]) {
+		if (ño == fecha[3]) {
 			if (mes == fecha[2]) {
 				if (dia == fecha[1]) {
 					return horaInicio >= fecha[0];
@@ -246,7 +250,7 @@ public class SocioAlquilaWindow extends JDialog {
 			} else if (fecha[2] > mes) {
 				return false;
 			}
-		} else if (fecha[3] > año) {
+		} else if (fecha[3] > ño) {
 			return false;
 		}
 		return true;
@@ -256,7 +260,7 @@ public class SocioAlquilaWindow extends JDialog {
 		Instalacion instalacion = (Instalacion) cmbInstalaciones.getSelectedItem();
 		int horaInicio = Integer.parseInt(txtHoraInicio.getText());
 		int horaFin = Integer.parseInt(txtHoraFin.getText());
-		getPrograma().añadirAlquiler(socio, instalacion, horaInicio, horaFin, dia, mes, año);
+		getPrograma().añadirAlquiler(socio, instalacion, horaInicio, horaFin, dia, mes, ño);
 	}
 
 	private JPanel getPnProgramarActividad() {
@@ -268,6 +272,7 @@ public class SocioAlquilaWindow extends JDialog {
 			pnProgramarActividad.add(getCmbInstalaciones());
 			pnProgramarActividad.add(getLblHora());
 			pnProgramarActividad.add(getPnHoras());
+			pnProgramarActividad.add(getPnDisponibilidad());
 		}
 		return pnProgramarActividad;
 	}
@@ -311,28 +316,32 @@ public class SocioAlquilaWindow extends JDialog {
 		return txtHoraFin;
 	}
 
-	private JButton getBtnAñadir() {
-		if (btnAñadir == null) {
-			btnAñadir = new JButton("A\u00F1adir");
-			btnAñadir.addActionListener(new ActionListener() {
+	private JButton getBtnñadir() {
+		if (btnñadir == null) {
+			btnñadir = new JButton("A\u00F1adir");
+			btnñadir.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					Instalacion instalacion = (Instalacion) cmbInstalaciones.getSelectedItem();
+					if (txtHoraInicio.getText().trim().isEmpty() || txtHoraFin.getText().trim().isEmpty()) {
+						JOptionPane.showMessageDialog(SocioAlquilaWindow.this, "Los datos introducidos en la hora de fin no representan un número");
+						return;
+					}
 					int horaInicio = Integer.parseInt(txtHoraInicio.getText());
 					int horaFin = Integer.parseInt(txtHoraFin.getText());
 					
 					if (comprobacionesAlquiler()) {
-						int yesNo = JOptionPane.showConfirmDialog(getMe(), "El precio será de " + instalacion.getPrecioHora() * (horaFin - horaInicio) + ". ¿Confirmar?");	
+						int yesNo = JOptionPane.showConfirmDialog(getMe(), "El precio sería de " + instalacion.getPrecioHora() * (horaFin - horaInicio) + ". Â¿Confirmar?");	
 						if(yesNo == JOptionPane.YES_OPTION) {
 							crearAlquiler();
-							JOptionPane.showMessageDialog(getMe(), "Se ha añadido el alquiler correctamente");
+							JOptionPane.showMessageDialog(getMe(), "Se ha ñadido el alquiler correctamente");
 						}
 					}
 				}
 			});
-			btnAñadir.setForeground(Color.WHITE);
-			btnAñadir.setBackground(new Color(60, 179, 113));
+			btnñadir.setForeground(Color.WHITE);
+			btnñadir.setBackground(new Color(60, 179, 113));
 		}
-		return btnAñadir;
+		return btnñadir;
 	}
 
 	public SocioAlquilaWindow getMe() {
@@ -344,7 +353,7 @@ public class SocioAlquilaWindow extends JDialog {
 			pnBotones = new JPanel();
 			pnBotones.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			pnBotones.add(getBtnVolver());
-			pnBotones.add(getBtnAñadir());
+			pnBotones.add(getBtnñadir());
 		}
 		return pnBotones;
 	}
@@ -367,6 +376,7 @@ public class SocioAlquilaWindow extends JDialog {
 	private JLabel getLblInstalacion() {
 		if (lblInstalacion == null) {
 			lblInstalacion = new JLabel("Instalaci\u00F3n donde se realizar\u00E1 el alquiler: ");
+			lblInstalacion.setForeground(new Color(0, 0, 0));
 		}
 		return lblInstalacion;
 	}
@@ -374,12 +384,66 @@ public class SocioAlquilaWindow extends JDialog {
 	private JComboBox<Instalacion> getCmbInstalaciones() {
 		if (cmbInstalaciones == null) {
 			cmbInstalaciones = new JComboBox<Instalacion>(modeloInstalaciones);
+			cmbInstalaciones.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					añadirLabels();
+				}
+			});
 		}
 		return cmbInstalaciones;
 	}
 
 	private Programa getPrograma() {
 		return parent.getParent().getParent().getPrograma();
+	}
+	private JPanel getPnDisponibilidad() {
+		if (pnDisponibilidad == null) {
+			pnDisponibilidad = new JPanel();
+			pnDisponibilidad.setLayout(new GridLayout(1, 0, 0, 0));
+		}
+		return pnDisponibilidad;
+	}
+
+	private void añadirLabels() {
+		pnDisponibilidad.removeAll();
+		for (int i = 8; i < 23; i++) {
+			JLabel label = new JLabel();
+			label.setHorizontalAlignment(SwingConstants.CENTER);
+			label.setBorder(new LineBorder(new Color(0, 0, 0)));
+			String labelText ="<html>" + i + ":00<br/>";
+			if (checkInstalacionLibre(i)) {
+				label.setForeground(new Color(0,125,0));
+				labelText += "D";
+			}
+			else {
+				label.setForeground(Color.red);
+				labelText += "ND";
+			}
+			labelText += "</html>";
+			label.setText(labelText);
+			pnDisponibilidad.add(label);
+		}
+		pnDisponibilidad.repaint();
+		pnDisponibilidad.validate();
+	}
+
+	private boolean checkInstalacionLibre(int i) {
+		int horaInicio = i;
+		Instalacion instalacion = (Instalacion) cmbInstalaciones.getSelectedItem();
+		List<ActividadPlanificada> actividadesInstalacion = getPrograma().getActividadesPlanificadas(horaInicio, dia,
+				mes, ño);
+		List<Alquiler> alquileresInstalacion = getPrograma().getAlquileres(horaInicio, dia, mes, ño);
+		for (ActividadPlanificada actividadPlanificada : actividadesInstalacion) {
+			if (instalacion.getCodigoInstalacion().equals(actividadPlanificada.getCodigoInstalacion())) {
+				return false;
+			}
+		}
+		for (Alquiler alquiler : alquileresInstalacion) {
+			if (instalacion.getCodigoInstalacion().equals(alquiler.getId_instalacion())) {
+				return false;
+			}
+		}
+		return true;
 	}
 }
 

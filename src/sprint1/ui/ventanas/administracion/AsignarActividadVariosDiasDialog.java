@@ -37,7 +37,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JCheckBox;
 import javax.swing.BoxLayout;
 import java.awt.Dimension;
-import net.miginfocom.swing.MigLayout;
 import javax.swing.SwingConstants;
 
 public class AsignarActividadVariosDiasDialog extends JDialog {
