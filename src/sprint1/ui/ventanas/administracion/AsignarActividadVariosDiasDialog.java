@@ -11,7 +11,9 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -80,7 +82,6 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 	private DefaultComboBoxModel<Instalacion> modeloInstalacionesSabado = new DefaultComboBoxModel<>();
 	private DefaultComboBoxModel<Instalacion> modeloInstalacionesDomingo = new DefaultComboBoxModel<>();
 	private JPanel pnHoraFin;
-	private JTextField txtHoraFin;
 	private JPanel pnDecisionesInstalaciones;
 	private JPanel pnUnaSolaInstalación;
 	private JPanel pnVariasInstalaciones;
@@ -111,7 +112,7 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 	private JLabel lblHoraFinLunes;
 	private JTextField txtHoraFinLunes;
 	private JPanel pnActividad;
-	private JComboBox cmbActividades;
+	private JComboBox<Actividad> cmbActividades;
 	private JPanel pnFechaFin;
 	private JTextField txtFechaFin;
 	private JPanel pnModificarMartes;
@@ -144,15 +145,23 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 	private JComboBox<Instalacion> cmbInstalacionesDomingo;
 	private JLabel lblHoraFinDomingo;
 	private JTextField txtHoraFinDomingo;
+	private JPanel pnDecisionesHoraFin;
+	private JPanel pnMismaHoraFin;
+	private JRadioButton rdbtnMismaHoraFin;
+	private JPanel pnDistintaHora;
+	private JRadioButton rdbtnDistintaHora;
+	private JTextField txtHoraFin;
 
 	private ButtonGroup instalacionesGroup = new ButtonGroup();
+	private ButtonGroup horasGroup = new ButtonGroup();
 
 	/**
 	 * Create the dialog.
 	 */
 	public AsignarActividadVariosDiasDialog(CalendarioSemanalPlanificar parent, Programa p, int dia, int mes, int año,
 			int horaInicio) {
-		setTitle("Centro de deportes: Planificando actividades");
+		setTitle("Centro de deportes: Planificando actividades el " + dia + "/" + mes + "/" + año + " a las "
+				+ horaInicio);
 		this.parent = parent;
 		this.programa = p;
 		this.dia = dia;
@@ -217,11 +226,28 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 			btnAñadir.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					try {
-						checkCampos();
-						crearActividades();
-						JOptionPane.showMessageDialog(getMe(), "Se han añadido las actividades correctamente");
-						getParent().generarPaneles();
-						dispose();
+						try {
+							checkCampos();
+							crearActividades();
+							JOptionPane.showMessageDialog(getMe(), "Se han añadido las actividades correctamente");
+							getParent().generarPaneles();
+							dispose();
+						} catch (NumberFormatException ex) {
+							JOptionPane.showMessageDialog(getMe(),
+									"Los campos de hora de fin contienen datos erróneos");
+						} catch (IllegalArgumentException ex) {
+							JOptionPane.showMessageDialog(getMe(), ex.getMessage());
+						} catch (DateTimeParseException ex) {
+							JOptionPane.showMessageDialog(getMe(),
+									"Revise la fecha de finalización (formato dia/mes/año)");
+						} catch (ArrayIndexOutOfBoundsException ex) {
+							JOptionPane.showMessageDialog(getMe(),
+									"Revise la fecha de finalización (formato dia/mes/año)");
+						} catch (DateTimeException ex) {
+							JOptionPane.showMessageDialog(getMe(),
+									"Revise la fecha de finalización (formato dia/mes/año)");
+						}
+
 					} catch (SQLException e) {
 						System.out.println(
 								"Ha habido un error creando las nuevas actividades, refresca el calendario para ver los cambios");
@@ -234,13 +260,76 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 		return btnAñadir;
 	}
 
-	protected void checkCampos() {
-		try {
-			int horaFin = Integer.parseInt(txtHoraFin.getText());
-		} catch (Exception ex) {
-			JOptionPane.showMessageDialog(getMe(), "Introduce un campo válido para la hora de fin");
+	protected void checkCampos() throws IllegalArgumentException, NumberFormatException, DateTimeParseException {
+		int horaFin = Integer.MAX_VALUE;
+		if (txtHoraFin.isVisible()) {
+			horaFin = Integer.parseInt(txtHoraFin.getText());
+			if (horaFin <= horaInicio) {
+				throw new IllegalArgumentException("La hora de fin es anterior a la de inicio");
+			}
+		} else {
+			if (chckbxLunes.isSelected()) {
+				horaFin = Integer.parseInt(txtHoraFinLunes.getText());
+				if (horaFin <= horaInicio && horaFin >= 10 && horaFin <= 23) {
+					throw new IllegalArgumentException(
+							"La hora de fin para el lunes es anterior a la de inicio o es inferior a las 10 o superior a las 23");
+				}
+			}
+			if (chckbxMartes.isSelected()) {
+				horaFin = Integer.parseInt(txtHoraFinMartes.getText());
+				if (horaFin <= horaInicio && horaFin >= 10 && horaFin <= 23) {
+					throw new IllegalArgumentException(
+							"La hora de fin para el martes es anterior a la de inicio o es inferior a las 10 o superior a las 23");
+				}
+			}
+			if (chckbxMiercoles.isSelected()) {
+				horaFin = Integer.parseInt(txtHoraFinMiercoles.getText());
+				if (horaFin <= horaInicio && horaFin >= 10 && horaFin <= 23) {
+					throw new IllegalArgumentException(
+							"La hora de fin para el miercoles es anterior a la de inicio o es inferior a las 10 o superior a las 23");
+				}
+			}
+			if (chckbxJueves.isSelected()) {
+				horaFin = Integer.parseInt(txtHoraFinJueves.getText());
+				if (horaFin <= horaInicio && horaFin >= 10 && horaFin <= 23) {
+					throw new IllegalArgumentException(
+							"La hora de fin para el jueves es anterior a la de inicio o es inferior a las 10 o superior a las 23");
+				}
+			}
+			if (chckbxViernes.isSelected()) {
+				horaFin = Integer.parseInt(txtHoraFinViernes.getText());
+				if (horaFin <= horaInicio && horaFin >= 10 && horaFin <= 23) {
+					throw new IllegalArgumentException(
+							"La hora de fin para el viernes es anterior a la de inicio o es inferior a las 10 o superior a las 23");
+				}
+			}
+			if (chckbxSabado.isSelected()) {
+				horaFin = Integer.parseInt(txtHoraFinSabado.getText());
+				if (horaFin <= horaInicio && horaFin >= 10 && horaFin <= 23) {
+					throw new IllegalArgumentException(
+							"La hora de fin para el sabado es anterior a la de inicio o es inferior a las 10 o superior a las 23");
+				}
+			}
+			if (chckbxDomingo.isSelected()) {
+				horaFin = Integer.parseInt(txtHoraFinDomingo.getText());
+				if (horaFin <= horaInicio && horaFin >= 10 && horaFin <= 23) {
+					throw new IllegalArgumentException(
+							"La hora de fin para el domingo es anterior a la de inicio o es inferior a las 10 o superior a las 23");
+				}
+			}
 		}
-
+		int diaFin = -1;
+		int mesFin = -1;
+		int añoFin = -1;
+		if (!txtFechaFin.getText().equals("")) {
+			diaFin = Integer.parseInt(txtFechaFin.getText().split("/")[0]);
+			mesFin = Integer.parseInt(txtFechaFin.getText().split("/")[1]);
+			añoFin = Integer.parseInt(txtFechaFin.getText().split("/")[2]);
+		}
+		if (LocalDate.of(añoFin, mesFin, diaFin).isBefore(LocalDate.of(año, mes, dia))) {
+			throw new IllegalArgumentException(
+					"La fecha de finalización de la actividad es anterior a la fecha seleccionada");
+		}
 	}
 
 	private JPanel getPnBotones() {
@@ -286,14 +375,14 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 			mesFin = Integer.parseInt(txtFechaFin.getText().split("/")[1]);
 			añoFin = Integer.parseInt(txtFechaFin.getText().split("/")[2]);
 		}
-
+		int horaFin = 0;
+		String codigoInstalacion = "";
 		while (LocalDate.of(añoUltimaReserva, mesUltimaReserva, diaUltimaReserva)
 				.isBefore(LocalDate.of(añoFin, mesFin, diaFin))) {
 
 			LocalDate diaIterable = LocalDate.of(añoUltimaReserva, mesUltimaReserva, diaUltimaReserva);
 			String codigoActividad = ((Actividad) cmbActividades.getSelectedItem()).getCodigo();
-			String codigoInstalacion = "";
-			int horaFin = 0;
+
 			if (rdbtnUnaInstalacion.isSelected()) {
 				codigoInstalacion = ((Instalacion) cmbInstalaciones.getSelectedItem()).getCodigoInstalacion();
 			}
@@ -304,82 +393,85 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 			if (diaIterable.getDayOfWeek().getValue() == 1) {
 				if (chckbxLunes.isSelected()) {
 					if (rdbtnVariasInstalaciones.isSelected()) {
-						codigoInstalacion = ((Instalacion) cmbInstalacionesLunes.getSelectedItem()).getCodigoInstalacion();
-					} 
-					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio,
-							horaFin, diaUltimaReserva, mesUltimaReserva,
-							añoUltimaReserva);
+						codigoInstalacion = ((Instalacion) cmbInstalacionesLunes.getSelectedItem())
+								.getCodigoInstalacion();
+					}
+					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio, horaFin,
+							diaUltimaReserva, mesUltimaReserva, añoUltimaReserva);
 					getPrograma().añadirActividadPlanificada(actividadACrear);
 				}
 			}
 			if (diaIterable.getDayOfWeek().getValue() == 2) {
 				if (chckbxMartes.isSelected()) {
 					if (rdbtnVariasInstalaciones.isSelected()) {
-						codigoInstalacion = ((Instalacion) cmbInstalacionesMartes.getSelectedItem()).getCodigoInstalacion();
-					} 
-					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio,
-							horaFin, diaUltimaReserva, mesUltimaReserva,
-							añoUltimaReserva);
+						codigoInstalacion = ((Instalacion) cmbInstalacionesMartes.getSelectedItem())
+								.getCodigoInstalacion();
+					}
+					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio, horaFin,
+							diaUltimaReserva, mesUltimaReserva, añoUltimaReserva);
 					getPrograma().añadirActividadPlanificada(actividadACrear);
 				}
 			}
 			if (diaIterable.getDayOfWeek().getValue() == 3) {
 				if (chckbxMiercoles.isSelected()) {
 					if (rdbtnVariasInstalaciones.isSelected()) {
-						codigoInstalacion = ((Instalacion) cmbInstalacionesMiercoles.getSelectedItem()).getCodigoInstalacion();
-					} 
-					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio,
-							horaFin, diaUltimaReserva, mesUltimaReserva,
-							añoUltimaReserva);
+						codigoInstalacion = ((Instalacion) cmbInstalacionesMiercoles.getSelectedItem())
+								.getCodigoInstalacion();
+					}
+					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio, horaFin,
+							diaUltimaReserva, mesUltimaReserva, añoUltimaReserva);
 					getPrograma().añadirActividadPlanificada(actividadACrear);
 				}
 			}
 			if (diaIterable.getDayOfWeek().getValue() == 4) {
 				if (chckbxJueves.isSelected()) {
 					if (rdbtnVariasInstalaciones.isSelected()) {
-						codigoInstalacion = ((Instalacion) cmbInstalacionesJueves.getSelectedItem()).getCodigoInstalacion();
-					} 
-					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio,
-							horaFin, diaUltimaReserva, mesUltimaReserva,
-							añoUltimaReserva);
+						codigoInstalacion = ((Instalacion) cmbInstalacionesJueves.getSelectedItem())
+								.getCodigoInstalacion();
+					}
+					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio, horaFin,
+							diaUltimaReserva, mesUltimaReserva, añoUltimaReserva);
 					getPrograma().añadirActividadPlanificada(actividadACrear);
 				}
 			}
 			if (diaIterable.getDayOfWeek().getValue() == 5) {
 				if (chckbxViernes.isSelected()) {
 					if (rdbtnVariasInstalaciones.isSelected()) {
-						codigoInstalacion = ((Instalacion) cmbInstalacionesViernes.getSelectedItem()).getCodigoInstalacion();
-					} 
-					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio,
-							horaFin, diaUltimaReserva, mesUltimaReserva,
-							añoUltimaReserva);
+						codigoInstalacion = ((Instalacion) cmbInstalacionesViernes.getSelectedItem())
+								.getCodigoInstalacion();
+					}
+					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio, horaFin,
+							diaUltimaReserva, mesUltimaReserva, añoUltimaReserva);
 					getPrograma().añadirActividadPlanificada(actividadACrear);
 				}
 			}
 			if (diaIterable.getDayOfWeek().getValue() == 6) {
 				if (chckbxSabado.isSelected()) {
 					if (rdbtnVariasInstalaciones.isSelected()) {
-						codigoInstalacion = ((Instalacion) cmbInstalacionesSabado.getSelectedItem()).getCodigoInstalacion();
-					} 
-					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio,
-							horaFin, diaUltimaReserva, mesUltimaReserva,
-							añoUltimaReserva);
+						codigoInstalacion = ((Instalacion) cmbInstalacionesSabado.getSelectedItem())
+								.getCodigoInstalacion();
+					}
+					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio, horaFin,
+							diaUltimaReserva, mesUltimaReserva, añoUltimaReserva);
 					getPrograma().añadirActividadPlanificada(actividadACrear);
 				}
 			}
 			if (diaIterable.getDayOfWeek().getValue() == 7) {
 				if (chckbxDomingo.isSelected()) {
 					if (rdbtnVariasInstalaciones.isSelected()) {
-						codigoInstalacion = ((Instalacion) cmbInstalacionesDomingo.getSelectedItem()).getCodigoInstalacion();
-					} 
-					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio,
-							horaFin, diaUltimaReserva, mesUltimaReserva,
-							añoUltimaReserva);
+						codigoInstalacion = ((Instalacion) cmbInstalacionesDomingo.getSelectedItem())
+								.getCodigoInstalacion();
+					}
+					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio, horaFin,
+							diaUltimaReserva, mesUltimaReserva, añoUltimaReserva);
 					getPrograma().añadirActividadPlanificada(actividadACrear);
 				}
 			}
 			diaUltimaReserva += 1;
-			if (mesUltimaReserva % 2 == 1 || mesUltimaReserva == 12) {
+
+			if (mesUltimaReserva == 1 || mesUltimaReserva == 3 || mesUltimaReserva == 5 || mesUltimaReserva == 7
+					|| mesUltimaReserva == 8 || mesUltimaReserva == 9 || mesUltimaReserva == 10
+					|| mesUltimaReserva == 12) {
 				if (diaUltimaReserva > 31) {
 					mesUltimaReserva++;
 					diaUltimaReserva = 1;
@@ -428,18 +520,10 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 			pnHoraFin = new JPanel();
 			pnHoraFin.setBorder(new TitledBorder(null, "Selecci\u00F3n de hora de finalizaci\u00F3n de la actividad:",
 					TitledBorder.LEADING, TitledBorder.TOP, null, null));
-			pnHoraFin.setLayout(new GridLayout(2, 2, 0, 0));
-			pnHoraFin.add(getTxtHoraFin());
+			pnHoraFin.setLayout(new GridLayout(1, 2, 0, 0));
+			pnHoraFin.add(getPnDecisionesHoraFin());
 		}
 		return pnHoraFin;
-	}
-
-	private JTextField getTxtHoraFin() {
-		if (txtHoraFin == null) {
-			txtHoraFin = new JTextField();
-			txtHoraFin.setColumns(10);
-		}
-		return txtHoraFin;
 	}
 
 	private JPanel getPnDecisionesInstalaciones() {
@@ -466,7 +550,6 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 	private JPanel getPnVariasInstalaciones() {
 		if (pnVariasInstalaciones == null) {
 			pnVariasInstalaciones = new JPanel();
-			FlowLayout flowLayout = (FlowLayout) pnVariasInstalaciones.getLayout();
 			pnVariasInstalaciones.add(getRdbtnVariasInstalaciones());
 		}
 		return pnVariasInstalaciones;
@@ -485,7 +568,7 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 					cmbInstalacionesViernes.setVisible(false);
 					cmbInstalacionesSabado.setVisible(false);
 					cmbInstalacionesDomingo.setVisible(false);
-					
+
 					lblInstalacionLunes.setVisible(false);
 					lblInstalacionMartes.setVisible(false);
 					lblInstalacionMiercoles.setVisible(false);
@@ -524,7 +607,7 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 						cmbInstalacionesJueves.setVisible(true);
 						lblInstalacionJueves.setVisible(true);
 					}
-					if (chckbxViernes.isSelected()) {					
+					if (chckbxViernes.isSelected()) {
 						cmbInstalacionesViernes.setVisible(true);
 						lblInstalacionViernes.setVisible(true);
 					}
@@ -532,7 +615,7 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 						cmbInstalacionesSabado.setVisible(true);
 						lblInstalacionSabado.setVisible(true);
 					}
-					if (chckbxDomingo.isSelected()) {						
+					if (chckbxDomingo.isSelected()) {
 						cmbInstalacionesDomingo.setVisible(true);
 						lblInstalacionDomingo.setVisible(true);
 					}
@@ -608,9 +691,18 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 							cmbInstalacionesLunes.setVisible(false);
 							lblInstalacionLunes.setVisible(false);
 						}
+						if (rdbtnDistintaHora.isSelected()) {
+							txtHoraFinLunes.setVisible(true);
+							lblHoraFinLunes.setVisible(true);
+						} else {
+							txtHoraFinLunes.setVisible(false);
+							lblHoraFinLunes.setVisible(false);
+						}
 					} else {
 						cmbInstalacionesLunes.setVisible(false);
 						lblInstalacionLunes.setVisible(false);
+						txtHoraFinLunes.setVisible(false);
+						lblHoraFinLunes.setVisible(false);
 					}
 				}
 			});
@@ -644,9 +736,18 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 							cmbInstalacionesMartes.setVisible(false);
 							lblInstalacionMartes.setVisible(false);
 						}
+						if (rdbtnDistintaHora.isSelected()) {
+							txtHoraFinMartes.setVisible(true);
+							lblHoraFinMartes.setVisible(true);
+						} else {
+							txtHoraFinMartes.setVisible(false);
+							lblHoraFinMartes.setVisible(false);
+						}
 					} else {
 						cmbInstalacionesMartes.setVisible(false);
 						lblInstalacionMartes.setVisible(false);
+						txtHoraFinMartes.setVisible(false);
+						lblHoraFinMartes.setVisible(false);
 					}
 				}
 			});
@@ -678,6 +779,13 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 						} else {
 							cmbInstalacionesMiercoles.setVisible(false);
 							lblInstalacionMiercoles.setVisible(false);
+						}
+						if (rdbtnDistintaHora.isSelected()) {
+							txtHoraFinMiercoles.setVisible(true);
+							lblHoraFinMiercoles.setVisible(true);
+						} else {
+							txtHoraFinMiercoles.setVisible(false);
+							lblHoraFinMiercoles.setVisible(false);
 						}
 					} else {
 						cmbInstalacionesMiercoles.setVisible(false);
@@ -714,9 +822,18 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 							cmbInstalacionesJueves.setVisible(false);
 							lblInstalacionJueves.setVisible(false);
 						}
+						if (rdbtnDistintaHora.isSelected()) {
+							txtHoraFinJueves.setVisible(true);
+							lblHoraFinJueves.setVisible(true);
+						} else {
+							txtHoraFinJueves.setVisible(false);
+							lblHoraFinJueves.setVisible(false);
+						}
 					} else {
 						cmbInstalacionesJueves.setVisible(false);
 						lblInstalacionJueves.setVisible(false);
+						txtHoraFinJueves.setVisible(false);
+						lblHoraFinJueves.setVisible(false);
 					}
 				}
 			});
@@ -760,9 +877,18 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 							cmbInstalacionesViernes.setVisible(false);
 							lblInstalacionViernes.setVisible(false);
 						}
+						if (rdbtnDistintaHora.isSelected()) {
+							txtHoraFinViernes.setVisible(true);
+							lblHoraFinViernes.setVisible(true);
+						} else {
+							txtHoraFinViernes.setVisible(false);
+							lblHoraFinViernes.setVisible(false);
+						}
 					} else {
 						cmbInstalacionesViernes.setVisible(false);
 						lblInstalacionViernes.setVisible(false);
+						txtHoraFinViernes.setVisible(false);
+						lblHoraFinViernes.setVisible(false);
 					}
 				}
 			});
@@ -795,9 +921,18 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 							cmbInstalacionesSabado.setVisible(false);
 							lblInstalacionSabado.setVisible(false);
 						}
+						if (rdbtnDistintaHora.isSelected()) {
+							txtHoraFinSabado.setVisible(true);
+							lblHoraFinSabado.setVisible(true);
+						} else {
+							txtHoraFinSabado.setVisible(false);
+							lblHoraFinSabado.setVisible(false);
+						}
 					} else {
 						cmbInstalacionesSabado.setVisible(false);
 						lblInstalacionSabado.setVisible(false);
+						txtHoraFinSabado.setVisible(false);
+						lblHoraFinSabado.setVisible(false);
 					}
 				}
 			});
@@ -830,9 +965,18 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 							cmbInstalacionesDomingo.setVisible(false);
 							lblInstalacionDomingo.setVisible(false);
 						}
+						if (rdbtnDistintaHora.isSelected()) {
+							txtHoraFinDomingo.setVisible(true);
+							lblHoraFinDomingo.setVisible(true);
+						} else {
+							txtHoraFinDomingo.setVisible(false);
+							lblHoraFinDomingo.setVisible(false);
+						}
 					} else {
 						cmbInstalacionesDomingo.setVisible(false);
 						lblInstalacionDomingo.setVisible(false);
+						txtHoraFinDomingo.setVisible(false);
+						lblHoraFinDomingo.setVisible(false);
 					}
 				}
 			});
@@ -899,9 +1043,9 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 		return pnActividad;
 	}
 
-	private JComboBox getCmbActividades_1() {
+	private JComboBox<Actividad> getCmbActividades_1() {
 		if (cmbActividades == null) {
-			cmbActividades = new JComboBox(modeloActividades);
+			cmbActividades = new JComboBox<Actividad>(modeloActividades);
 		}
 		return cmbActividades;
 	}
@@ -1213,5 +1357,115 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 			txtHoraFinDomingo.setVisible(false);
 		}
 		return txtHoraFinDomingo;
+	}
+
+	private JPanel getPnDecisionesHoraFin() {
+		if (pnDecisionesHoraFin == null) {
+			pnDecisionesHoraFin = new JPanel();
+			pnDecisionesHoraFin.setLayout(new GridLayout(0, 2, 0, 0));
+			pnDecisionesHoraFin.add(getPnMismaHoraFin());
+			pnDecisionesHoraFin.add(getPnDistintaHora());
+		}
+		return pnDecisionesHoraFin;
+	}
+
+	private JPanel getPnMismaHoraFin() {
+		if (pnMismaHoraFin == null) {
+			pnMismaHoraFin = new JPanel();
+			pnMismaHoraFin.setLayout(new GridLayout(0, 1, 0, 0));
+			pnMismaHoraFin.add(getRdbtnMismaHoraFin());
+			pnMismaHoraFin.add(getTxtHoraFin());
+		}
+		return pnMismaHoraFin;
+	}
+
+	private JRadioButton getRdbtnMismaHoraFin() {
+		if (rdbtnMismaHoraFin == null) {
+			rdbtnMismaHoraFin = new JRadioButton("Misma hora de fin para todas las planificadas");
+			rdbtnMismaHoraFin.setSelected(true);
+			rdbtnMismaHoraFin.setHorizontalAlignment(SwingConstants.CENTER);
+			rdbtnMismaHoraFin.setSelected(true);
+			rdbtnMismaHoraFin.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					txtHoraFin.setVisible(true);
+					txtHoraFinLunes.setVisible(false);
+					txtHoraFinMartes.setVisible(false);
+					txtHoraFinMiercoles.setVisible(false);
+					txtHoraFinJueves.setVisible(false);
+					txtHoraFinViernes.setVisible(false);
+					txtHoraFinSabado.setVisible(false);
+					txtHoraFinDomingo.setVisible(false);
+
+					lblHoraFinLunes.setVisible(false);
+					lblHoraFinMartes.setVisible(false);
+					lblHoraFinMiercoles.setVisible(false);
+					lblHoraFinJueves.setVisible(false);
+					lblHoraFinViernes.setVisible(false);
+					lblHoraFinSabado.setVisible(false);
+					lblHoraFinDomingo.setVisible(false);
+				}
+			});
+			horasGroup.add(rdbtnMismaHoraFin);
+		}
+		return rdbtnMismaHoraFin;
+	}
+
+	private JPanel getPnDistintaHora() {
+		if (pnDistintaHora == null) {
+			pnDistintaHora = new JPanel();
+			pnDistintaHora.add(getRdbtnDistintaHora());
+		}
+		return pnDistintaHora;
+	}
+
+	private JRadioButton getRdbtnDistintaHora() {
+		if (rdbtnDistintaHora == null) {
+			rdbtnDistintaHora = new JRadioButton("Decidir la hora de fin para cada d\u00EDa de la semana");
+			rdbtnDistintaHora.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					txtHoraFin.setVisible(false);
+					if (chckbxLunes.isSelected()) {
+						lblHoraFinLunes.setVisible(true);
+						txtHoraFinLunes.setVisible(true);
+					}
+					if (chckbxMartes.isSelected()) {
+						lblHoraFinMartes.setVisible(true);
+						txtHoraFinMartes.setVisible(true);
+					}
+					if (chckbxMiercoles.isSelected()) {
+						txtHoraFinMiercoles.setVisible(true);
+						lblHoraFinMiercoles.setVisible(true);
+					}
+					if (chckbxJueves.isSelected()) {
+						txtHoraFinJueves.setVisible(true);
+						lblHoraFinJueves.setVisible(true);
+					}
+					if (chckbxViernes.isSelected()) {
+						txtHoraFinViernes.setVisible(true);
+						lblHoraFinViernes.setVisible(true);
+					}
+					if (chckbxSabado.isSelected()) {
+						lblHoraFinSabado.setVisible(true);
+						txtHoraFinSabado.setVisible(true);
+					}
+					if (chckbxDomingo.isSelected()) {
+						txtHoraFinDomingo.setVisible(true);
+						lblHoraFinDomingo.setVisible(true);
+					}
+				}
+			});
+			horasGroup.add(rdbtnDistintaHora);
+		}
+		return rdbtnDistintaHora;
+	}
+
+	private JTextField getTxtHoraFin() {
+		if (txtHoraFin == null) {
+			txtHoraFin = new JTextField();
+			int hora = horaInicio + 1;
+			txtHoraFin.setText("" + hora);
+			txtHoraFin.setColumns(10);
+		}
+		return txtHoraFin;
 	}
 }

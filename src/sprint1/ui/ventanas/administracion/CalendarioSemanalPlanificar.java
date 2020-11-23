@@ -49,18 +49,25 @@ public class CalendarioSemanalPlanificar extends CalendarioSemanalBase {
 			for (int hora = 8; hora < 23; hora++) {
 				JButton button = new JButton();
 				ActividadPlanificada ap = hayInstalacionAEsaHoraYEseDia(hora, instalacion);
-				if ( ap != null) {
+				Alquiler al = hayInstalacionAEsaHoraYEseDiaAlquiler(hora, instalacion);
+				if ((ap != null && al != null) || hayInstalacionAEsaHoraYEseDiaVarias(hora, instalacion) > 1
+						|| hayInstalacionAEsaHoraYEseDiaAlquilerVarias(hora, instalacion) > 1) {
+					button.setText("Conflicto");
+					button.setFont(new Font("Tahoma", Font.PLAIN, 15));
+					button.setOpaque(true);
+					button.setHorizontalAlignment(SwingConstants.CENTER);
+					button.setBackground(Color.CYAN);
+				} else if (ap != null) {
 					button.setText(nombreInstalacion(instalacion, ap));
 					button.setFont(new Font("Tahoma", Font.PLAIN, 15));
 					button.setOpaque(true);
 					button.setHorizontalAlignment(SwingConstants.CENTER);
-					if (ap.getLimitePlazas() == 0)
+					if (ap.getLimitePlazas() == 0) {
 						button.setBackground(Color.red);
-					else
+					} else {
 						button.setBackground(Color.green);
-				}
-				Alquiler al = hayInstalacionAEsaHoraYEseDiaAlquiler(hora, instalacion);
-				if ( al != null) {
+					}
+				} else if (al != null) {
 					button.setText("Alquiler - " + nombreInstalacionAlquiler(instalacion, al));
 					button.setFont(new Font("Tahoma", Font.PLAIN, 15));
 					button.setOpaque(true);
