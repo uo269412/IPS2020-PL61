@@ -396,6 +396,9 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 						codigoInstalacion = ((Instalacion) cmbInstalacionesLunes.getSelectedItem())
 								.getCodigoInstalacion();
 					}
+					if (rdbtnDistintaHora.isSelected()) {
+						horaFin = Integer.parseInt(txtHoraFinLunes.getText());
+					}
 					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio, horaFin,
 							diaUltimaReserva, mesUltimaReserva, añoUltimaReserva);
 					getPrograma().añadirActividadPlanificada(actividadACrear);
@@ -406,6 +409,9 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 					if (rdbtnVariasInstalaciones.isSelected()) {
 						codigoInstalacion = ((Instalacion) cmbInstalacionesMartes.getSelectedItem())
 								.getCodigoInstalacion();
+					}
+					if (rdbtnDistintaHora.isSelected()) {
+						horaFin = Integer.parseInt(txtHoraFinMartes.getText());
 					}
 					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio, horaFin,
 							diaUltimaReserva, mesUltimaReserva, añoUltimaReserva);
@@ -418,6 +424,9 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 						codigoInstalacion = ((Instalacion) cmbInstalacionesMiercoles.getSelectedItem())
 								.getCodigoInstalacion();
 					}
+					if (rdbtnDistintaHora.isSelected()) {
+						horaFin = Integer.parseInt(txtHoraFinMiercoles.getText());
+					}
 					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio, horaFin,
 							diaUltimaReserva, mesUltimaReserva, añoUltimaReserva);
 					getPrograma().añadirActividadPlanificada(actividadACrear);
@@ -428,6 +437,9 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 					if (rdbtnVariasInstalaciones.isSelected()) {
 						codigoInstalacion = ((Instalacion) cmbInstalacionesJueves.getSelectedItem())
 								.getCodigoInstalacion();
+					}
+					if (rdbtnDistintaHora.isSelected()) {
+						horaFin = Integer.parseInt(txtHoraFinJueves.getText());
 					}
 					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio, horaFin,
 							diaUltimaReserva, mesUltimaReserva, añoUltimaReserva);
@@ -440,6 +452,9 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 						codigoInstalacion = ((Instalacion) cmbInstalacionesViernes.getSelectedItem())
 								.getCodigoInstalacion();
 					}
+					if (rdbtnDistintaHora.isSelected()) {
+						horaFin = Integer.parseInt(txtHoraFinViernes.getText());
+					}
 					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio, horaFin,
 							diaUltimaReserva, mesUltimaReserva, añoUltimaReserva);
 					getPrograma().añadirActividadPlanificada(actividadACrear);
@@ -451,6 +466,9 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 						codigoInstalacion = ((Instalacion) cmbInstalacionesSabado.getSelectedItem())
 								.getCodigoInstalacion();
 					}
+					if (rdbtnDistintaHora.isSelected()) {
+						horaFin = Integer.parseInt(txtHoraFinSabado.getText());
+					}
 					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio, horaFin,
 							diaUltimaReserva, mesUltimaReserva, añoUltimaReserva);
 					getPrograma().añadirActividadPlanificada(actividadACrear);
@@ -461,6 +479,9 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 					if (rdbtnVariasInstalaciones.isSelected()) {
 						codigoInstalacion = ((Instalacion) cmbInstalacionesDomingo.getSelectedItem())
 								.getCodigoInstalacion();
+					}
+					if (rdbtnDistintaHora.isSelected()) {
+						horaFin = Integer.parseInt(txtHoraFinDomingo.getText());
 					}
 					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio, horaFin,
 							diaUltimaReserva, mesUltimaReserva, añoUltimaReserva);
