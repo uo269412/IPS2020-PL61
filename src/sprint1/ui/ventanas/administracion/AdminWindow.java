@@ -59,7 +59,7 @@ public class AdminWindow extends JDialog {
 	private JButton btnAlquilerTercero;
 	private JButton btnVerOcupacionBotones;
 	private JButton btnPlanificarActividades;
-	//private JButton btnAsignarRecursos;
+	private JButton btnAsignarRecursos;
 	private JButton btnInspeccionarConflictos;
 
 	/**
@@ -144,7 +144,7 @@ public class AdminWindow extends JDialog {
 			pnAcciones.add(getBtnAlquilerTercero());
 			pnAcciones.add(getBtnVerOcupacionBotones());
 			pnAcciones.add(getBtnPlanificarActividades());
-			//pnAcciones.add(getBtnAsignarRecursos());
+			pnAcciones.add(getBtnAsignarRecursos());
 			pnAcciones.add(getBtnInspeccionarConflictos());
 		}
 		return pnAcciones;
@@ -469,6 +469,22 @@ public class AdminWindow extends JDialog {
 		return btnPlanificarActividades;
 	}
 	
+	private JButton getBtnAsignarRecursos() {
+		if (btnAsignarRecursos == null) {
+			btnAsignarRecursos = new JButton("Asignar recursos a instalacion");
+			btnAsignarRecursos.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					AsignarRecursosAInstalaciónDialog araid = new AsignarRecursosAInstalaciónDialog(parent.getPrograma());
+					araid.setLocationRelativeTo(AdminWindow.this);
+					araid.setModal(true);
+					araid.setVisible(true);
+					
+					
+				}
+			});
+		}
+		return btnAsignarRecursos;
+	}
 	
 	private JButton getBtnInspeccionarConflictos() {
 		if (btnInspeccionarConflictos == null) {
