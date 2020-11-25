@@ -6,6 +6,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -13,6 +14,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import sprint1.business.clases.Alquiler;
@@ -20,7 +22,6 @@ import sprint1.business.clases.Instalacion;
 import sprint1.business.clases.Programa;
 import sprint1.business.clases.Registro;
 import sprint1.business.clases.Socio;
-import javax.swing.JTextField;
 
 public class RegistrarSalidaSocio extends JDialog {
 
@@ -30,7 +31,6 @@ public class RegistrarSalidaSocio extends JDialog {
 	private static final long serialVersionUID = 1L;
 
 	private AdminWindow parent = null;
-	private Socio socio = null;
 	private DefaultComboBoxModel<Socio> modeloSocios = new DefaultComboBoxModel<Socio>();
 	private JPanel pnBotones;
 	private JButton btnVolver;
@@ -43,8 +43,6 @@ public class RegistrarSalidaSocio extends JDialog {
 	private JPanel pnInfo;
 	private JLabel lblInfoAlquiler;
 	private JTextField textField;
-
-	private Instalacion seleccionada;
 
 	public RegistrarSalidaSocio(AdminWindow adminWindow) {
 		setTitle("Administraci\u00F3n: Registrando salida del socio");

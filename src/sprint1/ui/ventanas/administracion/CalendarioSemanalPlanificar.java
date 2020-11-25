@@ -1,11 +1,9 @@
 package sprint1.ui.ventanas.administracion;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.SQLException;
 import java.util.Calendar;
 
 import javax.swing.JButton;
@@ -16,20 +14,16 @@ import javax.swing.SwingConstants;
 import sprint1.business.clases.ActividadPlanificada;
 import sprint1.business.clases.Alquiler;
 import sprint1.business.clases.Instalacion;
-import sprint1.business.clases.Programa;
 import sprint1.ui.ventanas.CalendarioSemanalBase;
-import sprint1.ui.ventanas.socio.Calendario;
 
 public class CalendarioSemanalPlanificar extends CalendarioSemanalBase {
 	
 	private static final long serialVersionUID = 1L;
-	private Programa p;
 	private ActionListener listener;
 
 	public CalendarioSemanalPlanificar(AdminWindow parent) {
 		super(parent.getParent().getPrograma());
 		setTitle("Calendario Semanal");
-		this.p = parent.getParent().getPrograma();
 		listener = new AsignarActividades();
 		setLocationRelativeTo(parent);
 	}

@@ -6,7 +6,6 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Calendar;
 import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
@@ -45,7 +44,6 @@ public class AdminAlquilaSocio extends JDialog {
 	private JButton btnVolver;
 
 	private CalendarioAlquilerAdmin parent;
-	private Programa programa;
 	private int dia;
 	private int mes;
 	private int año;

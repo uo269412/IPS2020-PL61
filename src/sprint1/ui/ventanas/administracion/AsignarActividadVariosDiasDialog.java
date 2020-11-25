@@ -32,7 +32,6 @@ import javax.swing.border.TitledBorder;
 
 import sprint1.business.clases.Actividad;
 import sprint1.business.clases.ActividadPlanificada;
-import sprint1.business.clases.Conflicto;
 import sprint1.business.clases.Instalacion;
 import sprint1.business.clases.Programa;
 

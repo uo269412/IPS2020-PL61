@@ -20,7 +20,6 @@ import javax.swing.SwingConstants;
 import sprint1.business.clases.Alquiler;
 import sprint1.business.clases.Instalacion;
 import sprint1.business.clases.Programa;
-import sprint1.business.clases.Registro;
 import sprint1.business.clases.Socio;
 
 public class RegistrarEntradaSocio extends JDialog {
@@ -31,7 +30,6 @@ public class RegistrarEntradaSocio extends JDialog {
 	private static final long serialVersionUID = 1L;
 
 	private AdminWindow parent = null;
-	private Socio socio = null;
 	private DefaultComboBoxModel<Socio> modeloSocios = new DefaultComboBoxModel<Socio>();
 	private JPanel pnBotones;
 	private JButton btnVolver;
@@ -44,8 +42,6 @@ public class RegistrarEntradaSocio extends JDialog {
 	private JPanel pnInfo;
 	private JLabel lblInfoAlquiler;
 	private JTextField textField;
-
-	private Instalacion seleccionada;
 
 	public RegistrarEntradaSocio(AdminWindow adminWindow) {
 		setTitle("Administraci\u00F3n: Registrando entrada del socio");

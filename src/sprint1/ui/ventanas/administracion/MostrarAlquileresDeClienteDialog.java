@@ -2,10 +2,13 @@ package sprint1.ui.ventanas.administracion;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.Font;
+import java.time.LocalDateTime;
 
 import javax.swing.DefaultListModel;
-import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -15,12 +18,6 @@ import sprint1.business.clases.Instalacion;
 import sprint1.business.clases.Programa;
 import sprint1.business.clases.Socio;
 import sprint1.business.clases.Tercero;
-
-import javax.swing.JLabel;
-import java.awt.Font;
-import java.time.LocalDateTime;
-
-import javax.swing.JList;
 
 public class MostrarAlquileresDeClienteDialog extends JDialog {
 

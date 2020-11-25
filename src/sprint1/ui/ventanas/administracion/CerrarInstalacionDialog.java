@@ -1,7 +1,10 @@
 package sprint1.ui.ventanas.administracion;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Calendar;
@@ -12,26 +15,20 @@ import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 
-import sprint1.business.clases.Actividad;
 import sprint1.business.clases.Alquiler;
 import sprint1.business.clases.Cliente;
 import sprint1.business.clases.Instalacion;
 import sprint1.business.clases.Programa;
 import sprint1.business.clases.Socio;
 import sprint1.business.clases.Tercero;
-
-import javax.swing.JComboBox;
-import javax.swing.JScrollPane;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.ActionEvent;
 
 public class CerrarInstalacionDialog extends JDialog {
 	
@@ -112,7 +109,8 @@ public class CerrarInstalacionDialog extends JDialog {
 			llenarModeloClientesAfectados();
 			listAfectados.addMouseListener(new MouseAdapter() {
 			    public void mouseClicked(MouseEvent evt) {
-			        JList<Cliente> list = (JList<Cliente>)evt.getSource();
+			        @SuppressWarnings("unchecked")
+					JList<Cliente> list = (JList<Cliente>)evt.getSource();
 			        if (evt.getClickCount() == 2) {
 
 			            // Double-click detected

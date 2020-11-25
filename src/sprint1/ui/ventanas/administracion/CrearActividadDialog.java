@@ -3,34 +3,30 @@ package sprint1.ui.ventanas.administracion;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.JTextPane;
+import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
 
 import sprint1.business.clases.Actividad;
 import sprint1.business.clases.Programa;
 import sprint1.business.clases.Recurso;
-
-import java.awt.GridLayout;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JTextField;
-import java.awt.event.ActionListener;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.awt.event.ActionEvent;
-import javax.swing.JTextPane;
-import javax.swing.JComboBox;
-import javax.swing.JSpinner;
-import javax.swing.JList;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.ListSelectionModel;
 
 public class CrearActividadDialog extends JDialog {
 

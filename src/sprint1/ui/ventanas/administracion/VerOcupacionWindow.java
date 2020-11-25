@@ -2,7 +2,6 @@ package sprint1.ui.ventanas.administracion;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -10,7 +9,6 @@ import java.awt.event.ActionListener;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
@@ -20,6 +18,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
+import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
@@ -30,9 +29,6 @@ import sprint1.business.clases.Alquiler;
 import sprint1.business.clases.Instalacion;
 import sprint1.business.clases.Programa;
 import sprint1.business.clases.Socio;
-import javax.swing.JTextPane;
-import javax.swing.BoxLayout;
-import java.awt.CardLayout;
 
 public class VerOcupacionWindow extends JDialog {
 

@@ -22,8 +22,6 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import sprint1.business.clases.Cliente;
-import sprint1.business.clases.Instalacion;
 import sprint1.business.clases.Programa;
 import sprint1.business.clases.Socio;
 
@@ -86,7 +84,8 @@ public class ListaSociosConImpagos extends JDialog {
 			list = new JList<Socio>(dflm);
 			list.addMouseListener(new MouseAdapter() {
 			    public void mouseClicked(MouseEvent evt) {
-			        JList<Socio> list = (JList<Socio>)evt.getSource();
+			        @SuppressWarnings("unchecked")
+					JList<Socio> list = (JList<Socio>)evt.getSource();
 			        if (evt.getClickCount() == 2) {
 
 			            // Double-click detected
