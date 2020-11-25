@@ -33,11 +33,10 @@ public class Programa {
 	private List<Registro> registros;
 
 	// Conexión Javi
-	public static String URL = "jdbc:sqlite:C:\\Users\\javie\\git\\IPS2020-PL61\\resources\\bdProject.db";
+	//public static String URL = "jdbc:sqlite:C:\\Users\\javie\\git\\IPS2020-PL61\\resources\\bdProject.db";
 
 	// Conexión Dani
-	// public static String URL =
-	// "jdbc:sqlite:C:\\Users\\Dani\\git\\IPS2020-PL61_sprint2\\resources\\bdProject.db";
+	public static String URL = "jdbc:sqlite:C:\\Users\\Dani\\git\\IPS2020-PL61_sprint3\\resources\\bdProject.db";
 
 	// Conexión Juan.elo
 	 //public static String URL =
@@ -54,6 +53,7 @@ public class Programa {
 			cargarReservas();
 			cargarMonitores();
 			cargarActividadesPlanificadas();
+			cargarConflictos();
 			cargarInstalaciones();
 			cargarRecursos();
 			cargarTerceros();
@@ -1418,6 +1418,18 @@ public class Programa {
 
 // RECURSOS
 
+	public void insertarRecurso(Recurso r) throws SQLException {
+		Connection con = DriverManager.getConnection(URL);
+		PreparedStatement pst = con.prepareStatement("INSERT INTO RECURSOS(codigo_recurso, nombre_recurso, codigo_instalacion, unidades)"
+				+ "VALUES (?,?,?,?)");
+		pst.setString(1, r.getIdRecurso());
+		pst.setString(2, r.getNombre());
+		pst.setString(3, r.getInstalacion());
+		pst.setInt(4, r.getUnidades());
+		
+		pst.executeUpdate();
+	}
+	
 	public void updateRecursosFromLista(List<Recurso> listaRecursos) throws SQLException {
 		Connection con = DriverManager.getConnection(URL);
 		for (Recurso r : listaRecursos) {
@@ -1634,4 +1646,44 @@ public class Programa {
 		return false;
 	}
 
+	
+	//CONFLICTOS
+	public void crearConflicto(ActividadPlanificada a1, ActividadPlanificada a2) throws SQLException {
+		Conflicto c = new Conflicto(a1, a2);
+		c.conseguirNombreActividades(this);
+		a1.añadirConflicto(c);
+		
+		Connection con = DriverManager.getConnection(URL);
+		
+		PreparedStatement pst = con.prepareStatement("INSERT INTO CONFLICTOS VALUES ?,?");
+		pst.setString(1, a1.getCodigoPlanificada());
+		pst.setString(2, a2.getCodigoPlanificada());
+		
+		pst.executeUpdate();
+		
+		pst.close();
+		con.close();
+	}
+	
+	public void cargarConflictos() throws SQLException {
+		Connection con = DriverManager.getConnection(URL);
+		for(ActividadPlanificada a: actividadesPlanificadas) {
+			PreparedStatement pst = con.prepareStatement("SELECT codigoActividadConflictiva FROM CONFLICTOS WHERE codigoActividadAfectada = ?");
+			pst.setString(1, a.getCodigoPlanificada());
+			ResultSet rs = pst.executeQuery();
+			
+			while(rs.next()) {
+				ActividadPlanificada actividadConflictiva = null;
+				for(ActividadPlanificada a2: actividadesPlanificadas) {
+					if(a2.getCodigoPlanificada().equals(rs.getString(1))) {
+						actividadConflictiva = a2;
+					}
+				}
+				Conflicto c = new Conflicto(a, actividadConflictiva);
+				c.conseguirNombreActividades(this);
+				a.añadirConflicto(c);
+			}
+			
+		}
+	}
 }

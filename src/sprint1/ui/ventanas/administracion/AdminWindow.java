@@ -59,6 +59,8 @@ public class AdminWindow extends JDialog {
 	private JButton btnAlquilerTercero;
 	private JButton btnVerOcupacionBotones;
 	private JButton btnPlanificarActividades;
+	//private JButton btnAsignarRecursos;
+	private JButton btnInspeccionarConflictos;
 
 	/**
 	 * Create the dialog.
@@ -142,6 +144,8 @@ public class AdminWindow extends JDialog {
 			pnAcciones.add(getBtnAlquilerTercero());
 			pnAcciones.add(getBtnVerOcupacionBotones());
 			pnAcciones.add(getBtnPlanificarActividades());
+			//pnAcciones.add(getBtnAsignarRecursos());
+			pnAcciones.add(getBtnInspeccionarConflictos());
 		}
 		return pnAcciones;
 	}
@@ -463,5 +467,23 @@ public class AdminWindow extends JDialog {
 			});
 		}
 		return btnPlanificarActividades;
+	}
+	
+	
+	private JButton getBtnInspeccionarConflictos() {
+		if (btnInspeccionarConflictos == null) {
+			btnInspeccionarConflictos = new JButton("Inspeccionar Conflictos");
+			btnInspeccionarConflictos.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					VerConflictosDialog vcd = new VerConflictosDialog(parent.getPrograma());
+					vcd.setLocationRelativeTo(AdminWindow.this);
+					vcd.setModal(true);
+					vcd.setVisible(true);
+					
+					
+				}
+			});
+		}
+		return btnInspeccionarConflictos;
 	}
 }
