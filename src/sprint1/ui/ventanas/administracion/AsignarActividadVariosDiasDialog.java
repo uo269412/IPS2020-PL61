@@ -1,12 +1,8 @@
 package sprint1.ui.ventanas.administracion;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
-
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,40 +10,31 @@ import java.sql.SQLException;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-import java.util.Comparator;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JList;
+import javax.swing.ButtonGroup;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
 
+import sprint1.business.clases.Actividad;
 import sprint1.business.clases.ActividadPlanificada;
+import sprint1.business.clases.Conflicto;
 import sprint1.business.clases.Instalacion;
 import sprint1.business.clases.Programa;
-import sprint1.business.clases.Recurso;
-
-import javax.swing.JLabel;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListModel;
-import javax.swing.JComboBox;
-import sprint1.business.clases.Actividad;
-import javax.swing.JTextField;
-import java.awt.Color;
-import java.awt.Font;
-import javax.swing.ListSelectionModel;
-import javax.swing.JScrollPane;
-import javax.swing.JCheckBox;
-import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
-
-import java.awt.Dimension;
-import javax.swing.SwingConstants;
-import javax.swing.ComboBoxModel;
-import javax.swing.JRadioButton;
-import javax.swing.border.LineBorder;
-import javax.swing.border.TitledBorder;
-import javax.swing.UIManager;
-import javax.swing.border.EtchedBorder;
 
 public class AsignarActividadVariosDiasDialog extends JDialog {
 
@@ -401,6 +388,7 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio, horaFin,
 							diaUltimaReserva, mesUltimaReserva, añoUltimaReserva);
 					getPrograma().añadirActividadPlanificada(actividadACrear);
+					checkConflictos(actividadACrear);
 				}
 			}
 			if (diaIterable.getDayOfWeek().getValue() == 2) {
@@ -415,6 +403,7 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio, horaFin,
 							diaUltimaReserva, mesUltimaReserva, añoUltimaReserva);
 					getPrograma().añadirActividadPlanificada(actividadACrear);
+					checkConflictos(actividadACrear);
 				}
 			}
 			if (diaIterable.getDayOfWeek().getValue() == 3) {
@@ -429,6 +418,7 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio, horaFin,
 							diaUltimaReserva, mesUltimaReserva, añoUltimaReserva);
 					getPrograma().añadirActividadPlanificada(actividadACrear);
+					checkConflictos(actividadACrear);
 				}
 			}
 			if (diaIterable.getDayOfWeek().getValue() == 4) {
@@ -443,6 +433,7 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio, horaFin,
 							diaUltimaReserva, mesUltimaReserva, añoUltimaReserva);
 					getPrograma().añadirActividadPlanificada(actividadACrear);
+					checkConflictos(actividadACrear);
 				}
 			}
 			if (diaIterable.getDayOfWeek().getValue() == 5) {
@@ -457,6 +448,7 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio, horaFin,
 							diaUltimaReserva, mesUltimaReserva, añoUltimaReserva);
 					getPrograma().añadirActividadPlanificada(actividadACrear);
+					checkConflictos(actividadACrear);
 				}
 			}
 			if (diaIterable.getDayOfWeek().getValue() == 6) {
@@ -471,6 +463,7 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio, horaFin,
 							diaUltimaReserva, mesUltimaReserva, añoUltimaReserva);
 					getPrograma().añadirActividadPlanificada(actividadACrear);
+					checkConflictos(actividadACrear);
 				}
 			}
 			if (diaIterable.getDayOfWeek().getValue() == 7) {
@@ -485,8 +478,12 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio, horaFin,
 							diaUltimaReserva, mesUltimaReserva, añoUltimaReserva);
 					getPrograma().añadirActividadPlanificada(actividadACrear);
+					checkConflictos(actividadACrear);
 				}
 			}
+			
+			
+			
 			diaUltimaReserva += 1;
 
 			if (mesUltimaReserva == 1 || mesUltimaReserva == 3 || mesUltimaReserva == 5 || mesUltimaReserva == 7
@@ -1487,5 +1484,21 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 			txtHoraFin.setColumns(10);
 		}
 		return txtHoraFin;
+	}
+	
+	private void checkConflictos(ActividadPlanificada f) {
+		List<ActividadPlanificada> actividadesConflicting = new ArrayList<>();
+		for(int i = f.getHoraInicio(); i < f.getHoraFin() - 1; i++) {
+			actividadesConflicting.addAll(
+					getPrograma().getActividadesPlanificadas(f.getCodigoInstalacion(), i, f.getDia(), f.getMes(), f.getAño()));
+		}
+		
+		for(ActividadPlanificada a: actividadesConflicting) {
+			try {
+				getPrograma().crearConflicto(f, a);
+			} catch (SQLException e) {
+				JOptionPane.showMessageDialog(this, "Ha ocurrido un error creando los conflictos");
+			}
+		}
 	}
 }

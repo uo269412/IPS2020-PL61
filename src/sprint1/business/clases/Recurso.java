@@ -29,6 +29,13 @@ public class Recurso {
 		this.unidades = unidades;
 		this.id_recurso = id;
 	}
+	
+	public Recurso(String nombre, String codigo_instalacion, int unidades) {
+		this.nombre_recurso = nombre;
+		this.codigo_instalacion = codigo_instalacion;
+		this.unidades = unidades;
+		this.id_recurso = nombre.substring(0, 2) + "_" + nombre.substring(nombre.length() - 4);
+	}
 
 	public int getUnidades() {
 		return unidades;
@@ -52,6 +59,10 @@ public class Recurso {
 
 	public String getInstalacion() {
 		return this.codigo_instalacion;
+	}
+	
+	public String getNombre() {
+		return this.nombre_recurso;
 	}
 	
 	@Override

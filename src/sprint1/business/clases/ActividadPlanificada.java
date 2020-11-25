@@ -1,5 +1,7 @@
 package sprint1.business.clases;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class ActividadPlanificada implements Comparable<ActividadPlanificada> {
@@ -14,6 +16,7 @@ public class ActividadPlanificada implements Comparable<ActividadPlanificada> {
 	private int horaFin;
 	private int limitePlazas;
 	private String codigoInstalacion;
+	private List<Conflicto> conflictos = new ArrayList<>(); 
 
 	public ActividadPlanificada(String codigoActividad, int dia, int mes, int año, int limitePlazas, int horaInicio,
 			int horaFin, String codigoMonitor, String codigoPlanificada, String codigoInstalacion) {
@@ -153,6 +156,20 @@ public class ActividadPlanificada implements Comparable<ActividadPlanificada> {
 		return this.limitePlazas == 0;
 	}
 
+	public void añadirConflicto(Conflicto c) {
+		conflictos.add(c);
+	}
+	
+	public List<Conflicto> getConflictos() {
+		return this.conflictos;
+	}
+	
+	public void imprimirConflictos() {
+		for(Conflicto c: conflictos) {
+			System.out.println(c.toString());
+		}
+	}
+	
 	@Override
 	public String toString() {
 		String monitor;
