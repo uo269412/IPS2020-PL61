@@ -8,9 +8,9 @@ import javax.swing.DefaultListModel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import sprint1.business.clases.ActividadPlanificada;
-import sprint1.business.clases.Programa;
-import sprint1.business.clases.Socio;
+import sprint1.business.dominio.Programa;
+import sprint1.business.dominio.centroDeportes.actividades.ActividadPlanificada;
+import sprint1.business.dominio.clientes.Socio;
 import sprint1.ui.ventanas.socio.SocioWindow;
 
 import javax.swing.JLabel;

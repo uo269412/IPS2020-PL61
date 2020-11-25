@@ -23,12 +23,12 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
-import sprint1.business.clases.Actividad;
-import sprint1.business.clases.ActividadPlanificada;
-import sprint1.business.clases.Alquiler;
-import sprint1.business.clases.Instalacion;
-import sprint1.business.clases.Programa;
-import sprint1.business.clases.Socio;
+import sprint1.business.dominio.Programa;
+import sprint1.business.dominio.centroDeportes.actividades.Actividad;
+import sprint1.business.dominio.centroDeportes.actividades.ActividadPlanificada;
+import sprint1.business.dominio.centroDeportes.alquileres.Alquiler;
+import sprint1.business.dominio.centroDeportes.instalaciones.Instalacion;
+import sprint1.business.dominio.clientes.Socio;
 
 public class VerOcupacionWindow extends JDialog {
 

@@ -22,8 +22,8 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import sprint1.business.clases.Programa;
-import sprint1.business.clases.Socio;
+import sprint1.business.dominio.Programa;
+import sprint1.business.dominio.clientes.Socio;
 
 public class ListaSociosConImpagos extends JDialog {
 

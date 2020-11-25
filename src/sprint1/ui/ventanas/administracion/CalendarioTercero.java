@@ -7,10 +7,10 @@ import java.sql.SQLException;
 
 import javax.swing.JButton;
 
-import sprint1.business.clases.ActividadPlanificada;
-import sprint1.business.clases.Alquiler;
-import sprint1.business.clases.Programa;
-import sprint1.business.clases.Tercero;
+import sprint1.business.dominio.Programa;
+import sprint1.business.dominio.centroDeportes.actividades.ActividadPlanificada;
+import sprint1.business.dominio.centroDeportes.alquileres.Alquiler;
+import sprint1.business.dominio.clientes.Tercero;
 import sprint1.ui.ventanas.socio.util.Calendario;
 
 public class CalendarioTercero extends Calendario {

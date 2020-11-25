@@ -21,10 +21,10 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 
-import sprint1.business.clases.ActividadPlanificada;
-import sprint1.business.clases.Alquiler;
-import sprint1.business.clases.Programa;
-import sprint1.business.clases.Socio;
+import sprint1.business.dominio.Programa;
+import sprint1.business.dominio.centroDeportes.actividades.ActividadPlanificada;
+import sprint1.business.dominio.centroDeportes.alquileres.Alquiler;
+import sprint1.business.dominio.clientes.Socio;
 
 public class AdminReservaSocioWindow extends JDialog {
 

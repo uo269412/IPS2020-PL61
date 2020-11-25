@@ -14,8 +14,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 
-import sprint1.business.clases.ActividadPlanificada;
-import sprint1.business.clases.Conflicto;
+import sprint1.business.dominio.centroDeportes.actividades.ActividadPlanificada;
+import sprint1.business.dominio.centroDeportes.planificaciones.Conflicto;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 

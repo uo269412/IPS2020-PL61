@@ -11,9 +11,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import sprint1.business.clases.ActividadPlanificada;
-import sprint1.business.clases.Alquiler;
-import sprint1.business.clases.Instalacion;
+import sprint1.business.dominio.centroDeportes.actividades.ActividadPlanificada;
+import sprint1.business.dominio.centroDeportes.alquileres.Alquiler;
+import sprint1.business.dominio.centroDeportes.instalaciones.Instalacion;
 import sprint1.ui.ventanas.util.CalendarioSemanalBase;
 
 public class CalendarioSemanalPlanificar extends CalendarioSemanalBase {

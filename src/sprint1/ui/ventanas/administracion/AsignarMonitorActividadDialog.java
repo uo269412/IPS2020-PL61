@@ -22,9 +22,9 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import sprint1.business.clases.ActividadPlanificada;
-import sprint1.business.clases.Monitor;
-import sprint1.business.clases.Programa;
+import sprint1.business.dominio.Programa;
+import sprint1.business.dominio.centroDeportes.actividades.ActividadPlanificada;
+import sprint1.business.dominio.centroDeportes.empleados.Monitor;
 
 public class AsignarMonitorActividadDialog extends JDialog {
 

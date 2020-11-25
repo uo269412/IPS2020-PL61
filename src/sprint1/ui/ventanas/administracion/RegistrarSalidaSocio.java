@@ -17,11 +17,11 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-import sprint1.business.clases.Alquiler;
-import sprint1.business.clases.Instalacion;
-import sprint1.business.clases.Programa;
-import sprint1.business.clases.Registro;
-import sprint1.business.clases.Socio;
+import sprint1.business.dominio.Programa;
+import sprint1.business.dominio.centroDeportes.alquileres.Alquiler;
+import sprint1.business.dominio.centroDeportes.instalaciones.Instalacion;
+import sprint1.business.dominio.centroDeportes.reservas.Registro;
+import sprint1.business.dominio.clientes.Socio;
 
 public class RegistrarSalidaSocio extends JDialog {
 

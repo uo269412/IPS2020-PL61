@@ -15,7 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import sprint1.business.clases.Socio;
+import sprint1.business.dominio.clientes.Socio;
 import sprint1.ui.ventanas.MainWindow;
 import sprint1.ui.ventanas.socio.SocioWindow;
 

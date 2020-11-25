@@ -7,6 +7,13 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import sprint1.business.dominio.Programa;
+import sprint1.business.dominio.centroDeportes.actividades.Actividad;
+import sprint1.business.dominio.centroDeportes.actividades.ActividadPlanificada;
+import sprint1.business.dominio.centroDeportes.instalaciones.Instalacion;
+import sprint1.business.dominio.centroDeportes.instalaciones.Recurso;
+
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,17 +24,10 @@ import java.util.List;
 
 import javax.swing.JList;
 import javax.swing.JOptionPane;
-
-import sprint1.business.clases.ActividadPlanificada;
-import sprint1.business.clases.Instalacion;
-import sprint1.business.clases.Programa;
-import sprint1.business.clases.Recurso;
-
 import javax.swing.JLabel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JComboBox;
-import sprint1.business.clases.Actividad;
 import javax.swing.JTextField;
 import java.awt.Color;
 import java.awt.Font;

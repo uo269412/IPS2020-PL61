@@ -24,10 +24,10 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
-import sprint1.business.clases.Alquiler;
-import sprint1.business.clases.ComparadorPorDiaAlquiler;
-import sprint1.business.clases.Instalacion;
-import sprint1.business.clases.Socio;
+import sprint1.business.dominio.centroDeportes.alquileres.Alquiler;
+import sprint1.business.dominio.centroDeportes.alquileres.util.ComparadorPorDiaAlquiler;
+import sprint1.business.dominio.centroDeportes.instalaciones.Instalacion;
+import sprint1.business.dominio.clientes.Socio;
 import sprint1.ui.ventanas.socio.SocioWindow;
 
 public class VerAlquileresSocio extends JDialog {

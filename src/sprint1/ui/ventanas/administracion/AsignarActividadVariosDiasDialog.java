@@ -30,10 +30,10 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
-import sprint1.business.clases.Actividad;
-import sprint1.business.clases.ActividadPlanificada;
-import sprint1.business.clases.Instalacion;
-import sprint1.business.clases.Programa;
+import sprint1.business.dominio.Programa;
+import sprint1.business.dominio.centroDeportes.actividades.Actividad;
+import sprint1.business.dominio.centroDeportes.actividades.ActividadPlanificada;
+import sprint1.business.dominio.centroDeportes.instalaciones.Instalacion;
 
 public class AsignarActividadVariosDiasDialog extends JDialog {
 

@@ -16,10 +16,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import sprint1.business.clases.ActividadPlanificada;
-import sprint1.business.clases.Alquiler;
-import sprint1.business.clases.Reserva;
-import sprint1.business.clases.Socio;
+import sprint1.business.dominio.centroDeportes.actividades.ActividadPlanificada;
+import sprint1.business.dominio.centroDeportes.alquileres.Alquiler;
+import sprint1.business.dominio.centroDeportes.reservas.Reserva;
+import sprint1.business.dominio.clientes.Socio;
 import sprint1.ui.ventanas.MainWindow;
 import sprint1.ui.ventanas.socio.acciones.ListaDeReservasWindow;
 import sprint1.ui.ventanas.socio.acciones.ListaDeAlquileresWindow;

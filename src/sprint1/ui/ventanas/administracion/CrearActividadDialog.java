@@ -24,9 +24,9 @@ import javax.swing.JTextPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
 
-import sprint1.business.clases.Actividad;
-import sprint1.business.clases.Programa;
-import sprint1.business.clases.Recurso;
+import sprint1.business.dominio.Programa;
+import sprint1.business.dominio.centroDeportes.actividades.Actividad;
+import sprint1.business.dominio.centroDeportes.instalaciones.Recurso;
 
 public class CrearActividadDialog extends JDialog {
 

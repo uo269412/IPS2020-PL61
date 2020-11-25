@@ -15,9 +15,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import sprint1.business.clases.Instalacion;
-import sprint1.business.clases.Programa;
-import sprint1.business.clases.Recurso;
+import sprint1.business.dominio.Programa;
+import sprint1.business.dominio.centroDeportes.instalaciones.Instalacion;
+import sprint1.business.dominio.centroDeportes.instalaciones.Recurso;
 
 import java.awt.event.ActionListener;
 import java.sql.SQLException;

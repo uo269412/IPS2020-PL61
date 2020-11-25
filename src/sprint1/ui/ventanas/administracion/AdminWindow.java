@@ -15,7 +15,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import sprint1.business.clases.Tercero;
+import sprint1.business.dominio.clientes.Tercero;
 import sprint1.ui.ventanas.MainWindow;
 import sprint1.ui.ventanas.util.CalendarioSemanalBase;
 
