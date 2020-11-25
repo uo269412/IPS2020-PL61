@@ -16,6 +16,7 @@ import javax.swing.border.EmptyBorder;
 import sprint1.business.Programa;
 import sprint1.ui.ventanas.administracion.AdminWindow;
 import sprint1.ui.ventanas.socio.util.SeleccionSocioWindow;
+import java.awt.Toolkit;
 
 public class MainWindow extends JFrame {
 	
@@ -50,6 +51,7 @@ public class MainWindow extends JFrame {
 	 * Create the frame.
 	 */
 	public MainWindow() {
+		setIconImage(Toolkit.getDefaultToolkit().getImage(MainWindow.class.getResource("/sprint1/ui/resources/titulo.png")));
 		setTitle("Centro de Deportes");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 577, 545);
@@ -71,6 +73,8 @@ public class MainWindow extends JFrame {
 		contentPane.add(pnBotones, BorderLayout.SOUTH);
 		
 		JButton btnAdmin = new JButton("Acceder como administrador");
+		btnAdmin.setBackground(new Color(25, 25, 112));
+		btnAdmin.setForeground(Color.WHITE);
 		btnAdmin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				openAdminWindow();
@@ -79,6 +83,8 @@ public class MainWindow extends JFrame {
 		pnBotones.add(btnAdmin);
 		
 		JButton btnSocio = new JButton("Acceder como socio");
+		btnSocio.setForeground(Color.WHITE);
+		btnSocio.setBackground(new Color(25, 25, 112));
 		btnSocio.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 //				String id_socio;

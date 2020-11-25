@@ -59,7 +59,7 @@ public class AsignarMonitorDialog extends JDialog {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(AsignarMonitorDialog.class.getResource("/sprint1/ui/resources/titulo.png")));
 		setTitle("Centro de deporte: Asignando monitor a las actividades");
 		this.parent = parent;
-		setBounds(100, 100, 1244, 614);
+		setBounds(100, 100, 1344, 615);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
