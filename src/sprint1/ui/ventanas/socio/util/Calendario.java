@@ -1,4 +1,4 @@
-package sprint1.ui.ventanas.socio;
+package sprint1.ui.ventanas.socio.util;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;

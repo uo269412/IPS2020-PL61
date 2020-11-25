@@ -1,4 +1,4 @@
-package sprint1.ui.ventanas;
+package sprint1.ui.ventanas.util;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

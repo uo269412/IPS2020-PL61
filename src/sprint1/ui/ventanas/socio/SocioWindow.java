@@ -21,6 +21,12 @@ import sprint1.business.clases.Alquiler;
 import sprint1.business.clases.Reserva;
 import sprint1.business.clases.Socio;
 import sprint1.ui.ventanas.MainWindow;
+import sprint1.ui.ventanas.socio.acciones.ListaDeReservasWindow;
+import sprint1.ui.ventanas.socio.acciones.ListaDeAlquileresWindow;
+import sprint1.ui.ventanas.socio.acciones.ReservaSocioWindow;
+import sprint1.ui.ventanas.socio.util.CalendarioAlquilerSocio;
+import sprint1.ui.ventanas.socio.vistas.VerAlquileresSocio;
+import sprint1.ui.ventanas.socio.vistas.VerHorariosSocioWindow;
 
 public class SocioWindow extends JDialog {
 
@@ -35,7 +41,7 @@ public class SocioWindow extends JDialog {
 	private JPanel pnAcciones;
 	private JButton btnLogOut;
 	private JButton btnVerActividades;
-	private ListaDeActividadesWindow listaDeActividadesWindow = null;
+	private ListaDeReservasWindow listaDeActividadesWindow = null;
 	private ListaDeAlquileresWindow listaDeAlquileresWindow = null;
 	private JButton btnVerHorariosSocios;
 	private JButton btnReservar;
@@ -111,11 +117,11 @@ public class SocioWindow extends JDialog {
 			pnAcciones = new JPanel();
 			pnAcciones.setBackground(new Color(255, 255, 255));
 			pnAcciones.add(getButton_1());
+			pnAcciones.add(getBtnAlquilar());
 			pnAcciones.add(getBtnVerActividades());
 			pnAcciones.add(getBtnVerHorariosSocios());
 			pnAcciones.add(getBtnCancelarAlquiler());
 			pnAcciones.add(getBtnVerAlquileres());
-			pnAcciones.add(getBtnAlquilar());
 		}
 		return pnAcciones;
 	}
@@ -142,7 +148,7 @@ public class SocioWindow extends JDialog {
 
 	private void openListaDeActividadesWindow() {
 		if (checkIfListWillOpen()) {
-			listaDeActividadesWindow = new ListaDeActividadesWindow(this, socio);
+			listaDeActividadesWindow = new ListaDeReservasWindow(this, socio);
 			listaDeActividadesWindow.setModal(true);
 			listaDeActividadesWindow.setLocationRelativeTo(this);
 			listaDeActividadesWindow.setVisible(true);

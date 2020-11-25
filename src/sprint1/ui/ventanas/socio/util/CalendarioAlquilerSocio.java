@@ -1,4 +1,4 @@
-package sprint1.ui.ventanas.socio;
+package sprint1.ui.ventanas.socio.util;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -25,6 +25,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
 import sprint1.business.clases.Socio;
+import sprint1.ui.ventanas.socio.SocioWindow;
+import sprint1.ui.ventanas.socio.acciones.AlquilaSocioWindow;
 
 public class CalendarioAlquilerSocio extends JDialog {
 
@@ -64,7 +66,7 @@ public class CalendarioAlquilerSocio extends JDialog {
 	private SocioWindow parent;
 	private ActionListener aa;
 
-	private SocioAlquilaWindow socioAlquila;
+	private AlquilaSocioWindow socioAlquila;
 	private Socio socio;
 
 //	/**
@@ -519,7 +521,7 @@ public class CalendarioAlquilerSocio extends JDialog {
 	}
 
 	private void openAlquilaSocioWindow(CalendarioAlquilerSocio parent, int dia, int mes, int año, Socio socio) {
-		socioAlquila = new SocioAlquilaWindow(parent, dia, mes, año, socio);
+		socioAlquila = new AlquilaSocioWindow(parent, dia, mes, año, socio);
 		socioAlquila.setModal(true);
 		socioAlquila.setLocationRelativeTo(this);
 		socioAlquila.setVisible(true);

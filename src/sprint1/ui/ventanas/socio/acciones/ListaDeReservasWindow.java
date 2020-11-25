@@ -1,4 +1,4 @@
-package sprint1.ui.ventanas.socio;
+package sprint1.ui.ventanas.socio.acciones;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -21,8 +21,9 @@ import sprint1.business.clases.ActividadPlanificada;
 import sprint1.business.clases.Programa;
 import sprint1.business.clases.Reserva;
 import sprint1.business.clases.Socio;
+import sprint1.ui.ventanas.socio.SocioWindow;
 
-public class ListaDeActividadesWindow extends JDialog {
+public class ListaDeReservasWindow extends JDialog {
 
 	/**
 	 * 
@@ -38,7 +39,7 @@ public class ListaDeActividadesWindow extends JDialog {
 	private JButton btnVolver;
 	private JButton btnCancelarReserva;
 
-	public ListaDeActividadesWindow(SocioWindow parent, Socio socio) {
+	public ListaDeReservasWindow(SocioWindow parent, Socio socio) {
 		setTitle("Socio: Viendo y cancelando reservas");
 		this.parent = parent;
 		this.socio = socio;

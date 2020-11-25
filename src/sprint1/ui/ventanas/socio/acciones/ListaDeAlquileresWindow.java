@@ -1,4 +1,4 @@
-package sprint1.ui.ventanas.socio;
+package sprint1.ui.ventanas.socio.acciones;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -18,6 +18,7 @@ import javax.swing.ListSelectionModel;
 import sprint1.business.clases.Alquiler;
 import sprint1.business.clases.Programa;
 import sprint1.business.clases.Socio;
+import sprint1.ui.ventanas.socio.SocioWindow;
 
 public class ListaDeAlquileresWindow extends JDialog {
 

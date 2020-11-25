@@ -11,7 +11,7 @@ import sprint1.business.clases.ActividadPlanificada;
 import sprint1.business.clases.Alquiler;
 import sprint1.business.clases.Programa;
 import sprint1.business.clases.Tercero;
-import sprint1.ui.ventanas.socio.Calendario;
+import sprint1.ui.ventanas.socio.util.Calendario;
 
 public class CalendarioTercero extends Calendario {
 

@@ -15,7 +15,7 @@ import javax.swing.border.EmptyBorder;
 
 import sprint1.business.clases.Programa;
 import sprint1.ui.ventanas.administracion.AdminWindow;
-import sprint1.ui.ventanas.socio.CbSociosWindow;
+import sprint1.ui.ventanas.socio.util.SeleccionSocioWindow;
 
 public class MainWindow extends JFrame {
 	
@@ -112,7 +112,7 @@ public class MainWindow extends JFrame {
 	
 
 	private void abrirCbSociosWindowPrueba() {
-		CbSociosWindow cbSocios = new CbSociosWindow(this);
+		SeleccionSocioWindow cbSocios = new SeleccionSocioWindow(this);
 		cbSocios.setModal(true);
 		cbSocios.setLocationRelativeTo(this);
 		cbSocios.setVisible(true);

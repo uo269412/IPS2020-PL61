@@ -9,7 +9,7 @@ import javax.swing.JButton;
 
 import sprint1.business.clases.ActividadPlanificada;
 import sprint1.business.clases.Programa;
-import sprint1.ui.ventanas.socio.Calendario;
+import sprint1.ui.ventanas.socio.util.Calendario;
 
 public class CalendarioAdmin extends Calendario {
 

@@ -1,4 +1,4 @@
-package sprint1.ui.ventanas.socio;
+package sprint1.ui.ventanas.socio.vistas;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -28,6 +28,7 @@ import sprint1.business.clases.Alquiler;
 import sprint1.business.clases.ComparadorPorDiaAlquiler;
 import sprint1.business.clases.Instalacion;
 import sprint1.business.clases.Socio;
+import sprint1.ui.ventanas.socio.SocioWindow;
 
 public class VerAlquileresSocio extends JDialog {
 

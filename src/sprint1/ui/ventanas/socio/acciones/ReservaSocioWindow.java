@@ -1,4 +1,4 @@
-package sprint1.ui.ventanas.socio;
+package sprint1.ui.ventanas.socio.acciones;
 
 import java.awt.BorderLayout;
 import java.util.ArrayList;
@@ -11,6 +11,8 @@ import javax.swing.border.EmptyBorder;
 import sprint1.business.clases.ActividadPlanificada;
 import sprint1.business.clases.Programa;
 import sprint1.business.clases.Socio;
+import sprint1.ui.ventanas.socio.SocioWindow;
+
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JList;

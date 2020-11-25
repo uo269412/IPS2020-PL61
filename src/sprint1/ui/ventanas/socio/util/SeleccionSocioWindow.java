@@ -1,4 +1,4 @@
-package sprint1.ui.ventanas.socio;
+package sprint1.ui.ventanas.socio.util;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -17,8 +17,9 @@ import javax.swing.border.EmptyBorder;
 
 import sprint1.business.clases.Socio;
 import sprint1.ui.ventanas.MainWindow;
+import sprint1.ui.ventanas.socio.SocioWindow;
 
-public class CbSociosWindow extends JDialog {
+public class SeleccionSocioWindow extends JDialog {
 
 	/**
 	 * 
@@ -46,7 +47,7 @@ public class CbSociosWindow extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public CbSociosWindow(MainWindow parent) {
+	public SeleccionSocioWindow(MainWindow parent) {
 		this.parent = parent;
 		getContentPane().setBackground(Color.WHITE);
 		setBounds(100, 100, 346, 186);

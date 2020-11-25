@@ -1,4 +1,4 @@
-package sprint1.ui.ventanas.socio;
+package sprint1.ui.ventanas.socio.acciones;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -24,8 +24,9 @@ import sprint1.business.clases.Instalacion;
 import sprint1.business.clases.Programa;
 import sprint1.business.clases.Reserva;
 import sprint1.business.clases.Socio;
+import sprint1.ui.ventanas.socio.util.CalendarioAlquilerSocio;
 
-public class SocioAlquilaWindow extends JDialog {
+public class AlquilaSocioWindow extends JDialog {
 
 	/**
 	 * 
@@ -57,7 +58,7 @@ public class SocioAlquilaWindow extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public SocioAlquilaWindow(CalendarioAlquilerSocio parent, int dia, int mes, int año, Socio socio) {
+	public AlquilaSocioWindow(CalendarioAlquilerSocio parent, int dia, int mes, int año, Socio socio) {
 		setTitle("Centro de deportes: Alquilar instalaci\u00F3n");
 		this.dia = dia;
 		this.mes = mes;
@@ -335,7 +336,7 @@ public class SocioAlquilaWindow extends JDialog {
 		return btnAñadir;
 	}
 
-	public SocioAlquilaWindow getMe() {
+	public AlquilaSocioWindow getMe() {
 		return this;
 	}
 
