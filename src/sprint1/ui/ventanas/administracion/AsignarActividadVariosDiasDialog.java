@@ -41,7 +41,6 @@ import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 
 import java.awt.Dimension;
-import net.miginfocom.swing.MigLayout;
 import javax.swing.SwingConstants;
 import javax.swing.ComboBoxModel;
 import javax.swing.JRadioButton;
