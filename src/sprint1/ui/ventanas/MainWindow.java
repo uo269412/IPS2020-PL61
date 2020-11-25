@@ -5,22 +5,17 @@ import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.SQLException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import sprint1.business.clases.Programa;
-import sprint1.business.clases.Socio;
-import sprint1.business.clases.Tercero;
 import sprint1.ui.ventanas.administracion.AdminWindow;
 import sprint1.ui.ventanas.socio.CbSociosWindow;
-import sprint1.ui.ventanas.socio.SocioWindow;
 
 public class MainWindow extends JFrame {
 	
@@ -29,7 +24,6 @@ public class MainWindow extends JFrame {
 	private JPanel contentPane;
 
 	private AdminWindow adminWindow = null;
-	private SocioWindow socioWindow = null;
 	
 
 	private static Programa programa;
@@ -106,13 +100,6 @@ public class MainWindow extends JFrame {
 	
 	public Programa getPrograma() {
 		return MainWindow.programa;
-	}
-
-	private void openSocioWindow(Socio socio) {
-		socioWindow = new SocioWindow(this, socio);
-		socioWindow.setModal(true);
-		socioWindow.setLocationRelativeTo(this);
-		socioWindow.setVisible(true);
 	}
 	
 	private void openAdminWindow() {

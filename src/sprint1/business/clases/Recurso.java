@@ -1,7 +1,5 @@
 package sprint1.business.clases;
 
-import java.util.UUID;
-
 public class Recurso {
 	private String id_recurso; // formato:
 	private String nombre_recurso;
