@@ -16,6 +16,7 @@ import javax.swing.border.EmptyBorder;
 import sprint1.business.Programa;
 import sprint1.business.dominio.centroDeportes.alquileres.Alquiler;
 import sprint1.business.dominio.clientes.Socio;
+import java.awt.Toolkit;
 
 public class MostrarImpagosDeSocioDialog extends JDialog {
 
@@ -34,9 +35,10 @@ public class MostrarImpagosDeSocioDialog extends JDialog {
 	 * Create the dialog.
 	 */
 	public MostrarImpagosDeSocioDialog(Socio s, Programa p) {
+		setIconImage(Toolkit.getDefaultToolkit().getImage(MostrarImpagosDeSocioDialog.class.getResource("/sprint1/ui/resources/titulo.png")));
 		this.s = s;
 		this.p = p;
-		setTitle("Listar socios con impagos: Impagos de socio");
+		setTitle("Centro de deporte: Impagos del socio");
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout(0, 0));
 		getContentPane().add(getLblCliente(), BorderLayout.NORTH);

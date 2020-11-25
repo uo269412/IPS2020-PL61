@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
@@ -146,6 +147,7 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 	 */
 	public PlanificarActividadFlexibilidadDialog(CalendarioSemanalPlanificar parent, Programa p, int dia, int mes, int año,
 			int horaInicio) {
+		setIconImage(Toolkit.getDefaultToolkit().getImage(PlanificarActividadFlexibilidadDialog.class.getResource("/sprint1/ui/resources/titulo.png")));
 		setTitle("Centro de deportes: Planificando actividades el " + dia + "/" + mes + "/" + año + " a las "
 				+ horaInicio);
 		this.parent = parent;
@@ -209,6 +211,7 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 	private JButton getBtnAñadir() {
 		if (btnAñadir == null) {
 			btnAñadir = new JButton("Planificar");
+			btnAñadir.setMnemonic('P');
 			btnAñadir.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					try {
@@ -331,13 +334,14 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 	private JButton getBtnVolver() {
 		if (btnVolver == null) {
 			btnVolver = new JButton("Volver");
+			btnVolver.setMnemonic('V');
 			btnVolver.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					getMe().dispose();
 				}
 			});
-			btnVolver.setBackground(new Color(240, 240, 240));
-			btnVolver.setForeground(Color.BLACK);
+			btnVolver.setBackground(Color.BLUE);
+			btnVolver.setForeground(Color.WHITE);
 			btnVolver.setActionCommand("Cancel");
 		}
 		return btnVolver;
@@ -567,6 +571,7 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 	private JPanel getPnVariasInstalaciones() {
 		if (pnVariasInstalaciones == null) {
 			pnVariasInstalaciones = new JPanel();
+			pnVariasInstalaciones.setLayout(new BorderLayout(0, 0));
 			pnVariasInstalaciones.add(getRdbtnVariasInstalaciones());
 		}
 		return pnVariasInstalaciones;
@@ -605,6 +610,7 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 	private JRadioButton getRdbtnVariasInstalaciones() {
 		if (rdbtnVariasInstalaciones == null) {
 			rdbtnVariasInstalaciones = new JRadioButton("Decidir la instalaci\u00F3n para cada d\u00EDa de la semana");
+			rdbtnVariasInstalaciones.setHorizontalAlignment(SwingConstants.CENTER);
 			rdbtnVariasInstalaciones.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					cmbInstalaciones.setVisible(false);
@@ -698,6 +704,8 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 	private JCheckBox getChckbxLunes() {
 		if (chckbxLunes == null) {
 			chckbxLunes = new JCheckBox("Lunes");
+			chckbxLunes.setForeground(new Color(255, 255, 255));
+			chckbxLunes.setBackground(new Color(0, 0, 128));
 			chckbxLunes.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					if (chckbxLunes.isSelected()) {
@@ -742,6 +750,8 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 	private JCheckBox getChckbxMartes() {
 		if (chckbxMartes == null) {
 			chckbxMartes = new JCheckBox("Martes");
+			chckbxMartes.setForeground(new Color(255, 255, 255));
+			chckbxMartes.setBackground(new Color(0, 0, 128));
 			chckbxMartes.setHorizontalAlignment(SwingConstants.CENTER);
 			chckbxMartes.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
@@ -786,6 +796,8 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 	private JCheckBox getChckbxMiercoles() {
 		if (chckbxMiercoles == null) {
 			chckbxMiercoles = new JCheckBox("Mi\u00E9rcoles");
+			chckbxMiercoles.setForeground(new Color(255, 255, 255));
+			chckbxMiercoles.setBackground(new Color(0, 0, 128));
 			chckbxMiercoles.setHorizontalAlignment(SwingConstants.CENTER);
 			chckbxMiercoles.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
@@ -828,6 +840,8 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 	private JCheckBox getChckbxJueves() {
 		if (chckbxJueves == null) {
 			chckbxJueves = new JCheckBox("Jueves");
+			chckbxJueves.setForeground(new Color(255, 255, 255));
+			chckbxJueves.setBackground(new Color(0, 0, 128));
 			chckbxJueves.setHorizontalAlignment(SwingConstants.CENTER);
 			chckbxJueves.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
@@ -883,6 +897,8 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 	private JCheckBox getChckbxViernes() {
 		if (chckbxViernes == null) {
 			chckbxViernes = new JCheckBox("Viernes");
+			chckbxViernes.setBackground(new Color(0, 0, 128));
+			chckbxViernes.setForeground(new Color(255, 255, 255));
 			chckbxViernes.setHorizontalAlignment(SwingConstants.CENTER);
 			chckbxViernes.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
@@ -927,6 +943,8 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 	private JCheckBox getChckbxSabado() {
 		if (chckbxSabado == null) {
 			chckbxSabado = new JCheckBox("S\u00E1bado");
+			chckbxSabado.setForeground(new Color(255, 255, 255));
+			chckbxSabado.setBackground(new Color(0, 0, 128));
 			chckbxSabado.setHorizontalAlignment(SwingConstants.CENTER);
 			chckbxSabado.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
@@ -971,6 +989,8 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 	private JCheckBox getChckbxDomingo() {
 		if (chckbxDomingo == null) {
 			chckbxDomingo = new JCheckBox("Domingo");
+			chckbxDomingo.setForeground(new Color(255, 255, 255));
+			chckbxDomingo.setBackground(new Color(0, 0, 128));
 			chckbxDomingo.setHorizontalAlignment(SwingConstants.CENTER);
 			chckbxDomingo.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
@@ -1006,8 +1026,8 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 			pnModificarLunes = new JPanel();
 			pnModificarLunes.setLayout(new GridLayout(0, 2, 0, 0));
 			pnModificarLunes.add(getLblInstalacionLunes());
-			pnModificarLunes.add(getCmbInstalacionesLunes());
 			pnModificarLunes.add(getLblHoraFinLunes());
+			pnModificarLunes.add(getCmbInstalacionesLunes());
 			pnModificarLunes.add(getTxtHoraFinLunes());
 		}
 		return pnModificarLunes;
@@ -1015,7 +1035,7 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 
 	private JLabel getLblInstalacionLunes() {
 		if (lblInstalacionLunes == null) {
-			lblInstalacionLunes = new JLabel("Instalaci\u00F3n:");
+			lblInstalacionLunes = new JLabel("Instalaci\u00F3n");
 			lblInstalacionLunes.setHorizontalAlignment(SwingConstants.CENTER);
 			lblInstalacionLunes.setVisible(false);
 		}
@@ -1033,7 +1053,7 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 
 	private JLabel getLblHoraFinLunes() {
 		if (lblHoraFinLunes == null) {
-			lblHoraFinLunes = new JLabel("Hora fin:");
+			lblHoraFinLunes = new JLabel("Hora fin");
 			lblHoraFinLunes.setHorizontalAlignment(SwingConstants.CENTER);
 			lblHoraFinLunes.setVisible(false);
 		}
@@ -1043,6 +1063,7 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 	private JTextField getTxtHoraFinLunes() {
 		if (txtHoraFinLunes == null) {
 			txtHoraFinLunes = new JTextField();
+			txtHoraFinLunes.setHorizontalAlignment(SwingConstants.CENTER);
 			txtHoraFinLunes.setColumns(10);
 			txtHoraFinLunes.setVisible(false);
 		}
@@ -1082,6 +1103,7 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 	private JTextField getTxtFechaFin() {
 		if (txtFechaFin == null) {
 			txtFechaFin = new JTextField();
+			txtFechaFin.setHorizontalAlignment(SwingConstants.CENTER);
 			txtFechaFin.setToolTipText("Formato (d\u00EDa/mes/a\u00F1o)");
 			txtFechaFin.setColumns(10);
 		}
@@ -1093,8 +1115,8 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 			pnModificarMartes = new JPanel();
 			pnModificarMartes.setLayout(new GridLayout(0, 2, 0, 0));
 			pnModificarMartes.add(getLblInstalacionMartes());
-			pnModificarMartes.add(getCmbInstalacionesMartes());
 			pnModificarMartes.add(getLblHoraFinMartes());
+			pnModificarMartes.add(getCmbInstalacionesMartes());
 			pnModificarMartes.add(getTxtHoraFinMartes());
 		}
 		return pnModificarMartes;
@@ -1102,7 +1124,7 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 
 	private JLabel getLblInstalacionMartes() {
 		if (lblInstalacionMartes == null) {
-			lblInstalacionMartes = new JLabel("Instalaci\u00F3n:");
+			lblInstalacionMartes = new JLabel("Instalaci\u00F3n");
 			lblInstalacionMartes.setHorizontalAlignment(SwingConstants.CENTER);
 			lblInstalacionMartes.setVisible(false);
 		}
@@ -1120,7 +1142,7 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 
 	private JLabel getLblHoraFinMartes() {
 		if (lblHoraFinMartes == null) {
-			lblHoraFinMartes = new JLabel("Hora fin:");
+			lblHoraFinMartes = new JLabel("Hora fin");
 			lblHoraFinMartes.setHorizontalAlignment(SwingConstants.CENTER);
 			lblHoraFinMartes.setVisible(false);
 		}
@@ -1130,6 +1152,7 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 	private JTextField getTxtHoraFinMartes() {
 		if (txtHoraFinMartes == null) {
 			txtHoraFinMartes = new JTextField();
+			txtHoraFinMartes.setHorizontalAlignment(SwingConstants.CENTER);
 			txtHoraFinMartes.setColumns(10);
 			txtHoraFinMartes.setVisible(false);
 		}
@@ -1141,8 +1164,8 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 			pnModificarMiercoles = new JPanel();
 			pnModificarMiercoles.setLayout(new GridLayout(0, 2, 0, 0));
 			pnModificarMiercoles.add(getLblInstalacionMiercoles());
-			pnModificarMiercoles.add(getCmbInstalacionesMiercoles());
 			pnModificarMiercoles.add(getLblHoraFinMiercoles());
+			pnModificarMiercoles.add(getCmbInstalacionesMiercoles());
 			pnModificarMiercoles.add(getTxtHoraFinMiercoles());
 		}
 		return pnModificarMiercoles;
@@ -1150,7 +1173,7 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 
 	private JLabel getLblInstalacionMiercoles() {
 		if (lblInstalacionMiercoles == null) {
-			lblInstalacionMiercoles = new JLabel("Instalaci\u00F3n:");
+			lblInstalacionMiercoles = new JLabel("Instalaci\u00F3n");
 			lblInstalacionMiercoles.setHorizontalAlignment(SwingConstants.CENTER);
 			lblInstalacionMiercoles.setVisible(false);
 		}
@@ -1168,7 +1191,7 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 
 	private JLabel getLblHoraFinMiercoles() {
 		if (lblHoraFinMiercoles == null) {
-			lblHoraFinMiercoles = new JLabel("Hora fin:");
+			lblHoraFinMiercoles = new JLabel("Hora fin");
 			lblHoraFinMiercoles.setHorizontalAlignment(SwingConstants.CENTER);
 			lblHoraFinMiercoles.setVisible(false);
 		}
@@ -1178,6 +1201,7 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 	private JTextField getTxtHoraFinMiercoles() {
 		if (txtHoraFinMiercoles == null) {
 			txtHoraFinMiercoles = new JTextField();
+			txtHoraFinMiercoles.setHorizontalAlignment(SwingConstants.CENTER);
 			txtHoraFinMiercoles.setColumns(10);
 			txtHoraFinMiercoles.setVisible(false);
 		}
@@ -1189,8 +1213,8 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 			pnModificarJueves = new JPanel();
 			pnModificarJueves.setLayout(new GridLayout(0, 2, 0, 0));
 			pnModificarJueves.add(getLblInstalacionJueves());
-			pnModificarJueves.add(getCmbInstalacionesJueves());
 			pnModificarJueves.add(getLblHoraFinJueves());
+			pnModificarJueves.add(getCmbInstalacionesJueves());
 			pnModificarJueves.add(getTxtHoraFinJueves());
 		}
 		return pnModificarJueves;
@@ -1198,7 +1222,7 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 
 	private JLabel getLblInstalacionJueves() {
 		if (lblInstalacionJueves == null) {
-			lblInstalacionJueves = new JLabel("Instalaci\u00F3n:");
+			lblInstalacionJueves = new JLabel("Instalaci\u00F3n");
 			lblInstalacionJueves.setHorizontalAlignment(SwingConstants.CENTER);
 			lblInstalacionJueves.setVisible(false);
 		}
@@ -1216,7 +1240,7 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 
 	private JLabel getLblHoraFinJueves() {
 		if (lblHoraFinJueves == null) {
-			lblHoraFinJueves = new JLabel("Hora fin:");
+			lblHoraFinJueves = new JLabel("Hora fin");
 			lblHoraFinJueves.setHorizontalAlignment(SwingConstants.CENTER);
 			lblHoraFinJueves.setVisible(false);
 		}
@@ -1226,6 +1250,7 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 	private JTextField getTxtHoraFinJueves() {
 		if (txtHoraFinJueves == null) {
 			txtHoraFinJueves = new JTextField();
+			txtHoraFinJueves.setHorizontalAlignment(SwingConstants.CENTER);
 			txtHoraFinJueves.setColumns(10);
 			txtHoraFinJueves.setVisible(false);
 		}
@@ -1237,8 +1262,8 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 			pnModificarViernes = new JPanel();
 			pnModificarViernes.setLayout(new GridLayout(0, 2, 0, 0));
 			pnModificarViernes.add(getLblInstalacionViernes());
-			pnModificarViernes.add(getCmbInstalacionesViernes());
 			pnModificarViernes.add(getLblHoraFinViernes());
+			pnModificarViernes.add(getCmbInstalacionesViernes());
 			pnModificarViernes.add(getTxtHoraFinViernes());
 		}
 		return pnModificarViernes;
@@ -1246,7 +1271,7 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 
 	private JLabel getLblInstalacionViernes() {
 		if (lblInstalacionViernes == null) {
-			lblInstalacionViernes = new JLabel("Instalaci\u00F3n:");
+			lblInstalacionViernes = new JLabel("Instalaci\u00F3n");
 			lblInstalacionViernes.setHorizontalAlignment(SwingConstants.CENTER);
 			lblInstalacionViernes.setVisible(false);
 		}
@@ -1264,7 +1289,7 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 
 	private JLabel getLblHoraFinViernes() {
 		if (lblHoraFinViernes == null) {
-			lblHoraFinViernes = new JLabel("Hora fin:");
+			lblHoraFinViernes = new JLabel("Hora fin");
 			lblHoraFinViernes.setHorizontalAlignment(SwingConstants.CENTER);
 			lblHoraFinViernes.setVisible(false);
 		}
@@ -1274,6 +1299,7 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 	private JTextField getTxtHoraFinViernes() {
 		if (txtHoraFinViernes == null) {
 			txtHoraFinViernes = new JTextField();
+			txtHoraFinViernes.setHorizontalAlignment(SwingConstants.CENTER);
 			txtHoraFinViernes.setColumns(10);
 			txtHoraFinViernes.setVisible(false);
 		}
@@ -1285,8 +1311,8 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 			pnModificarSabado = new JPanel();
 			pnModificarSabado.setLayout(new GridLayout(0, 2, 0, 0));
 			pnModificarSabado.add(getLblInstalacionSabado());
-			pnModificarSabado.add(getCmbInstalacionesSabado());
 			pnModificarSabado.add(getLblHoraFinSabado());
+			pnModificarSabado.add(getCmbInstalacionesSabado());
 			pnModificarSabado.add(getTxtHoraFinSabado());
 		}
 		return pnModificarSabado;
@@ -1294,7 +1320,7 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 
 	private JLabel getLblInstalacionSabado() {
 		if (lblInstalacionSabado == null) {
-			lblInstalacionSabado = new JLabel("Instalaci\u00F3n:");
+			lblInstalacionSabado = new JLabel("Instalaci\u00F3n");
 			lblInstalacionSabado.setHorizontalAlignment(SwingConstants.CENTER);
 			lblInstalacionSabado.setVisible(false);
 		}
@@ -1312,7 +1338,7 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 
 	private JLabel getLblHoraFinSabado() {
 		if (lblHoraFinSabado == null) {
-			lblHoraFinSabado = new JLabel("Hora fin:");
+			lblHoraFinSabado = new JLabel("Hora fin");
 			lblHoraFinSabado.setHorizontalAlignment(SwingConstants.CENTER);
 			lblHoraFinSabado.setVisible(false);
 		}
@@ -1322,6 +1348,7 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 	private JTextField getTxtHoraFinSabado() {
 		if (txtHoraFinSabado == null) {
 			txtHoraFinSabado = new JTextField();
+			txtHoraFinSabado.setHorizontalAlignment(SwingConstants.CENTER);
 			txtHoraFinSabado.setColumns(10);
 			txtHoraFinSabado.setVisible(false);
 		}
@@ -1333,8 +1360,8 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 			pnModificarDomingo = new JPanel();
 			pnModificarDomingo.setLayout(new GridLayout(0, 2, 0, 0));
 			pnModificarDomingo.add(getLblInstalacionDomingo());
-			pnModificarDomingo.add(getCmbInstalacionesDomingo());
 			pnModificarDomingo.add(getLblHoraFinDomingo());
+			pnModificarDomingo.add(getCmbInstalacionesDomingo());
 			pnModificarDomingo.add(getTxtHoraFinDomingo());
 		}
 		return pnModificarDomingo;
@@ -1342,7 +1369,7 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 
 	private JLabel getLblInstalacionDomingo() {
 		if (lblInstalacionDomingo == null) {
-			lblInstalacionDomingo = new JLabel("Instalaci\u00F3n:");
+			lblInstalacionDomingo = new JLabel("Instalaci\u00F3n");
 			lblInstalacionDomingo.setHorizontalAlignment(SwingConstants.CENTER);
 			lblInstalacionDomingo.setVisible(false);
 		}
@@ -1360,7 +1387,7 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 
 	private JLabel getLblHoraFinDomingo() {
 		if (lblHoraFinDomingo == null) {
-			lblHoraFinDomingo = new JLabel("Hora fin:");
+			lblHoraFinDomingo = new JLabel("Hora fin");
 			lblHoraFinDomingo.setHorizontalAlignment(SwingConstants.CENTER);
 			lblHoraFinDomingo.setVisible(false);
 		}
@@ -1370,6 +1397,7 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 	private JTextField getTxtHoraFinDomingo() {
 		if (txtHoraFinDomingo == null) {
 			txtHoraFinDomingo = new JTextField();
+			txtHoraFinDomingo.setHorizontalAlignment(SwingConstants.CENTER);
 			txtHoraFinDomingo.setColumns(10);
 			txtHoraFinDomingo.setVisible(false);
 		}
@@ -1430,6 +1458,7 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 	private JPanel getPnDistintaHora() {
 		if (pnDistintaHora == null) {
 			pnDistintaHora = new JPanel();
+			pnDistintaHora.setLayout(new BorderLayout(0, 0));
 			pnDistintaHora.add(getRdbtnDistintaHora());
 		}
 		return pnDistintaHora;
@@ -1438,6 +1467,7 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 	private JRadioButton getRdbtnDistintaHora() {
 		if (rdbtnDistintaHora == null) {
 			rdbtnDistintaHora = new JRadioButton("Decidir la hora de fin para cada d\u00EDa de la semana");
+			rdbtnDistintaHora.setHorizontalAlignment(SwingConstants.CENTER);
 			rdbtnDistintaHora.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					txtHoraFin.setVisible(false);
@@ -1479,6 +1509,7 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 	private JTextField getTxtHoraFin() {
 		if (txtHoraFin == null) {
 			txtHoraFin = new JTextField();
+			txtHoraFin.setHorizontalAlignment(SwingConstants.CENTER);
 			int hora = horaInicio + 1;
 			txtHoraFin.setText("" + hora);
 			txtHoraFin.setColumns(10);

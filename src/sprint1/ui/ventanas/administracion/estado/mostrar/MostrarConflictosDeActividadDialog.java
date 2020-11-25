@@ -19,6 +19,7 @@ import sprint1.business.dominio.centroDeportes.planificaciones.Conflicto;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Toolkit;
 
 public class MostrarConflictosDeActividadDialog extends JDialog {
 
@@ -40,6 +41,8 @@ public class MostrarConflictosDeActividadDialog extends JDialog {
 	 * Create the dialog.
 	 */
 	public MostrarConflictosDeActividadDialog(ActividadPlanificada ap) {
+		setIconImage(Toolkit.getDefaultToolkit().getImage(MostrarConflictosDeActividadDialog.class.getResource("/sprint1/ui/resources/titulo.png")));
+		setTitle("Centro de deporte: Conflictos de la actividad");
 		this.ap = ap;
 		this.lm = new DefaultListModel<>();
 		rellenarModelo();

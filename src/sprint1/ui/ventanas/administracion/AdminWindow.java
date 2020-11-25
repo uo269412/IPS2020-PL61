@@ -19,6 +19,8 @@ import sprint1.business.dominio.clientes.Tercero;
 import sprint1.ui.ventanas.MainWindow;
 import sprint1.ui.ventanas.administracion.actividades.CrearActividadDialog;
 import sprint1.ui.ventanas.administracion.alquileres.AdminAlquilaSocioAhoraDialog;
+import sprint1.ui.ventanas.administracion.alquileres.RegistrarEntradaSocioDialog;
+import sprint1.ui.ventanas.administracion.alquileres.RegistrarSalidaSocioDialog;
 import sprint1.ui.ventanas.administracion.estado.ListaSociosConImpagos;
 import sprint1.ui.ventanas.administracion.estado.VerConflictosDialog;
 import sprint1.ui.ventanas.administracion.estado.VerOcupacionDialog;
@@ -26,8 +28,6 @@ import sprint1.ui.ventanas.administracion.instalaciones.AsignarRecursosAInstalac
 import sprint1.ui.ventanas.administracion.instalaciones.CerrarInstalacionDialog;
 import sprint1.ui.ventanas.administracion.monitores.AsignarMonitorDialog;
 import sprint1.ui.ventanas.administracion.reservas.AdminReservaSocioDialog;
-import sprint1.ui.ventanas.administracion.reservas.RegistrarEntradaSocioDialog;
-import sprint1.ui.ventanas.administracion.reservas.RegistrarSalidaSocioDialog;
 import sprint1.ui.ventanas.administracion.util.CalendarioAdmin;
 import sprint1.ui.ventanas.administracion.util.CalendarioAdminAlquilar;
 import sprint1.ui.ventanas.administracion.util.CalendarioSemanalPlanificar;

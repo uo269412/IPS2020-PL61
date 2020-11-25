@@ -22,6 +22,7 @@ import sprint1.business.dominio.centroDeportes.actividades.ActividadPlanificada;
 import sprint1.business.dominio.centroDeportes.reservas.Reserva;
 import sprint1.business.dominio.clientes.Socio;
 import sprint1.ui.ventanas.socio.SocioWindow;
+import java.awt.Toolkit;
 
 public class ListaDeReservasWindow extends JDialog {
 
@@ -40,7 +41,8 @@ public class ListaDeReservasWindow extends JDialog {
 	private JButton btnCancelarReserva;
 
 	public ListaDeReservasWindow(SocioWindow parent, Socio socio) {
-		setTitle("Socio: Viendo y cancelando reservas");
+		setIconImage(Toolkit.getDefaultToolkit().getImage(ListaDeReservasWindow.class.getResource("/sprint1/ui/resources/titulo.png")));
+		setTitle("Centro de deportes: Listado de reservas");
 		this.parent = parent;
 		this.socio = socio;
 		setBounds(100, 100, 681, 588);
@@ -105,6 +107,7 @@ public class ListaDeReservasWindow extends JDialog {
 	private JButton getBtnVolver() {
 		if (btnVolver == null) {
 			btnVolver = new JButton("Volver");
+			btnVolver.setMnemonic('V');
 			btnVolver.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					dispose();
@@ -120,6 +123,7 @@ public class ListaDeReservasWindow extends JDialog {
 	private JButton getBtnCancelarReserva() {
 		if (btnCancelarReserva == null) {
 			btnCancelarReserva = new JButton("Cancelar reserva");
+			btnCancelarReserva.setMnemonic('C');
 			btnCancelarReserva.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					if (listActividades.isSelectionEmpty()) {

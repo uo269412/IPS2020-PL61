@@ -18,6 +18,7 @@ import sprint1.business.dominio.centroDeportes.instalaciones.Instalacion;
 import sprint1.business.dominio.clientes.Cliente;
 import sprint1.business.dominio.clientes.Socio;
 import sprint1.business.dominio.clientes.Tercero;
+import java.awt.Toolkit;
 
 public class MostrarAlquileresDeClienteDialog extends JDialog {
 
@@ -36,10 +37,11 @@ public class MostrarAlquileresDeClienteDialog extends JDialog {
 	 * Create the dialog.
 	 */
 	public MostrarAlquileresDeClienteDialog(Cliente c, Instalacion i, Programa p) {
+		setIconImage(Toolkit.getDefaultToolkit().getImage(MostrarAlquileresDeClienteDialog.class.getResource("/sprint1/ui/resources/titulo.png")));
 		this.c = c;
 		this.i = i;
 		this.p = p;
-		setTitle("Cerrar Instalaci\u00F3n: Alquileres de cliente");
+		setTitle("Centro de deporte: Alquileres del cliente");
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout(0, 0));
 		getContentPane().add(getLblCliente(), BorderLayout.NORTH);

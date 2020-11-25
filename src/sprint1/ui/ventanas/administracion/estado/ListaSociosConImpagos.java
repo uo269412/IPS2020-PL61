@@ -25,6 +25,7 @@ import javax.swing.border.EmptyBorder;
 import sprint1.business.Programa;
 import sprint1.business.dominio.clientes.Socio;
 import sprint1.ui.ventanas.administracion.estado.mostrar.MostrarImpagosDeSocioDialog;
+import java.awt.Toolkit;
 
 public class ListaSociosConImpagos extends JDialog {
 
@@ -51,7 +52,8 @@ public class ListaSociosConImpagos extends JDialog {
 	 * Create the dialog.
 	 */
 	public ListaSociosConImpagos(Programa p) {
-		setTitle("Administrador: Listar socios que no han pagado sus alquileres");
+		setIconImage(Toolkit.getDefaultToolkit().getImage(ListaSociosConImpagos.class.getResource("/sprint1/ui/resources/titulo.png")));
+		setTitle("Centro de deporte: Socios que no han pagado sus alquileres");
 		this.p = p;
 		this.dflm = new DefaultListModel<>();
 		this.mes = new HashMap<>();

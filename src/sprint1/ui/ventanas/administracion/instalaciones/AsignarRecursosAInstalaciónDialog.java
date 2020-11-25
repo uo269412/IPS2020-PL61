@@ -24,6 +24,7 @@ import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.Toolkit;
 
 public class AsignarRecursosAInstalaciónDialog extends JDialog {
 
@@ -49,10 +50,11 @@ public class AsignarRecursosAInstalaciónDialog extends JDialog {
 	 * Create the dialog.
 	 */
 	public AsignarRecursosAInstalaciónDialog(Programa p) {
+		setIconImage(Toolkit.getDefaultToolkit().getImage(AsignarRecursosAInstalaciónDialog.class.getResource("/sprint1/ui/resources/titulo.png")));
 		this.p = p;
 		dcbm = new DefaultComboBoxModel<>();
 		rellenarComboBox();
-		setTitle("AdminWindow: A\u00F1adir recurso a instalaci\u00F3n");
+		setTitle("Centro de deporte: A\u00F1adiendo recursos");
 		setBounds(100, 100, 367, 271);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -118,14 +120,15 @@ public class AsignarRecursosAInstalaciónDialog extends JDialog {
 	private JPanel getPnButtons() {
 		if (pnButtons == null) {
 			pnButtons = new JPanel();
-			pnButtons.add(getBtnAñadir());
 			pnButtons.add(getBtnCancelar());
+			pnButtons.add(getBtnAñadir());
 		}
 		return pnButtons;
 	}
 	private JButton getBtnAñadir() {
 		if (btnAñadir == null) {
 			btnAñadir = new JButton("A\u00F1adir");
+			btnAñadir.setMnemonic('A');
 			btnAñadir.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					if(checkUnits()) {
@@ -153,6 +156,7 @@ public class AsignarRecursosAInstalaciónDialog extends JDialog {
 	private JButton getBtnCancelar() {
 		if (btnCancelar == null) {
 			btnCancelar = new JButton("Cancelar");
+			btnCancelar.setMnemonic('C');
 			btnCancelar.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					dispose();

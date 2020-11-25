@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -12,11 +13,12 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
 
 import sprint1.business.Programa;
 import sprint1.business.dominio.centroDeportes.actividades.ActividadPlanificada;
@@ -34,8 +36,6 @@ public class AlquilaSocioWindow extends JDialog {
 	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
 	private JPanel pnProgramarActividad;
-	private JLabel lblSocio;
-	private JLabel lblHora;
 	private JPanel pnHoras;
 	private JTextField txtHoraInicio;
 	private JTextField txtHoraFin;
@@ -48,24 +48,26 @@ public class AlquilaSocioWindow extends JDialog {
 	private int mes;
 	private int año;
 	private Socio socio;
-
-	private JLabel lblInstalacion;
 	private JComboBox<Instalacion> cmbInstalaciones;
 
 	private DefaultComboBoxModel<Instalacion> modeloInstalaciones = new DefaultComboBoxModel<>();
 	private DefaultComboBoxModel<Socio> modeloSocios = new DefaultComboBoxModel<>();
+	private JPanel pnCombo;
+	private JPanel pnHoraInicio;
+	private JPanel pnHoraFin;
 
 	/**
 	 * Create the dialog.
 	 */
 	public AlquilaSocioWindow(CalendarioAlquilerSocio parent, int dia, int mes, int año, Socio socio) {
-		setTitle("Centro de deportes: Alquilar instalaci\u00F3n");
+		setIconImage(Toolkit.getDefaultToolkit().getImage(AlquilaSocioWindow.class.getResource("/sprint1/ui/resources/titulo.png")));
+		setTitle("Centro de deportes: Alquilando instalaci\u00F3n");
 		this.dia = dia;
 		this.mes = mes;
 		this.año = año;
 		this.parent = parent;
 		this.socio = socio;
-		setBounds(100, 100, 707, 342);
+		setBounds(100, 100, 423, 207);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
@@ -264,34 +266,19 @@ public class AlquilaSocioWindow extends JDialog {
 		if (pnProgramarActividad == null) {
 			pnProgramarActividad = new JPanel();
 			pnProgramarActividad.setLayout(new GridLayout(0, 1, 0, 0));
-			pnProgramarActividad.add(getLblSocio());
-			pnProgramarActividad.add(getLblInstalacion());
-			pnProgramarActividad.add(getCmbInstalaciones());
-			pnProgramarActividad.add(getLblHora());
+			pnProgramarActividad.add(getPnCombo());
 			pnProgramarActividad.add(getPnHoras());
+
 		}
 		return pnProgramarActividad;
-	}
-
-	private JLabel getLblSocio() {
-		if (lblSocio == null) {
-			lblSocio = new JLabel("Alquilando instalacion para: " + socio.getNombre() + " " + socio.getApellido());
-		}
-		return lblSocio;
-	}
-
-	private JLabel getLblHora() {
-		if (lblHora == null) {
-			lblHora = new JLabel("Hora inicio / Hora fin (formato HH)");
-		}
-		return lblHora;
 	}
 
 	private JPanel getPnHoras() {
 		if (pnHoras == null) {
 			pnHoras = new JPanel();
-			pnHoras.add(getTxtHoraInicio());
-			pnHoras.add(getTxtHoraFin());
+			pnHoras.setLayout(new GridLayout(0, 2, 0, 0));
+			pnHoras.add(getPnHoraInicio());
+			pnHoras.add(getPnHoraFin());
 		}
 		return pnHoras;
 	}
@@ -314,7 +301,8 @@ public class AlquilaSocioWindow extends JDialog {
 
 	private JButton getBtnAñadir() {
 		if (btnAñadir == null) {
-			btnAñadir = new JButton("A\u00F1adir");
+			btnAñadir = new JButton("Alquilar");
+			btnAñadir.setMnemonic('A');
 			btnAñadir.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					Instalacion instalacion = (Instalacion) cmbInstalaciones.getSelectedItem();
@@ -353,6 +341,7 @@ public class AlquilaSocioWindow extends JDialog {
 	private JButton getBtnVolver() {
 		if (btnVolver == null) {
 			btnVolver = new JButton("Volver");
+			btnVolver.setMnemonic('V');
 			btnVolver.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					dispose();
@@ -365,13 +354,6 @@ public class AlquilaSocioWindow extends JDialog {
 		return btnVolver;
 	}
 
-	private JLabel getLblInstalacion() {
-		if (lblInstalacion == null) {
-			lblInstalacion = new JLabel("Instalaci\u00F3n donde se realizar\u00E1 el alquiler: ");
-		}
-		return lblInstalacion;
-	}
-
 	private JComboBox<Instalacion> getCmbInstalaciones() {
 		if (cmbInstalaciones == null) {
 			cmbInstalaciones = new JComboBox<Instalacion>(modeloInstalaciones);
@@ -381,6 +363,31 @@ public class AlquilaSocioWindow extends JDialog {
 
 	private Programa getPrograma() {
 		return parent.getParent().getParent().getPrograma();
+	}
+	private JPanel getPnCombo() {
+		if (pnCombo == null) {
+			pnCombo = new JPanel();
+			pnCombo.setBorder(new TitledBorder(null, "Instalaci\u00F3n donde se realizar\u00E1 el alquiler:", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+			pnCombo.setLayout(new BorderLayout(0, 0));
+			pnCombo.add(getCmbInstalaciones(), BorderLayout.CENTER);
+		}
+		return pnCombo;
+	}
+	private JPanel getPnHoraInicio() {
+		if (pnHoraInicio == null) {
+			pnHoraInicio = new JPanel();
+			pnHoraInicio.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Hora de inicio:", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+			pnHoraInicio.add(getTxtHoraInicio());
+		}
+		return pnHoraInicio;
+	}
+	private JPanel getPnHoraFin() {
+		if (pnHoraFin == null) {
+			pnHoraFin = new JPanel();
+			pnHoraFin.setBorder(new TitledBorder(null, "Hora de fin:", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+			pnHoraFin.add(getTxtHoraFin());
+		}
+		return pnHoraFin;
 	}
 }
 

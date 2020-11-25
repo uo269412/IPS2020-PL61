@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -20,7 +21,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
-import javax.swing.SwingConstants;
+import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import sprint1.business.Programa;
@@ -30,8 +32,6 @@ import sprint1.business.dominio.centroDeportes.instalaciones.Instalacion;
 import sprint1.business.dominio.centroDeportes.reservas.Reserva;
 import sprint1.business.dominio.clientes.Socio;
 import sprint1.ui.ventanas.administracion.AdminWindow;
-
-import javax.swing.event.ListSelectionEvent;
 
 public class AdminAlquilaSocioAhoraDialog extends JDialog {
 
@@ -51,16 +51,15 @@ public class AdminAlquilaSocioAhoraDialog extends JDialog {
 	private JPanel panel;
 	private JScrollPane scpInstalaciones;
 	private JList<Instalacion> listInstalaciones;
-	private JLabel lblInstalaciones;
-	private JLabel lblNewLabel;
 	private JPanel pnCombo;
 	private JComboBox<Socio> comboBox;
 	private JLabel lblEstadoInstlacion;
 
 	public AdminAlquilaSocioAhoraDialog(AdminWindow adminWindow) {
-		setTitle("Administraci\u00F3n: Realizando un alquiler para el socio ahora");
+		setIconImage(Toolkit.getDefaultToolkit().getImage(AdminAlquilaSocioAhoraDialog.class.getResource("/sprint1/ui/resources/titulo.png")));
+		setTitle("Centro de deportes: Alquilando instalaci\u00F3n ahora");
 		this.parent = adminWindow;
-		setBounds(100, 100, 681, 313);
+		setBounds(100, 100, 503, 316);
 		getContentPane().setLayout(new BorderLayout());
 		getContentPane().add(getPnBotones(), BorderLayout.SOUTH);
 		getContentPane().add(getPnSocio(), BorderLayout.NORTH);
@@ -148,8 +147,8 @@ public class AdminAlquilaSocioAhoraDialog extends JDialog {
 			pnBotones = new JPanel();
 			pnBotones.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			pnBotones.add(getLblEstadoInstlacion());
-			pnBotones.add(getBtnReservar());
 			pnBotones.add(getBtnVolver());
+			pnBotones.add(getBtnReservar());
 		}
 		return pnBotones;
 	}
@@ -157,13 +156,14 @@ public class AdminAlquilaSocioAhoraDialog extends JDialog {
 	private JButton getBtnVolver() {
 		if (btnVolver == null) {
 			btnVolver = new JButton("Volver");
+			btnVolver.setMnemonic('V');
 			btnVolver.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					dispose();
 				}
 			});
 			btnVolver.setForeground(Color.WHITE);
-			btnVolver.setBackground(new Color(30, 144, 255));
+			btnVolver.setBackground(Color.BLUE);
 			btnVolver.setActionCommand("Cancel");
 		}
 		return btnVolver;
@@ -172,6 +172,7 @@ public class AdminAlquilaSocioAhoraDialog extends JDialog {
 	private JButton getBtnReservar() {
 		if (btnReservar == null) {
 			btnReservar = new JButton("Alquilar");
+			btnReservar.setMnemonic('A');
 			btnReservar.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					if (listInstalaciones.isSelectionEmpty()) {
@@ -215,8 +216,8 @@ public class AdminAlquilaSocioAhoraDialog extends JDialog {
 	private JPanel getPnSocio() {
 		if (pnSocio == null) {
 			pnSocio = new JPanel();
+			pnSocio.setBorder(new TitledBorder(null, "Selecci\u00F3n de socio", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			pnSocio.setLayout(new BorderLayout(0, 0));
-			pnSocio.add(getLblNewLabel(), BorderLayout.WEST);
 			pnSocio.add(getPnCombo(), BorderLayout.CENTER);
 		}
 		return pnSocio;
@@ -225,6 +226,7 @@ public class AdminAlquilaSocioAhoraDialog extends JDialog {
 	private JPanel getPanel() {
 		if (panel == null) {
 			panel = new JPanel();
+			panel.setBorder(new TitledBorder(null, "Lista de instalaciones disponibles", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			panel.setLayout(new BorderLayout(0, 0));
 			panel.add(getScpInstalaciones());
 		}
@@ -235,7 +237,6 @@ public class AdminAlquilaSocioAhoraDialog extends JDialog {
 		if (scpInstalaciones == null) {
 			scpInstalaciones = new JScrollPane();
 			scpInstalaciones.setViewportView(getListInstalaciones());
-			scpInstalaciones.setColumnHeaderView(getLblInstalaciones());
 		}
 		return scpInstalaciones;
 	}
@@ -257,23 +258,6 @@ public class AdminAlquilaSocioAhoraDialog extends JDialog {
 			listInstalaciones.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		}
 		return listInstalaciones;
-	}
-
-	private JLabel getLblInstalaciones() {
-		if (lblInstalaciones == null) {
-			lblInstalaciones = new JLabel("Lista de instalaciones que est\u00E1n disponibles en el momento");
-			lblInstalaciones.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		}
-		return lblInstalaciones;
-	}
-
-	private JLabel getLblNewLabel() {
-		if (lblNewLabel == null) {
-			lblNewLabel = new JLabel("Selecci\u00F3n de socio:   ");
-			lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-			lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		}
-		return lblNewLabel;
 	}
 
 	private JPanel getPnCombo() {

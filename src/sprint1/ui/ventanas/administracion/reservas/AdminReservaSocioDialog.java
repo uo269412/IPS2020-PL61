@@ -26,6 +26,9 @@ import sprint1.business.dominio.centroDeportes.actividades.ActividadPlanificada;
 import sprint1.business.dominio.centroDeportes.alquileres.Alquiler;
 import sprint1.business.dominio.clientes.Socio;
 import sprint1.ui.ventanas.administracion.AdminWindow;
+import javax.swing.border.TitledBorder;
+import java.awt.Toolkit;
+import javax.swing.UIManager;
 
 public class AdminReservaSocioDialog extends JDialog {
 
@@ -45,14 +48,13 @@ public class AdminReservaSocioDialog extends JDialog {
 	private JPanel panel;
 	private JScrollPane scpActividades;
 	private JList<ActividadPlanificada> listActividades;
-	private JLabel lblActividades;
-	private JLabel lblNewLabel;
 	private JPanel pnCombo;
 	private JComboBox<Socio> comboBox;
 	private JLabel lblEstadoSocio;
 
 	public AdminReservaSocioDialog(AdminWindow adminWindow) {
-		setTitle("Administraci\u00F3n: Realizando reserva para un socio");
+		setIconImage(Toolkit.getDefaultToolkit().getImage(AdminReservaSocioDialog.class.getResource("/sprint1/ui/resources/titulo.png")));
+		setTitle("Centro de deportes: Reservando actividades");
 		this.parent = adminWindow;
 		setBounds(100, 100, 681, 313);
 		getContentPane().setLayout(new BorderLayout());
@@ -146,8 +148,8 @@ public class AdminReservaSocioDialog extends JDialog {
 			pnBotones = new JPanel();
 			pnBotones.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			pnBotones.add(getLblEstadoSocio());
-			pnBotones.add(getBtnReservar());
 			pnBotones.add(getBtnVolver());
+			pnBotones.add(getBtnReservar());
 		}
 		return pnBotones;
 	}
@@ -155,6 +157,7 @@ public class AdminReservaSocioDialog extends JDialog {
 	private JButton getBtnVolver() {
 		if (btnVolver == null) {
 			btnVolver = new JButton("Volver");
+			btnVolver.setMnemonic('V');
 			btnVolver.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					dispose();
@@ -170,6 +173,7 @@ public class AdminReservaSocioDialog extends JDialog {
 	private JButton getBtnReservar() {
 		if (btnReservar == null) {
 			btnReservar = new JButton("Reservar");
+			btnReservar.setMnemonic('R');
 			btnReservar.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					if (listActividades.isSelectionEmpty()) {
@@ -208,8 +212,8 @@ public class AdminReservaSocioDialog extends JDialog {
 	private JPanel getPnSocio() {
 		if (pnSocio == null) {
 			pnSocio = new JPanel();
+			pnSocio.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Selecci\u00F3n de socio", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 			pnSocio.setLayout(new BorderLayout(0, 0));
-			pnSocio.add(getLblNewLabel(), BorderLayout.WEST);
 			pnSocio.add(getPnCombo(), BorderLayout.CENTER);
 		}
 		return pnSocio;
@@ -218,6 +222,7 @@ public class AdminReservaSocioDialog extends JDialog {
 	private JPanel getPanel() {
 		if (panel == null) {
 			panel = new JPanel();
+			panel.setBorder(new TitledBorder(null, "Lista de actividades disponibles", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			panel.setLayout(new BorderLayout(0, 0));
 			panel.add(getScpActividades());
 		}
@@ -228,7 +233,6 @@ public class AdminReservaSocioDialog extends JDialog {
 		if (scpActividades == null) {
 			scpActividades = new JScrollPane();
 			scpActividades.setViewportView(getListActividades());
-			scpActividades.setColumnHeaderView(getLblActividades());
 		}
 		return scpActividades;
 	}
@@ -240,23 +244,6 @@ public class AdminReservaSocioDialog extends JDialog {
 			listActividades.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		}
 		return listActividades;
-	}
-
-	private JLabel getLblActividades() {
-		if (lblActividades == null) {
-			lblActividades = new JLabel("Lista de actividades disponibles para el socio:");
-			lblActividades.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		}
-		return lblActividades;
-	}
-
-	private JLabel getLblNewLabel() {
-		if (lblNewLabel == null) {
-			lblNewLabel = new JLabel("Selecci\u00F3n de socio:   ");
-			lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-			lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		}
-		return lblNewLabel;
 	}
 
 	private JPanel getPnCombo() {

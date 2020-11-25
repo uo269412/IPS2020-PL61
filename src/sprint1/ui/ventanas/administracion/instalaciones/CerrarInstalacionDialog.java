@@ -31,6 +31,7 @@ import sprint1.business.dominio.clientes.Socio;
 import sprint1.business.dominio.clientes.Tercero;
 import sprint1.ui.ventanas.administracion.AdminWindow;
 import sprint1.ui.ventanas.administracion.estado.mostrar.MostrarAlquileresDeClienteDialog;
+import java.awt.Toolkit;
 
 public class CerrarInstalacionDialog extends JDialog {
 	
@@ -52,6 +53,8 @@ public class CerrarInstalacionDialog extends JDialog {
 	 * Create the dialog.
 	 */
 	public CerrarInstalacionDialog(AdminWindow parent) {
+		setIconImage(Toolkit.getDefaultToolkit().getImage(CerrarInstalacionDialog.class.getResource("/sprint1/ui/resources/titulo.png")));
+		setTitle("Centro de deporte: Cerrando instalaciones");
 		//crear programa
 		this.p = parent.getParent().getPrograma();
 		this.clientesAfectados = new DefaultListModel<>();

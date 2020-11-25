@@ -34,6 +34,7 @@ import java.awt.Color;
 import java.awt.Font;
 import javax.swing.ListSelectionModel;
 import javax.swing.JScrollPane;
+import java.awt.Toolkit;
 
 public class PlanificarActividadDialog extends JDialog {
 
@@ -92,6 +93,7 @@ public class PlanificarActividadDialog extends JDialog {
 	 * Create the dialog.
 	 */
 	public PlanificarActividadDialog(CalendarioAdmin parent, Programa p, int dia, int mes, int año) {
+		setIconImage(Toolkit.getDefaultToolkit().getImage(PlanificarActividadDialog.class.getResource("/sprint1/ui/resources/titulo.png")));
 		setTitle("Centro de deportes: Asignar actividad " + dia + "/" + mes + "/" + año);
 		this.programa = p;
 		this.dia = dia;
@@ -242,6 +244,7 @@ public class PlanificarActividadDialog extends JDialog {
 	private JButton getBtnAñadir() {
 		if (btnAñadir == null) {
 			btnAñadir = new JButton("A\u00F1adir");
+			btnAñadir.setMnemonic('d');
 			if(cmbInstalaciones.getModel().getSize() == 0) {
 				btnAñadir.setEnabled(false);
 			} else {
@@ -285,6 +288,7 @@ public class PlanificarActividadDialog extends JDialog {
 	private JButton getBtnEliminar() {
 		if (btnEliminar == null) {
 			btnEliminar = new JButton("Eliminar seleccionada");
+			btnEliminar.setMnemonic('E');
 			btnEliminar.setForeground(Color.WHITE);
 			btnEliminar.setBackground(new Color(255, 99, 71));
 			btnEliminar.addActionListener(new ActionListener() {
@@ -315,13 +319,14 @@ public class PlanificarActividadDialog extends JDialog {
 	private JButton getBtnVolver() {
 		if (btnVolver == null) {
 			btnVolver = new JButton("Volver");
+			btnVolver.setMnemonic('V');
 			btnVolver.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					getMe().dispose();
 				}
 			});
-			btnVolver.setBackground(new Color(240,240,240));
-			btnVolver.setForeground(Color.BLACK);
+			btnVolver.setBackground(Color.BLUE);
+			btnVolver.setForeground(Color.WHITE);
 			btnVolver.setActionCommand("Cancel");
 		}
 		return btnVolver;
@@ -454,6 +459,9 @@ public class PlanificarActividadDialog extends JDialog {
 	private JButton getBtnNewButton() {
 		if (btnNewButton == null) {
 			btnNewButton = new JButton("Aplicar cambios");
+			btnNewButton.setBackground(new Color(0, 128, 0));
+			btnNewButton.setForeground(Color.WHITE);
+			btnNewButton.setMnemonic('A');
 			btnNewButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					aplicarCambios();

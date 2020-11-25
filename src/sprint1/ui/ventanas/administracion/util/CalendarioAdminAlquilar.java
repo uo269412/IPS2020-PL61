@@ -26,6 +26,7 @@ import javax.swing.border.LineBorder;
 
 import sprint1.ui.ventanas.administracion.AdminWindow;
 import sprint1.ui.ventanas.administracion.alquileres.AdminAlquilaSocioDialog;
+import java.awt.Toolkit;
 
 public class CalendarioAdminAlquilar extends JDialog {
 
@@ -87,7 +88,8 @@ public class CalendarioAdminAlquilar extends JDialog {
 	 * Create the frame.
 	 */
 	public CalendarioAdminAlquilar(AdminWindow parent) {
-		setTitle("Administraci\u00F3n: Calendario para alquilarle instalaciones a socio");
+		setIconImage(Toolkit.getDefaultToolkit().getImage(CalendarioAdminAlquilar.class.getResource("/sprint1/ui/resources/titulo.png")));
+		setTitle("Centro de deportes: Calendario alquileres");
 		aa = new AlquilarSocio();
 		this.parent = parent;
 		Calendar calendar = Calendar.getInstance();

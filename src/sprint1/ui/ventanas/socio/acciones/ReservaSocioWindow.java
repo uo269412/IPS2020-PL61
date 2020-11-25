@@ -29,6 +29,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.SwingConstants;
 import javax.swing.BoxLayout;
 import java.awt.GridLayout;
+import java.awt.Toolkit;
 
 public class ReservaSocioWindow extends JDialog {
 
@@ -54,7 +55,8 @@ public class ReservaSocioWindow extends JDialog {
 	 * Create the frame.
 	 */
 	public ReservaSocioWindow(SocioWindow socioWindow, Socio socio) {
-		setTitle("Socio: Reserva de actividad");
+		setIconImage(Toolkit.getDefaultToolkit().getImage(ReservaSocioWindow.class.getResource("/sprint1/ui/resources/titulo.png")));
+		setTitle("Centro de deportes: Reserva de actividad");
 		this.parent = socioWindow;
 		this.socio = socio;
 		setBounds(100, 100, 681, 588);
@@ -136,14 +138,15 @@ public class ReservaSocioWindow extends JDialog {
 			pnBotones = new JPanel();
 			pnBotones.setLayout(new BoxLayout(pnBotones, BoxLayout.X_AXIS));
 			pnBotones.add(getPnRecuerda());
-			pnBotones.add(getBtnReservar());
 			pnBotones.add(getBtnVolver());
+			pnBotones.add(getBtnReservar());
 		}
 		return pnBotones;
 	}
 	private JButton getBtnReservar() {
 		if (btnReservar == null) {
 			btnReservar = new JButton("Reservar");
+			btnReservar.setMnemonic('R');
 			btnReservar.setEnabled(false);
 			btnReservar.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
@@ -171,6 +174,7 @@ public class ReservaSocioWindow extends JDialog {
 	private JButton getBtnVolver() {
 		if (btnVolver == null) {
 			btnVolver = new JButton("Volver");
+			btnVolver.setMnemonic('V');
 			btnVolver.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					ReservaSocioWindow.this.dispose();

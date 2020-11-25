@@ -19,6 +19,7 @@ import sprint1.business.Programa;
 import sprint1.business.dominio.centroDeportes.alquileres.Alquiler;
 import sprint1.business.dominio.clientes.Socio;
 import sprint1.ui.ventanas.socio.SocioWindow;
+import java.awt.Toolkit;
 
 public class ListaDeAlquileresWindow extends JDialog {
 
@@ -37,7 +38,8 @@ public class ListaDeAlquileresWindow extends JDialog {
 	private JButton btnCancelarAlquiler;
 
 	public ListaDeAlquileresWindow(SocioWindow parent, Socio socio) {
-		setTitle("Socio: Viendo y cancelando alquileres");
+		setIconImage(Toolkit.getDefaultToolkit().getImage(ListaDeAlquileresWindow.class.getResource("/sprint1/ui/resources/titulo.png")));
+		setTitle("Centro de deportes: Listado de alquileres");
 		this.parent = parent;
 		this.socio = socio;
 		setBounds(100, 100, 681, 588);
@@ -92,6 +94,7 @@ public class ListaDeAlquileresWindow extends JDialog {
 	private JButton getBtnVolver() {
 		if (btnVolver == null) {
 			btnVolver = new JButton("Volver");
+			btnVolver.setMnemonic('V');
 			btnVolver.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					dispose();
@@ -107,6 +110,7 @@ public class ListaDeAlquileresWindow extends JDialog {
 	private JButton getBtnCancelarAlquiler() {
 		if (btnCancelarAlquiler == null) {
 			btnCancelarAlquiler = new JButton("Cancelar alquiler");
+			btnCancelarAlquiler.setMnemonic('C');
 			btnCancelarAlquiler.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					if (listAlquileres.isSelectionEmpty()) {

@@ -22,6 +22,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import java.awt.Toolkit;
 
 public class Calendario extends JDialog {
 
@@ -70,6 +71,8 @@ public class Calendario extends JDialog {
 	 * Create the frame.
 	 */
 	public Calendario() {
+		setIconImage(Toolkit.getDefaultToolkit().getImage(Calendario.class.getResource("/sprint1/ui/resources/titulo.png")));
+		setTitle("Centro de deportes: Calendario");
 		llenarMeses();
 		llenarAños();
 		setBounds(100, 100, 629, 343);

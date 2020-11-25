@@ -27,6 +27,7 @@ import javax.swing.border.EmptyBorder;
 import sprint1.business.Programa;
 import sprint1.business.dominio.centroDeportes.actividades.Actividad;
 import sprint1.business.dominio.centroDeportes.instalaciones.Recurso;
+import java.awt.Toolkit;
 
 public class CrearActividadDialog extends JDialog {
 
@@ -52,9 +53,10 @@ public class CrearActividadDialog extends JDialog {
 	 * Create the dialog.
 	 */
 	public CrearActividadDialog(Programa p) {
+		setIconImage(Toolkit.getDefaultToolkit().getImage(CrearActividadDialog.class.getResource("/sprint1/ui/resources/titulo.png")));
 		this.p = p;
 		this.modelRecursos = new DefaultListModel<Recurso>();
-		setTitle("Administrador: Crear actividad");
+		setTitle("Centro de deportes: Crear actividad");
 		setModal(true);
 		setBounds(100, 100, 483, 499);
 		getContentPane().setLayout(new BorderLayout());
@@ -93,6 +95,7 @@ public class CrearActividadDialog extends JDialog {
 			}
 			{
 				JButton btnAñadirRecurso = new JButton("A\u00F1adir recurso");
+				btnAñadirRecurso.setMnemonic('A');
 				btnAñadirRecurso.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
 						añadirRecursos();
@@ -110,6 +113,7 @@ public class CrearActividadDialog extends JDialog {
 		}
 		{
 			JButton btnEliminarRecurso = new JButton("Eliminar recurso seleccionado");
+			btnEliminarRecurso.setMnemonic('E');
 			btnEliminarRecurso.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					eliminarRecursos();
@@ -124,7 +128,23 @@ public class CrearActividadDialog extends JDialog {
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				JButton okButton = new JButton("OK");
+				JButton cancelButton = new JButton("Volver");
+				cancelButton.setForeground(Color.WHITE);
+				cancelButton.setBackground(Color.BLUE);
+				cancelButton.setMnemonic('V');
+				cancelButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {
+						dispose();
+					}
+				});
+				cancelButton.setActionCommand("Cancel");
+				buttonPane.add(cancelButton);
+			}
+			{
+				JButton okButton = new JButton("Crear");
+				okButton.setMnemonic('C');
+				okButton.setForeground(new Color(255, 255, 255));
+				okButton.setBackground(new Color(0, 128, 0));
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
 						recolorFields();
@@ -164,16 +184,6 @@ public class CrearActividadDialog extends JDialog {
 				okButton.setActionCommand("OK");
 				buttonPane.add(okButton);
 				getRootPane().setDefaultButton(okButton);
-			}
-			{
-				JButton cancelButton = new JButton("Cancel");
-				cancelButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent arg0) {
-						dispose();
-					}
-				});
-				cancelButton.setActionCommand("Cancel");
-				buttonPane.add(cancelButton);
 			}
 		}
 	}

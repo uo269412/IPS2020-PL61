@@ -20,6 +20,7 @@ import javax.swing.border.EmptyBorder;
 import sprint1.business.Programa;
 import sprint1.business.dominio.centroDeportes.actividades.ActividadPlanificada;
 import sprint1.ui.ventanas.administracion.estado.mostrar.MostrarConflictosDeActividadDialog;
+import java.awt.Toolkit;
 
 public class VerConflictosDialog extends JDialog {
 
@@ -40,9 +41,10 @@ public class VerConflictosDialog extends JDialog {
 	 * Create the dialog.
 	 */
 	public VerConflictosDialog(Programa p) {
+		setIconImage(Toolkit.getDefaultToolkit().getImage(VerConflictosDialog.class.getResource("/sprint1/ui/resources/titulo.png")));
 		this.p = p;
 		rellenarModelo();
-		setTitle("Actividades en conflicto");
+		setTitle("Centro de deporte: Actividades en conflicto");
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
 		getContentPane().add(getLblActividadesConflictos(), BorderLayout.NORTH);

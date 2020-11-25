@@ -27,6 +27,7 @@ import javax.swing.border.LineBorder;
 import sprint1.business.dominio.clientes.Socio;
 import sprint1.ui.ventanas.socio.SocioWindow;
 import sprint1.ui.ventanas.socio.acciones.AlquilaSocioWindow;
+import java.awt.Toolkit;
 
 public class CalendarioAlquilerSocio extends JDialog {
 
@@ -89,7 +90,8 @@ public class CalendarioAlquilerSocio extends JDialog {
 	 * Create the frame.
 	 */
 	public CalendarioAlquilerSocio(SocioWindow parent, Socio socio) {
-		setTitle("Administraci\u00F3n: Calendario para alquilarle instalaciones a socio");
+		setIconImage(Toolkit.getDefaultToolkit().getImage(CalendarioAlquilerSocio.class.getResource("/sprint1/ui/resources/titulo.png")));
+		setTitle("Centro de deportes: Seleccionando d\u00EDa para alquilar");
 		aa = new AlquilarSocio();
 		this.parent = parent;
 		this.socio = socio;

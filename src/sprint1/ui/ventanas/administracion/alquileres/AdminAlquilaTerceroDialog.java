@@ -28,6 +28,8 @@ import sprint1.business.dominio.centroDeportes.alquileres.Alquiler;
 import sprint1.business.dominio.centroDeportes.instalaciones.Instalacion;
 import sprint1.business.dominio.clientes.Tercero;
 import sprint1.ui.ventanas.administracion.util.CalendarioTercero;
+import javax.swing.SwingConstants;
+import java.awt.Toolkit;
 
 public class AdminAlquilaTerceroDialog extends JDialog {
 
@@ -67,6 +69,7 @@ public class AdminAlquilaTerceroDialog extends JDialog {
 	 * Create the dialog.
 	 */
 	public AdminAlquilaTerceroDialog(CalendarioTercero c, Programa p, Tercero t, int dia, int mes, int año) {
+		setIconImage(Toolkit.getDefaultToolkit().getImage(AdminAlquilaTerceroDialog.class.getResource("/sprint1/ui/resources/titulo.png")));
 		setTitle("Reservar instalaci\u00F3n: " + dia + "/" + mes + "/" + año);
 		this.dia = dia;
 		this.mes = mes;
@@ -193,6 +196,7 @@ public class AdminAlquilaTerceroDialog extends JDialog {
 	private JLabel getLblHoraInicio() {
 		if (lblHoraInicio == null) {
 			lblHoraInicio = new JLabel("Hora inicio:");
+			lblHoraInicio.setHorizontalAlignment(SwingConstants.CENTER);
 		}
 		return lblHoraInicio;
 	}
@@ -206,6 +210,7 @@ public class AdminAlquilaTerceroDialog extends JDialog {
 	private JLabel getLblHoraFin() {
 		if (lblHoraFin == null) {
 			lblHoraFin = new JLabel("Hora fin:");
+			lblHoraFin.setHorizontalAlignment(SwingConstants.CENTER);
 		}
 		return lblHoraFin;
 	}
@@ -219,6 +224,7 @@ public class AdminAlquilaTerceroDialog extends JDialog {
 	private JButton getBtnReservar() {
 		if (btnReservar == null) {
 			btnReservar = new JButton("Reservar");
+			btnReservar.setMnemonic('R');
 			btnReservar.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					if(checkHoraInicio() && checkHoraFin() && checkFechaFin()) {

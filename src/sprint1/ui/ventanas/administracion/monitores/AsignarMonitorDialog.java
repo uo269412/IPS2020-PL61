@@ -26,6 +26,7 @@ import sprint1.business.Programa;
 import sprint1.business.dominio.centroDeportes.actividades.ActividadPlanificada;
 import sprint1.business.dominio.centroDeportes.empleados.Monitor;
 import sprint1.ui.ventanas.administracion.AdminWindow;
+import java.awt.Toolkit;
 
 public class AsignarMonitorDialog extends JDialog {
 
@@ -55,7 +56,8 @@ public class AsignarMonitorDialog extends JDialog {
 	 * Create the dialog.
 	 */
 	public AsignarMonitorDialog(AdminWindow parent) {
-		setTitle("Administraci\u00F3n: Asignando monitor");
+		setIconImage(Toolkit.getDefaultToolkit().getImage(AsignarMonitorDialog.class.getResource("/sprint1/ui/resources/titulo.png")));
+		setTitle("Centro de deporte: Asignando monitor a las actividades");
 		this.parent = parent;
 		setBounds(100, 100, 1244, 614);
 		getContentPane().setLayout(new BorderLayout());
@@ -85,6 +87,7 @@ public class AsignarMonitorDialog extends JDialog {
 	private JButton getBtnVolver() {
 		if (btnVolver == null) {
 			btnVolver = new JButton("Volver");
+			btnVolver.setMnemonic('V');
 			btnVolver.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					dispose();
@@ -222,6 +225,7 @@ public class AsignarMonitorDialog extends JDialog {
 	private JButton getBtnAsignar() {
 		if (btnAsignar == null) {
 			btnAsignar = new JButton("Asignar");
+			btnAsignar.setMnemonic('A');
 			btnAsignar.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					if (listMonitores.isSelectionEmpty() || listActividades.isSelectionEmpty()) {

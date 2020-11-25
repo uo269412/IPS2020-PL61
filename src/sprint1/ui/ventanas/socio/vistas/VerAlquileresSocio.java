@@ -29,6 +29,7 @@ import sprint1.business.dominio.centroDeportes.alquileres.util.ComparadorPorDiaA
 import sprint1.business.dominio.centroDeportes.instalaciones.Instalacion;
 import sprint1.business.dominio.clientes.Socio;
 import sprint1.ui.ventanas.socio.SocioWindow;
+import java.awt.Toolkit;
 
 public class VerAlquileresSocio extends JDialog {
 
@@ -60,6 +61,8 @@ public class VerAlquileresSocio extends JDialog {
 	 * Create the frame.
 	 */
 	public VerAlquileresSocio(SocioWindow parent, Socio socio) {
+		setIconImage(Toolkit.getDefaultToolkit().getImage(VerAlquileresSocio.class.getResource("/sprint1/ui/resources/titulo.png")));
+		setTitle("Centro de deportes: Ver alquileres");
 		this.parent = parent;
 		this.socio = socio;
 		creaModeloComboBox();
@@ -94,6 +97,8 @@ public class VerAlquileresSocio extends JDialog {
 	private JButton getBtnVolver() {
 		if (btnVolver == null) {
 			btnVolver = new JButton("Volver");
+			btnVolver.setBackground(Color.BLUE);
+			btnVolver.setForeground(Color.WHITE);
 			btnVolver.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					VerAlquileresSocio.this.dispose();

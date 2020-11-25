@@ -29,6 +29,7 @@ import sprint1.business.dominio.centroDeportes.actividades.ActividadPlanificada;
 import sprint1.business.dominio.centroDeportes.alquileres.Alquiler;
 import sprint1.business.dominio.centroDeportes.instalaciones.Instalacion;
 import sprint1.business.dominio.clientes.Socio;
+import java.awt.Toolkit;
 
 public class VerOcupacionDialog extends JDialog {
 
@@ -51,7 +52,8 @@ public class VerOcupacionDialog extends JDialog {
 	 * Create the frame.
 	 */
 	public VerOcupacionDialog(Programa p) {
-		setTitle("Ver ocupación");
+		setIconImage(Toolkit.getDefaultToolkit().getImage(VerOcupacionDialog.class.getResource("/sprint1/ui/resources/titulo.png")));
+		setTitle("Centro de deporte: Ver ocupaci\u00F3n");
 		this.programa = p;
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 1335, 792);

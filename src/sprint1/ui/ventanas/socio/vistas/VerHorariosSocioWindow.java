@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.List;
 import java.awt.event.ActionEvent;
 import javax.swing.BoxLayout;
+import java.awt.Toolkit;
 
 public class VerHorariosSocioWindow extends JDialog{
 
@@ -43,7 +44,8 @@ public class VerHorariosSocioWindow extends JDialog{
 	 * Create the frame.
 	 */
 	public VerHorariosSocioWindow(Programa p) {
-		setTitle("Horarios de actividades");
+		setIconImage(Toolkit.getDefaultToolkit().getImage(VerHorariosSocioWindow.class.getResource("/sprint1/ui/resources/titulo.png")));
+		setTitle("Centro de deportes: Horario de actividades");
 		this.programa = p;
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 734, 518);
@@ -85,6 +87,8 @@ public class VerHorariosSocioWindow extends JDialog{
 	private JButton getBtnVolver() {
 		if (btnVolver == null) {
 			btnVolver = new JButton("Volver");
+			btnVolver.setBackground(Color.BLUE);
+			btnVolver.setForeground(Color.WHITE);
 			btnVolver.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					VerHorariosSocioWindow.this.dispose();

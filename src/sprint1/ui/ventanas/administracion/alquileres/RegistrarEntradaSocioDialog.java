@@ -1,4 +1,4 @@
-package sprint1.ui.ventanas.administracion.reservas;
+package sprint1.ui.ventanas.administracion.alquileres;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -22,6 +22,7 @@ import sprint1.business.dominio.centroDeportes.alquileres.Alquiler;
 import sprint1.business.dominio.centroDeportes.instalaciones.Instalacion;
 import sprint1.business.dominio.clientes.Socio;
 import sprint1.ui.ventanas.administracion.AdminWindow;
+import java.awt.Toolkit;
 
 public class RegistrarEntradaSocioDialog extends JDialog {
 
@@ -45,7 +46,8 @@ public class RegistrarEntradaSocioDialog extends JDialog {
 	private JTextField textField;
 
 	public RegistrarEntradaSocioDialog(AdminWindow adminWindow) {
-		setTitle("Administraci\u00F3n: Registrando entrada del socio");
+		setIconImage(Toolkit.getDefaultToolkit().getImage(RegistrarEntradaSocioDialog.class.getResource("/sprint1/ui/resources/titulo.png")));
+		setTitle("Centro de deporte: Registrando entrada del socio");
 		this.parent = adminWindow;
 		setBounds(100, 100, 748, 224);
 		getContentPane().setLayout(new BorderLayout());
@@ -79,13 +81,14 @@ public class RegistrarEntradaSocioDialog extends JDialog {
 	private JButton getBtnVolver() {
 		if (btnVolver == null) {
 			btnVolver = new JButton("Volver");
+			btnVolver.setMnemonic('V');
 			btnVolver.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					dispose();
 				}
 			});
 			btnVolver.setForeground(Color.WHITE);
-			btnVolver.setBackground(new Color(30, 144, 255));
+			btnVolver.setBackground(Color.BLUE);
 			btnVolver.setActionCommand("Cancel");
 		}
 		return btnVolver;
@@ -94,6 +97,7 @@ public class RegistrarEntradaSocioDialog extends JDialog {
 	private JButton getBtnReservar() {
 		if (btnReservar == null) {
 			btnReservar = new JButton("Registrar entrada");
+			btnReservar.setMnemonic('R');
 			btnReservar.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					int yesNo = JOptionPane.showConfirmDialog(null,
