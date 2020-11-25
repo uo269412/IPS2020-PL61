@@ -17,7 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 
-import sprint1.business.dominio.Programa;
+import sprint1.business.Programa;
 import sprint1.business.dominio.centroDeportes.actividades.ActividadPlanificada;
 import sprint1.business.dominio.centroDeportes.reservas.Reserva;
 import sprint1.business.dominio.clientes.Socio;

@@ -17,6 +17,21 @@ import javax.swing.SwingConstants;
 
 import sprint1.business.dominio.clientes.Tercero;
 import sprint1.ui.ventanas.MainWindow;
+import sprint1.ui.ventanas.administracion.actividades.CrearActividadDialog;
+import sprint1.ui.ventanas.administracion.alquileres.AdminAlquilaSocioAhoraDialog;
+import sprint1.ui.ventanas.administracion.estado.ListaSociosConImpagos;
+import sprint1.ui.ventanas.administracion.estado.VerConflictosDialog;
+import sprint1.ui.ventanas.administracion.estado.VerOcupacionDialog;
+import sprint1.ui.ventanas.administracion.instalaciones.AsignarRecursosAInstalaciónDialog;
+import sprint1.ui.ventanas.administracion.instalaciones.CerrarInstalacionDialog;
+import sprint1.ui.ventanas.administracion.monitores.AsignarMonitorDialog;
+import sprint1.ui.ventanas.administracion.reservas.AdminReservaSocioDialog;
+import sprint1.ui.ventanas.administracion.reservas.RegistrarEntradaSocioDialog;
+import sprint1.ui.ventanas.administracion.reservas.RegistrarSalidaSocioDialog;
+import sprint1.ui.ventanas.administracion.util.CalendarioAdmin;
+import sprint1.ui.ventanas.administracion.util.CalendarioAdminAlquilar;
+import sprint1.ui.ventanas.administracion.util.CalendarioSemanalPlanificar;
+import sprint1.ui.ventanas.administracion.util.CalendarioTercero;
 import sprint1.ui.ventanas.util.CalendarioSemanalBase;
 
 public class AdminWindow extends JDialog {
@@ -36,12 +51,12 @@ public class AdminWindow extends JDialog {
 	private JButton btnCrearActividad;
 	private JButton btnAsignarActividad;
 
-	private AsignarMonitorActividadDialog asignarMonitor;
-	private AdminReservaSocioWindow adminReservaSocio;
-	private AlquilarSocioMomentoWindow alquilarSocioMomento;
-	private CalendarioAlquilerAdmin calendarioAlquilerAdmin;
-	private RegistrarEntradaSocio registrarEntradaSocio;
-	private RegistrarSalidaSocio registrarSalidaSocio;
+	private AsignarMonitorDialog asignarMonitor;
+	private AdminReservaSocioDialog adminReservaSocio;
+	private AdminAlquilaSocioAhoraDialog alquilarSocioMomento;
+	private CalendarioAdminAlquilar calendarioAlquilerAdmin;
+	private RegistrarEntradaSocioDialog registrarEntradaSocio;
+	private RegistrarSalidaSocioDialog registrarSalidaSocio;
 	private CalendarioSemanalPlanificar calendarioSemanalPlanificar;
 	private JButton btnReservaSocio;
 	private JButton btnVerOcupacion;
@@ -176,7 +191,7 @@ public class AdminWindow extends JDialog {
 	}
 
 	public void openAsignarMonitorActividadWindow() {
-		asignarMonitor = new AsignarMonitorActividadDialog(this);
+		asignarMonitor = new AsignarMonitorDialog(this);
 		asignarMonitor.setModal(true);
 		asignarMonitor.setLocationRelativeTo(this);
 		asignarMonitor.setVisible(true);
@@ -223,7 +238,7 @@ public class AdminWindow extends JDialog {
 	}
 
 	public void openAdminReservaSocioWindow() {
-		adminReservaSocio = new AdminReservaSocioWindow(this);
+		adminReservaSocio = new AdminReservaSocioDialog(this);
 		adminReservaSocio.setModal(true);
 		adminReservaSocio.setLocationRelativeTo(this);
 		adminReservaSocio.setVisible(true);
@@ -251,7 +266,7 @@ public class AdminWindow extends JDialog {
 			btnVerOcupacion = new JButton("Ver ocupaci\u00F3n");
 			btnVerOcupacion.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					VerOcupacionWindow vow = new VerOcupacionWindow(parent.getPrograma());
+					VerOcupacionDialog vow = new VerOcupacionDialog(parent.getPrograma());
 					vow.setModal(true);
 					vow.setLocationRelativeTo(AdminWindow.this);
 					vow.setVisible(true);
@@ -294,7 +309,7 @@ public class AdminWindow extends JDialog {
 	}
 
 	private void openAlquilarSocioMomentoWindow() {
-		alquilarSocioMomento = new AlquilarSocioMomentoWindow(this);
+		alquilarSocioMomento = new AdminAlquilaSocioAhoraDialog(this);
 		alquilarSocioMomento.setModal(true);
 		alquilarSocioMomento.setLocationRelativeTo(this);
 		alquilarSocioMomento.setVisible(true);
@@ -314,7 +329,7 @@ public class AdminWindow extends JDialog {
 	}
 
 	private void openAlquilarSocioWindow() {
-		calendarioAlquilerAdmin = new CalendarioAlquilerAdmin(this);
+		calendarioAlquilerAdmin = new CalendarioAdminAlquilar(this);
 		calendarioAlquilerAdmin.setModal(true);
 		calendarioAlquilerAdmin.setLocationRelativeTo(this);
 		calendarioAlquilerAdmin.setVisible(true);
@@ -338,7 +353,7 @@ public class AdminWindow extends JDialog {
 	}
 
 	private void openRegistrarEntradaSocioWindow() {
-		registrarEntradaSocio = new RegistrarEntradaSocio(this);
+		registrarEntradaSocio = new RegistrarEntradaSocioDialog(this);
 		registrarEntradaSocio.setModal(true);
 		registrarEntradaSocio.setLocationRelativeTo(this);
 		registrarEntradaSocio.setVisible(true);
@@ -383,7 +398,7 @@ public class AdminWindow extends JDialog {
 	}
 
 	private void openRegistrarSalidaSocioWindow() {
-		registrarSalidaSocio = new RegistrarSalidaSocio(this);
+		registrarSalidaSocio = new RegistrarSalidaSocioDialog(this);
 		registrarSalidaSocio.setModal(true);
 		registrarSalidaSocio.setLocationRelativeTo(this);
 		registrarSalidaSocio.setVisible(true);

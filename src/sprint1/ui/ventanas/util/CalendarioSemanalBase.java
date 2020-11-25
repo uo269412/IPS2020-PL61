@@ -23,7 +23,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
-import sprint1.business.dominio.Programa;
+import sprint1.business.Programa;
 import sprint1.business.dominio.centroDeportes.actividades.Actividad;
 import sprint1.business.dominio.centroDeportes.actividades.ActividadPlanificada;
 import sprint1.business.dominio.centroDeportes.alquileres.Alquiler;

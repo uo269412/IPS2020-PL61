@@ -1,6 +1,6 @@
 package sprint1.business.dominio.centroDeportes.planificaciones;
 
-import sprint1.business.dominio.Programa;
+import sprint1.business.Programa;
 import sprint1.business.dominio.centroDeportes.actividades.Actividad;
 import sprint1.business.dominio.centroDeportes.actividades.ActividadPlanificada;
 

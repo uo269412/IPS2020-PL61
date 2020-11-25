@@ -13,7 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import sprint1.business.dominio.Programa;
+import sprint1.business.Programa;
 import sprint1.ui.ventanas.administracion.AdminWindow;
 import sprint1.ui.ventanas.socio.util.SeleccionSocioWindow;
 

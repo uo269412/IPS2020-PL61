@@ -1,4 +1,4 @@
-package sprint1.ui.ventanas.socio.acciones;
+package sprint1.ui.ventanas.administracion.alquileres;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -24,9 +24,9 @@ import sprint1.business.dominio.centroDeportes.alquileres.Alquiler;
 import sprint1.business.dominio.centroDeportes.instalaciones.Instalacion;
 import sprint1.business.dominio.centroDeportes.reservas.Reserva;
 import sprint1.business.dominio.clientes.Socio;
-import sprint1.ui.ventanas.socio.util.CalendarioAlquilerSocio;
+import sprint1.ui.ventanas.administracion.util.CalendarioAdminAlquilar;
 
-public class AlquilaSocioWindow extends JDialog {
+public class AdminAlquilaSocioDialog extends JDialog {
 
 	/**
 	 * 
@@ -35,6 +35,7 @@ public class AlquilaSocioWindow extends JDialog {
 	private final JPanel contentPanel = new JPanel();
 	private JPanel pnProgramarActividad;
 	private JLabel lblSocio;
+	private JComboBox<Socio> cmbSocio;
 	private JLabel lblHora;
 	private JPanel pnHoras;
 	private JTextField txtHoraInicio;
@@ -43,11 +44,10 @@ public class AlquilaSocioWindow extends JDialog {
 	private JPanel pnBotones;
 	private JButton btnVolver;
 
-	private CalendarioAlquilerSocio parent;
+	private CalendarioAdminAlquilar parent;
 	private int dia;
 	private int mes;
 	private int año;
-	private Socio socio;
 
 	private JLabel lblInstalacion;
 	private JComboBox<Instalacion> cmbInstalaciones;
@@ -58,13 +58,12 @@ public class AlquilaSocioWindow extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public AlquilaSocioWindow(CalendarioAlquilerSocio parent, int dia, int mes, int año, Socio socio) {
-		setTitle("Centro de deportes: Alquilar instalaci\u00F3n");
+	public AdminAlquilaSocioDialog(CalendarioAdminAlquilar parent, int dia, int mes, int año) {
+		setTitle("Centro de deportes: Alquilar para socio");
 		this.dia = dia;
 		this.mes = mes;
 		this.año = año;
 		this.parent = parent;
-		this.socio = socio;
 		setBounds(100, 100, 707, 342);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -113,19 +112,6 @@ public class AlquilaSocioWindow extends JDialog {
 		} else if (!checkHorasNoSuperan2()) {
 			JOptionPane.showMessageDialog(this, "No se puede alquilar por más de dos horas");
 			return false;
-		} else if (!checkMenosDeUnaHoraAntes()) {
-			JOptionPane.showMessageDialog(this, "Solo se puede reservar hasta una hora antes del comienzo del alquiler");
-			return false;
-		}
-		return true;
-	}
-
-	private boolean checkMenosDeUnaHoraAntes() {
-		int[] fecha = getPrograma().obtenerHoraDiaMesAño();
-		if (dia == fecha[1] && mes == fecha[2] && año == fecha[3]) {
-			if (fecha[0] >= Integer.parseInt(txtHoraInicio.getText() ) - 1) {
-				return false;
-			}
 		}
 		return true;
 	}
@@ -153,6 +139,7 @@ public class AlquilaSocioWindow extends JDialog {
 	private boolean checkSocioLibre() {
 		int horaInicio = Integer.parseInt(txtHoraInicio.getText());
 		int horaFin = Integer.parseInt(txtHoraFin.getText());
+		Socio socio = (Socio) cmbSocio.getSelectedItem();
 		List<Reserva> reservasSocio = getPrograma().getReservas(horaInicio, dia, mes, año);
 		List<Alquiler> alquileresSocio = getPrograma().getAlquileres(horaInicio, dia, mes, año);
 		for (Reserva reserva : reservasSocio) {
@@ -181,7 +168,7 @@ public class AlquilaSocioWindow extends JDialog {
 		}
 		return true;
 	}
-
+	
 	private boolean chocaHoras(Alquiler alquiler, int horaInicio, int horaFin) {
 		for (int hora = alquiler.getHoraInicio(); hora < alquiler.getHoraFin(); hora++) {
 			if (hora >= horaInicio && hora < horaFin)
@@ -254,6 +241,7 @@ public class AlquilaSocioWindow extends JDialog {
 	}
 
 	private void crearAlquiler() {
+		Socio socio = (Socio) cmbSocio.getSelectedItem();
 		Instalacion instalacion = (Instalacion) cmbInstalaciones.getSelectedItem();
 		int horaInicio = Integer.parseInt(txtHoraInicio.getText());
 		int horaFin = Integer.parseInt(txtHoraFin.getText());
@@ -265,6 +253,7 @@ public class AlquilaSocioWindow extends JDialog {
 			pnProgramarActividad = new JPanel();
 			pnProgramarActividad.setLayout(new GridLayout(0, 1, 0, 0));
 			pnProgramarActividad.add(getLblSocio());
+			pnProgramarActividad.add(getCmbSocio());
 			pnProgramarActividad.add(getLblInstalacion());
 			pnProgramarActividad.add(getCmbInstalaciones());
 			pnProgramarActividad.add(getLblHora());
@@ -275,9 +264,17 @@ public class AlquilaSocioWindow extends JDialog {
 
 	private JLabel getLblSocio() {
 		if (lblSocio == null) {
-			lblSocio = new JLabel("Alquilando instalacion para: " + socio.getNombre() + " " + socio.getApellido());
+			lblSocio = new JLabel("Socio al que se le quiere asignar el alquiler:  ");
 		}
 		return lblSocio;
+	}
+
+	private JComboBox<Socio> getCmbSocio() {
+		if (cmbSocio == null) {
+			modeloSocios = new DefaultComboBoxModel<Socio>();
+			cmbSocio = new JComboBox<Socio>(modeloSocios);
+		}
+		return cmbSocio;
 	}
 
 	private JLabel getLblHora() {
@@ -317,16 +314,9 @@ public class AlquilaSocioWindow extends JDialog {
 			btnAñadir = new JButton("A\u00F1adir");
 			btnAñadir.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					Instalacion instalacion = (Instalacion) cmbInstalaciones.getSelectedItem();
-					int horaInicio = Integer.parseInt(txtHoraInicio.getText());
-					int horaFin = Integer.parseInt(txtHoraFin.getText());
-					
 					if (comprobacionesAlquiler()) {
-						int yesNo = JOptionPane.showConfirmDialog(getMe(), "El precio será de " + instalacion.getPrecioHora() * (horaFin - horaInicio) + ". ¿Confirmar?");	
-						if(yesNo == JOptionPane.YES_OPTION) {
-							crearAlquiler();
-							JOptionPane.showMessageDialog(getMe(), "Se ha añadido el alquiler correctamente");
-						}
+						crearAlquiler();
+						JOptionPane.showMessageDialog(getMe(), "Se ha añadido el alquiler correctamente");
 					}
 				}
 			});
@@ -336,7 +326,7 @@ public class AlquilaSocioWindow extends JDialog {
 		return btnAñadir;
 	}
 
-	public AlquilaSocioWindow getMe() {
+	public AdminAlquilaSocioDialog getMe() {
 		return this;
 	}
 
@@ -383,4 +373,3 @@ public class AlquilaSocioWindow extends JDialog {
 		return parent.getParent().getParent().getPrograma();
 	}
 }
-

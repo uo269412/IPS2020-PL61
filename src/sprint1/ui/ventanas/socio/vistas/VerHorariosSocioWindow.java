@@ -5,7 +5,7 @@ import java.awt.BorderLayout;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import sprint1.business.dominio.Programa;
+import sprint1.business.Programa;
 import sprint1.business.dominio.centroDeportes.actividades.Actividad;
 import sprint1.business.dominio.centroDeportes.actividades.ActividadPlanificada;
 import sprint1.business.dominio.centroDeportes.actividades.util.ComparadorPorDia;
