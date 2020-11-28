@@ -43,7 +43,6 @@ public class Programa {
 	private List<Tercero> terceros;
 	private List<Alquiler> alquileres;
 	private List<Registro> registros;
-
 	// Conexión Javi
 	//public static String URL = "jdbc:sqlite:C:\\Users\\javie\\git\\IPS2020-PL61\\resources\\bdProject.db";
 
@@ -302,6 +301,16 @@ public class Programa {
 			System.out.println(actividad.toString());
 		}
 	}
+	
+	public String encontrarNombrePlanificada(ActividadPlanificada planificada)  {
+		for(Actividad a: getActividades()) {
+			if(a.getCodigo().equals(planificada.getCodigoActividad())) {
+				return a.getNombre();
+			}
+		}
+		
+		return null;
+	}
 
 	public List<ActividadPlanificada> getActividadesPlanificadas(int dia, int mes, int año) {
 		List<ActividadPlanificada> listaSort = new ArrayList<ActividadPlanificada>();
@@ -433,9 +442,7 @@ public class Programa {
 	public void updateActividadPlanificada(ActividadPlanificada a) throws SQLException {
 		Connection con = DriverManager.getConnection(URL);
 		PreparedStatement pst = con.prepareStatement(
-				"UPDATE actividad_planificada" + " SET codigoActividad = ?, dia = ?, mes = ?, año = ?, "
-						+ "limitePlazas = ?, horaInicio = ?, horaFin = ?, "
-						+ "codigoMonitor = ?, codigo_instalacion = ? WHERE codigoPlanificada = ?");
+				"UPDATE actividad_planificada SET codigoActividad = ?, dia = ?, mes = ?, año = ?, limitePlazas = ?, horaInicio = ?, horaFin = ?, codigoMonitor = ?, codigoInstalacion = ? WHERE codigoPlanificada = ?");
 		pst.setString(1, a.getCodigoActividad());
 		pst.setInt(2, a.getDia());
 		pst.setInt(3, a.getMes());
@@ -1583,6 +1590,7 @@ public class Programa {
 		return instalacionesDisponibles;
 	}
 
+	
 	public void printInstalaciones() {
 		System.out.println("Lista de instalaciones");
 		for (Instalacion instalacion : instalaciones) {

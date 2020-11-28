@@ -1,5 +1,9 @@
 package sprint1.business.dominio.centroDeportes.planificaciones;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import sprint1.business.Programa;
 import sprint1.business.dominio.centroDeportes.actividades.Actividad;
 import sprint1.business.dominio.centroDeportes.actividades.ActividadPlanificada;
@@ -59,6 +63,44 @@ public class Conflicto {
 	public void setNombreActividadConflictiva(String nombreActividad2) {
 		this.nombreActividad2 = nombreActividad2;
 	}
+	
+//	public int getHoraConflicto() {
+//		List<Integer> horasActividad1 = new ArrayList<>();
+//		List<Integer> horasActividad2 = new ArrayList<>();
+//		
+//		for(int i = a1.getHoraInicio(); i < a1.getHoraFin(); i++) {
+//			horasActividad1.add(i);
+//		}
+//		
+//		for(int i = a2.getHoraInicio(); i < a2.getHoraFin(); i++) {
+//			horasActividad2.add(i);
+//		}
+//		
+//		List<Integer> intersectElements = horasActividad1.stream()
+//				.filter((Integer x) -> horasActividad2.contains(x))
+//				.collect(Collectors.toList());
+//		
+//		return intersectElements.get(0);
+//	}
+//	
+//	public int getDuracionConflicto() {
+//		List<Integer> horasActividad1 = new ArrayList<>();
+//		List<Integer> horasActividad2 = new ArrayList<>();
+//		
+//		for(int i = a1.getHoraInicio(); i < a1.getHoraFin(); i++) {
+//			horasActividad1.add(i);
+//		}
+//		
+//		for(int i = a2.getHoraInicio(); i < a2.getHoraFin(); i++) {
+//			horasActividad2.add(i);
+//		}
+//		
+//		List<Integer> intersectElements = horasActividad1.stream()
+//				.filter((Integer x) -> horasActividad2.contains(x))
+//				.collect(Collectors.toList());
+//		
+//		return intersectElements.get(intersectElements.size() - 1) - intersectElements.get(0);
+//	}
 
 	@Override
 	public String toString() {

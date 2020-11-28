@@ -41,7 +41,7 @@ public class CalendarioSemanalBase extends JDialog {
 	private JPanel pnNorth;
 	protected JComboBox<Instalacion> cbInstalacionSeleccionada;
 	private JButton btnMostrarOcupacion;
-	private Programa programa = null;
+	protected Programa programa = null;
 	private ArrayList<String> dias = new ArrayList<String>();
 	private JPanel pnTopCenter;
 	private JPanel pnTopEast;
@@ -51,7 +51,7 @@ public class CalendarioSemanalBase extends JDialog {
 	private JButton btnPreviousWeek;
 	private JButton btnNextWeek;
 
-	private Date date;
+	protected Date date;
 
 	private static final int DIA_EN_MILLIS = 1000 * 24 * 60 * 60;
 	private JLabel lblNombreMes;

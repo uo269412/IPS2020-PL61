@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GridLayout;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
@@ -14,6 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.border.TitledBorder;
 
 import sprint1.business.dominio.clientes.Tercero;
 import sprint1.ui.ventanas.MainWindow;
@@ -30,12 +33,10 @@ import sprint1.ui.ventanas.administracion.monitores.AsignarMonitorDialog;
 import sprint1.ui.ventanas.administracion.reservas.AdminReservaSocioDialog;
 import sprint1.ui.ventanas.administracion.util.CalendarioAdmin;
 import sprint1.ui.ventanas.administracion.util.CalendarioAdminAlquilar;
+import sprint1.ui.ventanas.administracion.util.CalendarioSemanalModificar;
 import sprint1.ui.ventanas.administracion.util.CalendarioSemanalPlanificar;
 import sprint1.ui.ventanas.administracion.util.CalendarioTercero;
 import sprint1.ui.ventanas.util.CalendarioSemanalBase;
-import java.awt.GridLayout;
-import javax.swing.border.TitledBorder;
-import java.awt.Toolkit;
 
 public class AdminWindow extends JDialog {
 	/**
@@ -79,6 +80,7 @@ public class AdminWindow extends JDialog {
 	private JPanel pnMonitores;
 	private JPanel pnAlquileres;
 	private JPanel pnInstalaciones;
+	private JButton btnModificarPlanificacion;
 
 	/**
 	 * Create the dialog.
@@ -562,6 +564,7 @@ public class AdminWindow extends JDialog {
 			pnActividades.add(getBtnCrearActividad());
 			pnActividades.add(getBtnAsignarActividad());
 			pnActividades.add(getBtnPlanificarActividades());
+			pnActividades.add(getBtnModificarPlanificacion());
 		}
 		return pnActividades;
 	}
@@ -602,5 +605,21 @@ public class AdminWindow extends JDialog {
 			pnInstalaciones.add(getBtnVerOcupacionBotones());
 		}
 		return pnInstalaciones;
+	}
+	private JButton getBtnModificarPlanificacion() {
+		if (btnModificarPlanificacion == null) {
+			btnModificarPlanificacion = new JButton("Modificar planificacion de actividades");
+			btnModificarPlanificacion.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					CalendarioSemanalModificar csm = new CalendarioSemanalModificar(getMe());
+					csm.setModal(true);
+					csm.setVisible(true);
+					csm.setLocationRelativeTo(getMe());
+				}
+			});
+			btnModificarPlanificacion.setBackground(new Color(25, 25, 112));
+			btnModificarPlanificacion.setForeground(new Color(255, 255, 255));
+		}
+		return btnModificarPlanificacion;
 	}
 }

@@ -143,6 +143,22 @@ public class ActividadPlanificada implements Comparable<ActividadPlanificada> {
 		this.codigoInstalacion = codigoInstalacion;
 	}
 
+	public void setDia(int dia) {
+		this.dia = dia;
+	}
+
+	public void setMes(int mes) {
+		this.mes = mes;
+	}
+
+	public void setAño(int año) {
+		this.año = año;
+	}
+
+	public void setConflictos(List<Conflicto> conflictos) {
+		this.conflictos = conflictos;
+	}
+
 	public boolean tieneMonitor() {
 		if (getCodigoMonitor() == null || getCodigoMonitor().isEmpty()) {
 			return false;
