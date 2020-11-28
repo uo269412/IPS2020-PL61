@@ -16,11 +16,19 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import sprint1.business.clases.ActividadPlanificada;
-import sprint1.business.clases.Alquiler;
-import sprint1.business.clases.Reserva;
-import sprint1.business.clases.Socio;
+import sprint1.business.dominio.centroDeportes.actividades.ActividadPlanificada;
+import sprint1.business.dominio.centroDeportes.alquileres.Alquiler;
+import sprint1.business.dominio.centroDeportes.reservas.Reserva;
+import sprint1.business.dominio.clientes.Socio;
 import sprint1.ui.ventanas.MainWindow;
+import sprint1.ui.ventanas.socio.acciones.ListaDeReservasWindow;
+import sprint1.ui.ventanas.socio.acciones.ListaDeAlquileresWindow;
+import sprint1.ui.ventanas.socio.acciones.ReservaSocioWindow;
+import sprint1.ui.ventanas.socio.util.CalendarioAlquilerSocio;
+import sprint1.ui.ventanas.socio.vistas.VerAlquileresSocio;
+import sprint1.ui.ventanas.socio.vistas.VerHorariosSocioWindow;
+import java.awt.GridLayout;
+import javax.swing.border.TitledBorder;
 
 public class SocioWindow extends JDialog {
 
@@ -35,13 +43,16 @@ public class SocioWindow extends JDialog {
 	private JPanel pnAcciones;
 	private JButton btnLogOut;
 	private JButton btnVerActividades;
-	private ListaDeActividadesWindow listaDeActividadesWindow = null;
+	private ListaDeReservasWindow listaDeActividadesWindow = null;
 	private ListaDeAlquileresWindow listaDeAlquileresWindow = null;
 	private JButton btnVerHorariosSocios;
 	private JButton btnReservar;
 	private JButton btnCancelarAlquiler;
 	private JButton btnVerAlquileres;
 	private JButton btnAlquilar;
+	private JPanel pnActividades;
+	private JPanel pnVista;
+	private JPanel pnAlquileres;
 
 	/**
 	 * Create the dialog.
@@ -50,7 +61,7 @@ public class SocioWindow extends JDialog {
 		setTitle("Centro de Deportes: Acceso como socio");
 		this.parent = mainWindow;
 		this.socio = socio;
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 365, 307);
 		getContentPane().setLayout(new BorderLayout(0, 0));
 		getContentPane().add(getPnTextos(), BorderLayout.NORTH);
 		getContentPane().add(getPnFuncionalidad(), BorderLayout.CENTER);
@@ -110,20 +121,19 @@ public class SocioWindow extends JDialog {
 		if (pnAcciones == null) {
 			pnAcciones = new JPanel();
 			pnAcciones.setBackground(new Color(255, 255, 255));
-			pnAcciones.add(getButton_1());
-			pnAcciones.add(getBtnVerActividades());
-			pnAcciones.add(getBtnVerHorariosSocios());
-			pnAcciones.add(getBtnCancelarAlquiler());
-			pnAcciones.add(getBtnVerAlquileres());
-			pnAcciones.add(getBtnAlquilar());
+			pnAcciones.setLayout(new GridLayout(0, 1, 0, 0));
+			pnAcciones.add(getPnActividades());
+			pnAcciones.add(getPnAlquileres());
+			pnAcciones.add(getPnVista());
+
 		}
 		return pnAcciones;
 	}
 
 	private JButton getBtnLogOut() {
 		if (btnLogOut == null) {
-			btnLogOut = new JButton("Log Out");
-			btnLogOut.setMnemonic('O');
+			btnLogOut = new JButton("Cerrar sesi\u00F3n");
+			btnLogOut.setMnemonic('s');
 			btnLogOut.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					dispose();
@@ -142,7 +152,7 @@ public class SocioWindow extends JDialog {
 
 	private void openListaDeActividadesWindow() {
 		if (checkIfListWillOpen()) {
-			listaDeActividadesWindow = new ListaDeActividadesWindow(this, socio);
+			listaDeActividadesWindow = new ListaDeReservasWindow(this, socio);
 			listaDeActividadesWindow.setModal(true);
 			listaDeActividadesWindow.setLocationRelativeTo(this);
 			listaDeActividadesWindow.setVisible(true);
@@ -176,8 +186,10 @@ public class SocioWindow extends JDialog {
 
 	private JButton getBtnVerActividades() {
 		if (btnVerActividades == null) {
-			btnVerActividades = new JButton("Listado de reservas para ver o cancelar");
-			btnVerActividades.setMnemonic('L');
+			btnVerActividades = new JButton("Ver y cancelar reservas");
+			btnVerActividades.setBackground(new Color(25, 25, 112));
+			btnVerActividades.setForeground(new Color(255, 255, 255));
+			btnVerActividades.setMnemonic('V');
 			btnVerActividades.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					openListaDeActividadesWindow();
@@ -190,6 +202,9 @@ public class SocioWindow extends JDialog {
 	private JButton getBtnVerHorariosSocios() {
 		if (btnVerHorariosSocios == null) {
 			btnVerHorariosSocios = new JButton("Ver horarios");
+			btnVerHorariosSocios.setForeground(new Color(255, 255, 255));
+			btnVerHorariosSocios.setBackground(new Color(25, 25, 112));
+			btnVerHorariosSocios.setMnemonic('h');
 			btnVerHorariosSocios.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					VerHorariosSocioWindow vosw = new VerHorariosSocioWindow(
@@ -205,7 +220,10 @@ public class SocioWindow extends JDialog {
 
 	private JButton getButton_1() {
 		if (btnReservar == null) {
-			btnReservar = new JButton("Hacer reserva");
+			btnReservar = new JButton("Reservar actividad");
+			btnReservar.setForeground(new Color(255, 255, 255));
+			btnReservar.setBackground(new Color(25, 25, 112));
+			btnReservar.setMnemonic('R');
 			btnReservar.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					ReservaSocioWindow rsw = new ReservaSocioWindow(SocioWindow.this, socio);
@@ -220,13 +238,15 @@ public class SocioWindow extends JDialog {
 
 	private JButton getBtnCancelarAlquiler() {
 		if (btnCancelarAlquiler == null) {
-			btnCancelarAlquiler = new JButton("Cancelar alquiler de una instalaci\u00F3n");
+			btnCancelarAlquiler = new JButton("Ver y cancelar alquileres");
+			btnCancelarAlquiler.setForeground(new Color(255, 255, 255));
+			btnCancelarAlquiler.setBackground(new Color(25, 25, 112));
 			btnCancelarAlquiler.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					openListaAlquileresWindow();
 				}
 			});
-			btnCancelarAlquiler.setMnemonic('A');
+			btnCancelarAlquiler.setMnemonic('q');
 		}
 		return btnCancelarAlquiler;
 	}
@@ -258,7 +278,10 @@ public class SocioWindow extends JDialog {
 	}
 	private JButton getBtnVerAlquileres() {
 		if (btnVerAlquileres == null) {
-			btnVerAlquileres = new JButton("Ver alquileres");
+			btnVerAlquileres = new JButton("Ver historial de alquileres");
+			btnVerAlquileres.setForeground(new Color(255, 255, 255));
+			btnVerAlquileres.setBackground(new Color(25, 25, 112));
+			btnVerAlquileres.setMnemonic('t');
 			btnVerAlquileres.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					VerAlquileresSocio vas = new VerAlquileresSocio(SocioWindow.this, socio);
@@ -272,7 +295,10 @@ public class SocioWindow extends JDialog {
 	}
 	private JButton getBtnAlquilar() {
 		if (btnAlquilar == null) {
-			btnAlquilar = new JButton("Alquilar instalacion");
+			btnAlquilar = new JButton("Alquilar instalaci\u00F3n");
+			btnAlquilar.setForeground(new Color(255, 255, 255));
+			btnAlquilar.setBackground(new Color(25, 25, 112));
+			btnAlquilar.setMnemonic('A');
 			btnAlquilar.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					openSocioAlquilaWindow();
@@ -286,5 +312,35 @@ public class SocioWindow extends JDialog {
 		cas.setModal(true);
 		cas.setLocationRelativeTo(this);
 		cas.setVisible(true);
+	}
+	private JPanel getPnActividades() {
+		if (pnActividades == null) {
+			pnActividades = new JPanel();
+			pnActividades.setBackground(Color.WHITE);
+			pnActividades.setBorder(new TitledBorder(null, "Reservas y actividades del centro deportivo", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+			pnActividades.add(getButton_1());
+			pnActividades.add(getBtnVerActividades());
+		}
+		return pnActividades;
+	}
+	private JPanel getPnVista() {
+		if (pnVista == null) {
+			pnVista = new JPanel();
+			pnVista.setBackground(Color.WHITE);
+			pnVista.setBorder(new TitledBorder(null, "Ver horario y alquileres", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+			pnVista.add(getBtnVerHorariosSocios());
+			pnVista.add(getBtnVerAlquileres());
+		}
+		return pnVista;
+	}
+	private JPanel getPnAlquileres() {
+		if (pnAlquileres == null) {
+			pnAlquileres = new JPanel();
+			pnAlquileres.setBackground(Color.WHITE);
+			pnAlquileres.setBorder(new TitledBorder(null, "Alquileres de instalaciones", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+			pnAlquileres.add(getBtnAlquilar());
+			pnAlquileres.add(getBtnCancelarAlquiler());
+		}
+		return pnAlquileres;
 	}
 }

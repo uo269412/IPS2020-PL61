@@ -7,8 +7,6 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -17,11 +15,27 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import sprint1.business.clases.ActividadPlanificada;
-import sprint1.business.clases.Socio;
-import sprint1.business.clases.Tercero;
-import sprint1.ui.ventanas.CalendarioSemanalBase;
+import sprint1.business.dominio.clientes.Tercero;
 import sprint1.ui.ventanas.MainWindow;
+import sprint1.ui.ventanas.administracion.actividades.CrearActividadDialog;
+import sprint1.ui.ventanas.administracion.alquileres.AdminAlquilaSocioAhoraDialog;
+import sprint1.ui.ventanas.administracion.alquileres.RegistrarEntradaSocioDialog;
+import sprint1.ui.ventanas.administracion.alquileres.RegistrarSalidaSocioDialog;
+import sprint1.ui.ventanas.administracion.estado.ListaSociosConImpagos;
+import sprint1.ui.ventanas.administracion.estado.VerConflictosDialog;
+import sprint1.ui.ventanas.administracion.estado.VerOcupacionDialog;
+import sprint1.ui.ventanas.administracion.instalaciones.AsignarRecursosAInstalaciónDialog;
+import sprint1.ui.ventanas.administracion.instalaciones.CerrarInstalacionDialog;
+import sprint1.ui.ventanas.administracion.monitores.AsignarMonitorDialog;
+import sprint1.ui.ventanas.administracion.reservas.AdminReservaSocioDialog;
+import sprint1.ui.ventanas.administracion.util.CalendarioAdmin;
+import sprint1.ui.ventanas.administracion.util.CalendarioAdminAlquilar;
+import sprint1.ui.ventanas.administracion.util.CalendarioSemanalPlanificar;
+import sprint1.ui.ventanas.administracion.util.CalendarioTercero;
+import sprint1.ui.ventanas.util.CalendarioSemanalBase;
+import java.awt.GridLayout;
+import javax.swing.border.TitledBorder;
+import java.awt.Toolkit;
 
 public class AdminWindow extends JDialog {
 	/**
@@ -40,12 +54,12 @@ public class AdminWindow extends JDialog {
 	private JButton btnCrearActividad;
 	private JButton btnAsignarActividad;
 
-	private AsignarMonitorActividadDialog asignarMonitor;
-	private AdminReservaSocioWindow adminReservaSocio;
-	private AlquilarSocioMomentoWindow alquilarSocioMomento;
-	private CalendarioAlquilerAdmin calendarioAlquilerAdmin;
-	private RegistrarEntradaSocio registrarEntradaSocio;
-	private RegistrarSalidaSocio registrarSalidaSocio;
+	private AsignarMonitorDialog asignarMonitor;
+	private AdminReservaSocioDialog adminReservaSocio;
+	private AdminAlquilaSocioAhoraDialog alquilarSocioMomento;
+	private CalendarioAdminAlquilar calendarioAlquilerAdmin;
+	private RegistrarEntradaSocioDialog registrarEntradaSocio;
+	private RegistrarSalidaSocioDialog registrarSalidaSocio;
 	private CalendarioSemanalPlanificar calendarioSemanalPlanificar;
 	private JButton btnReservaSocio;
 	private JButton btnVerOcupacion;
@@ -61,14 +75,19 @@ public class AdminWindow extends JDialog {
 	private JButton btnPlanificarActividades;
 	private JButton btnAsignarRecursos;
 	private JButton btnInspeccionarConflictos;
+	private JPanel pnActividades;
+	private JPanel pnMonitores;
+	private JPanel pnAlquileres;
+	private JPanel pnInstalaciones;
 
 	/**
 	 * Create the dialog.
 	 */
 	public AdminWindow(MainWindow mainWindow) {
+		setIconImage(Toolkit.getDefaultToolkit().getImage(AdminWindow.class.getResource("/sprint1/ui/resources/titulo.png")));
 		setTitle("Centro de Deportes: Administrador");
 		this.parent = mainWindow;
-		setBounds(100, 100, 511, 413);
+		setBounds(100, 100, 552, 572);
 		getContentPane().setLayout(new BorderLayout(0, 0));
 		getContentPane().add(getPnTextos(), BorderLayout.NORTH);
 		getContentPane().add(getPnFuncionalidad(), BorderLayout.CENTER);
@@ -128,32 +147,19 @@ public class AdminWindow extends JDialog {
 		if (pnAcciones == null) {
 			pnAcciones = new JPanel();
 			pnAcciones.setBackground(new Color(255, 255, 255));
-			pnAcciones.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-			pnAcciones.add(getBtnAsignarMonitor_1());
-			pnAcciones.add(getBtnCrearActividad());
-			pnAcciones.add(getBtnAsignarActividad());
-			pnAcciones.add(getBtnReservaSocio());
-			pnAcciones.add(getBtnVerOcupacion());
-			pnAcciones.add(getBtnCerrarInstalación());
-			pnAcciones.add(getBtnAlquilarSocioMomento());
-			pnAcciones.add(getBtnAlquilarSocio());
-			pnAcciones.add(getBtnCobrarAlquileres());
-			pnAcciones.add(getBtnRegistrarSalida());
-			pnAcciones.add(getBtnRegistrarEntrada());
-			pnAcciones.add(getBtnSociosConImpagos());
-			pnAcciones.add(getBtnAlquilerTercero());
-			pnAcciones.add(getBtnVerOcupacionBotones());
-			pnAcciones.add(getBtnPlanificarActividades());
-			pnAcciones.add(getBtnAsignarRecursos());
-			pnAcciones.add(getBtnInspeccionarConflictos());
+			pnAcciones.setLayout(new GridLayout(0, 1, 0, 0));
+			pnAcciones.add(getPnActividades());
+			pnAcciones.add(getPnMonitores());
+			pnAcciones.add(getPnAlquileres());
+			pnAcciones.add(getPnInstalaciones());
 		}
 		return pnAcciones;
 	}
 
 	private JButton getBtnLogOut() {
 		if (btnLogOut == null) {
-			btnLogOut = new JButton("Log Out");
-			btnLogOut.setMnemonic('O');
+			btnLogOut = new JButton("Cerrar sesi\u00F3n");
+			btnLogOut.setMnemonic('s');
 			btnLogOut.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					dispose();
@@ -169,7 +175,9 @@ public class AdminWindow extends JDialog {
 	private JButton getBtnAsignarMonitor_1() {
 		if (btnAsignarMonitor == null) {
 			btnAsignarMonitor = new JButton("Asignar monitor a actividad");
-			btnAsignarMonitor.setMnemonic('M');
+			btnAsignarMonitor.setForeground(new Color(255, 255, 255));
+			btnAsignarMonitor.setBackground(new Color(25, 25, 112));
+			btnAsignarMonitor.setMnemonic('m');
 			btnAsignarMonitor.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					openAsignarMonitorActividadWindow();
@@ -180,7 +188,7 @@ public class AdminWindow extends JDialog {
 	}
 
 	public void openAsignarMonitorActividadWindow() {
-		asignarMonitor = new AsignarMonitorActividadDialog(this);
+		asignarMonitor = new AsignarMonitorDialog(this);
 		asignarMonitor.setModal(true);
 		asignarMonitor.setLocationRelativeTo(this);
 		asignarMonitor.setVisible(true);
@@ -189,6 +197,8 @@ public class AdminWindow extends JDialog {
 	private JButton getBtnCrearActividad() {
 		if (btnCrearActividad == null) {
 			btnCrearActividad = new JButton("Crear actividad");
+			btnCrearActividad.setForeground(new Color(255, 255, 255));
+			btnCrearActividad.setBackground(new Color(25, 25, 112));
 			btnCrearActividad.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					CrearActividadDialog dialog = new CrearActividadDialog(parent.getPrograma());
@@ -208,7 +218,9 @@ public class AdminWindow extends JDialog {
 
 	private JButton getBtnAsignarActividad() {
 		if (btnAsignarActividad == null) {
-			btnAsignarActividad = new JButton("Asignar actividad");
+			btnAsignarActividad = new JButton("Planificar actividad");
+			btnAsignarActividad.setForeground(new Color(255, 255, 255));
+			btnAsignarActividad.setBackground(new Color(25, 25, 112));
 			btnAsignarActividad.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					getMe().setModal(false);
@@ -217,7 +229,7 @@ public class AdminWindow extends JDialog {
 					ca.setVisible(true);
 				}
 			});
-			btnAsignarActividad.setMnemonic('A');
+			btnAsignarActividad.setMnemonic('P');
 		}
 		return btnAsignarActividad;
 	}
@@ -227,7 +239,7 @@ public class AdminWindow extends JDialog {
 	}
 
 	public void openAdminReservaSocioWindow() {
-		adminReservaSocio = new AdminReservaSocioWindow(this);
+		adminReservaSocio = new AdminReservaSocioDialog(this);
 		adminReservaSocio.setModal(true);
 		adminReservaSocio.setLocationRelativeTo(this);
 		adminReservaSocio.setVisible(true);
@@ -235,8 +247,10 @@ public class AdminWindow extends JDialog {
 
 	private JButton getBtnReservaSocio() {
 		if (btnReservaSocio == null) {
-			btnReservaSocio = new JButton("Hacer una reserva para un socio en una actividad que se realiza hoy");
-			btnReservaSocio.setMnemonic('H');
+			btnReservaSocio = new JButton("Reservar plaza en una actividad de hoy");
+			btnReservaSocio.setForeground(new Color(255, 255, 255));
+			btnReservaSocio.setBackground(new Color(25, 25, 112));
+			btnReservaSocio.setMnemonic('R');
 			btnReservaSocio.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					if (getParent().getPrograma().checkIfHayActividadesParaHoy()) {
@@ -253,15 +267,17 @@ public class AdminWindow extends JDialog {
 	private JButton getBtnVerOcupacion() {
 		if (btnVerOcupacion == null) {
 			btnVerOcupacion = new JButton("Ver ocupaci\u00F3n");
+			btnVerOcupacion.setForeground(new Color(255, 255, 255));
+			btnVerOcupacion.setBackground(new Color(25, 25, 112));
 			btnVerOcupacion.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					VerOcupacionWindow vow = new VerOcupacionWindow(parent.getPrograma());
+					VerOcupacionDialog vow = new VerOcupacionDialog(parent.getPrograma());
 					vow.setModal(true);
 					vow.setLocationRelativeTo(AdminWindow.this);
 					vow.setVisible(true);
 				}
 			});
-			btnVerOcupacion.setMnemonic('V');
+			btnVerOcupacion.setMnemonic('o');
 		}
 		return btnVerOcupacion;
 	}
@@ -269,6 +285,9 @@ public class AdminWindow extends JDialog {
 	private JButton getBtnCerrarInstalación() {
 		if (btnCerrarInstalación == null) {
 			btnCerrarInstalación = new JButton("Cerrar instalaci\u00F3n");
+			btnCerrarInstalación.setForeground(new Color(255, 255, 255));
+			btnCerrarInstalación.setBackground(new Color(25, 25, 112));
+			btnCerrarInstalación.setMnemonic('l');
 			btnCerrarInstalación.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					CerrarInstalacionDialog cid = new CerrarInstalacionDialog(getMe());
@@ -283,7 +302,10 @@ public class AdminWindow extends JDialog {
 
 	private JButton getBtnAlquilarSocioMomento() {
 		if (btnAlquilarSocioMomento == null) {
-			btnAlquilarSocioMomento = new JButton("Alquilarle una instalación en el momento a un socio");
+			btnAlquilarSocioMomento = new JButton("Alquilar una instalaci\u00F3n ahora a un socio");
+			btnAlquilarSocioMomento.setForeground(new Color(255, 255, 255));
+			btnAlquilarSocioMomento.setBackground(new Color(25, 25, 112));
+			btnAlquilarSocioMomento.setMnemonic('h');
 			btnAlquilarSocioMomento.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					if (getParent().getPrograma().checkIfHayInstalacionesLibresParaAhora()) {
@@ -298,7 +320,7 @@ public class AdminWindow extends JDialog {
 	}
 
 	private void openAlquilarSocioMomentoWindow() {
-		alquilarSocioMomento = new AlquilarSocioMomentoWindow(this);
+		alquilarSocioMomento = new AdminAlquilaSocioAhoraDialog(this);
 		alquilarSocioMomento.setModal(true);
 		alquilarSocioMomento.setLocationRelativeTo(this);
 		alquilarSocioMomento.setVisible(true);
@@ -307,7 +329,10 @@ public class AdminWindow extends JDialog {
 
 	private JButton getBtnAlquilarSocio() {
 		if (btnAlquilarSocio == null) {
-			btnAlquilarSocio = new JButton("Alquilarle una instalaci\u00F3n a un socio");
+			btnAlquilarSocio = new JButton("Alquilar a un socio");
+			btnAlquilarSocio.setForeground(new Color(255, 255, 255));
+			btnAlquilarSocio.setBackground(new Color(25, 25, 112));
+			btnAlquilarSocio.setMnemonic('q');
 			btnAlquilarSocio.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					openAlquilarSocioWindow();
@@ -318,7 +343,7 @@ public class AdminWindow extends JDialog {
 	}
 
 	private void openAlquilarSocioWindow() {
-		calendarioAlquilerAdmin = new CalendarioAlquilerAdmin(this);
+		calendarioAlquilerAdmin = new CalendarioAdminAlquilar(this);
 		calendarioAlquilerAdmin.setModal(true);
 		calendarioAlquilerAdmin.setLocationRelativeTo(this);
 		calendarioAlquilerAdmin.setVisible(true);
@@ -327,6 +352,9 @@ public class AdminWindow extends JDialog {
 	private JButton getBtnRegistrarEntrada() {
 		if (btnRegistrarEntrada == null) {
 			btnRegistrarEntrada = new JButton("Registrar entrada al alquiler");
+			btnRegistrarEntrada.setForeground(new Color(255, 255, 255));
+			btnRegistrarEntrada.setBackground(new Color(25, 25, 112));
+			btnRegistrarEntrada.setMnemonic('e');
 			btnRegistrarEntrada.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					if (getParent().getPrograma().hayAlquileresAhoraSocioNoHaEntrado()) {
@@ -342,7 +370,7 @@ public class AdminWindow extends JDialog {
 	}
 
 	private void openRegistrarEntradaSocioWindow() {
-		registrarEntradaSocio = new RegistrarEntradaSocio(this);
+		registrarEntradaSocio = new RegistrarEntradaSocioDialog(this);
 		registrarEntradaSocio.setModal(true);
 		registrarEntradaSocio.setLocationRelativeTo(this);
 		registrarEntradaSocio.setVisible(true);
@@ -351,6 +379,9 @@ public class AdminWindow extends JDialog {
 	private JButton getBtnSociosConImpagos() {
 		if (btnSociosConImpagos == null) {
 			btnSociosConImpagos = new JButton("Ver socios que no han pagado sus alquileres");
+			btnSociosConImpagos.setForeground(new Color(255, 255, 255));
+			btnSociosConImpagos.setBackground(new Color(25, 25, 112));
+			btnSociosConImpagos.setMnemonic('n');
 			btnSociosConImpagos.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					ListaSociosConImpagos lsci = new ListaSociosConImpagos(parent.getPrograma());
@@ -365,6 +396,9 @@ public class AdminWindow extends JDialog {
 	private JButton getBtnCobrarAlquileres() {
 		if (btnCobrarAlquileres == null) {
 			btnCobrarAlquileres = new JButton("Cobrar alquiler a usuarios");
+			btnCobrarAlquileres.setForeground(new Color(255, 255, 255));
+			btnCobrarAlquileres.setBackground(new Color(25, 25, 112));
+			btnCobrarAlquileres.setMnemonic('b');
 		}
 		return btnCobrarAlquileres;
 	}
@@ -372,6 +406,9 @@ public class AdminWindow extends JDialog {
 	private JButton getBtnRegistrarSalida() {
 		if (btnRegistrarSalida == null) {
 			btnRegistrarSalida = new JButton("Registrar salida del alquiler");
+			btnRegistrarSalida.setForeground(new Color(255, 255, 255));
+			btnRegistrarSalida.setBackground(new Color(25, 25, 112));
+			btnRegistrarSalida.setMnemonic('s');
 			btnRegistrarSalida.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					if (getParent().getPrograma().hayAlquileresConSocioDentro()) {
@@ -387,7 +424,7 @@ public class AdminWindow extends JDialog {
 	}
 
 	private void openRegistrarSalidaSocioWindow() {
-		registrarSalidaSocio = new RegistrarSalidaSocio(this);
+		registrarSalidaSocio = new RegistrarSalidaSocioDialog(this);
 		registrarSalidaSocio.setModal(true);
 		registrarSalidaSocio.setLocationRelativeTo(this);
 		registrarSalidaSocio.setVisible(true);
@@ -395,6 +432,9 @@ public class AdminWindow extends JDialog {
 	private JButton getBtnAlquilerTercero() {
 		if (btnAlquilerTercero == null) {
 			btnAlquilerTercero = new JButton("Alquilar a un tercero");
+			btnAlquilerTercero.setForeground(new Color(255, 255, 255));
+			btnAlquilerTercero.setBackground(new Color(25, 25, 112));
+			btnAlquilerTercero.setMnemonic('t');
 			btnAlquilerTercero.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					String nombre_tercero;
@@ -438,7 +478,10 @@ public class AdminWindow extends JDialog {
 	}
 	private JButton getBtnVerOcupacionBotones() {
 		if (btnVerOcupacionBotones == null) {
-			btnVerOcupacionBotones = new JButton("Ver Ocupacion (Botones)");
+			btnVerOcupacionBotones = new JButton("Ver ocupaci\u00F3n semanal");
+			btnVerOcupacionBotones.setForeground(new Color(255, 255, 255));
+			btnVerOcupacionBotones.setBackground(new Color(25, 25, 112));
+			btnVerOcupacionBotones.setMnemonic('o');
 			btnVerOcupacionBotones.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					CalendarioSemanalBase vowb = new CalendarioSemanalBase(parent.getPrograma());
@@ -460,6 +503,9 @@ public class AdminWindow extends JDialog {
 	private JButton getBtnPlanificarActividades() {
 		if (btnPlanificarActividades == null) {
 			btnPlanificarActividades = new JButton("Planificar actividades para varios d\u00EDas");
+			btnPlanificarActividades.setForeground(new Color(255, 255, 255));
+			btnPlanificarActividades.setBackground(new Color(25, 25, 112));
+			btnPlanificarActividades.setMnemonic('a');
 			btnPlanificarActividades.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					openCalendarioSemanalPlanificar();
@@ -471,7 +517,10 @@ public class AdminWindow extends JDialog {
 	
 	private JButton getBtnAsignarRecursos() {
 		if (btnAsignarRecursos == null) {
-			btnAsignarRecursos = new JButton("Asignar recursos a instalacion");
+			btnAsignarRecursos = new JButton("Asignar recursos a instalaci\u00F3n");
+			btnAsignarRecursos.setForeground(new Color(255, 255, 255));
+			btnAsignarRecursos.setBackground(new Color(25, 25, 112));
+			btnAsignarRecursos.setMnemonic('g');
 			btnAsignarRecursos.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					AsignarRecursosAInstalaciónDialog araid = new AsignarRecursosAInstalaciónDialog(parent.getPrograma());
@@ -488,7 +537,10 @@ public class AdminWindow extends JDialog {
 	
 	private JButton getBtnInspeccionarConflictos() {
 		if (btnInspeccionarConflictos == null) {
-			btnInspeccionarConflictos = new JButton("Inspeccionar Conflictos");
+			btnInspeccionarConflictos = new JButton("Inspeccionar conflictos");
+			btnInspeccionarConflictos.setForeground(new Color(255, 255, 255));
+			btnInspeccionarConflictos.setBackground(new Color(25, 25, 112));
+			btnInspeccionarConflictos.setMnemonic('I');
 			btnInspeccionarConflictos.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					VerConflictosDialog vcd = new VerConflictosDialog(parent.getPrograma());
@@ -501,5 +553,54 @@ public class AdminWindow extends JDialog {
 			});
 		}
 		return btnInspeccionarConflictos;
+	}
+	private JPanel getPnActividades() {
+		if (pnActividades == null) {
+			pnActividades = new JPanel();
+			pnActividades.setBackground(new Color(255, 255, 255));
+			pnActividades.setBorder(new TitledBorder(null, "Administrar actividades", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+			pnActividades.add(getBtnCrearActividad());
+			pnActividades.add(getBtnAsignarActividad());
+			pnActividades.add(getBtnPlanificarActividades());
+		}
+		return pnActividades;
+	}
+	private JPanel getPnMonitores() {
+		if (pnMonitores == null) {
+			pnMonitores = new JPanel();
+			pnMonitores.setBackground(new Color(255, 255, 255));
+			pnMonitores.setBorder(new TitledBorder(null, "Administrar planificaciones y reservas", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+			pnMonitores.add(getBtnAsignarMonitor_1());
+			pnMonitores.add(getBtnReservaSocio());
+		}
+		return pnMonitores;
+	}
+	private JPanel getPnAlquileres() {
+		if (pnAlquileres == null) {
+			pnAlquileres = new JPanel();
+			pnAlquileres.setBackground(new Color(255, 255, 255));
+			pnAlquileres.setBorder(new TitledBorder(null, "Administrar alquileres", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+			pnAlquileres.add(getBtnAlquilarSocio());
+			pnAlquileres.add(getBtnAlquilarSocioMomento());
+			pnAlquileres.add(getBtnAlquilerTercero());
+			pnAlquileres.add(getBtnRegistrarEntrada());
+			pnAlquileres.add(getBtnRegistrarSalida());
+			pnAlquileres.add(getBtnSociosConImpagos());
+			pnAlquileres.add(getBtnCobrarAlquileres());
+		}
+		return pnAlquileres;
+	}
+	private JPanel getPnInstalaciones() {
+		if (pnInstalaciones == null) {
+			pnInstalaciones = new JPanel();
+			pnInstalaciones.setBackground(new Color(255, 255, 255));
+			pnInstalaciones.setBorder(new TitledBorder(null, "Administrar instalaciones", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+			pnInstalaciones.add(getBtnAsignarRecursos());
+			pnInstalaciones.add(getBtnCerrarInstalación());
+			pnInstalaciones.add(getBtnInspeccionarConflictos());
+			pnInstalaciones.add(getBtnVerOcupacion());
+			pnInstalaciones.add(getBtnVerOcupacionBotones());
+		}
+		return pnInstalaciones;
 	}
 }

@@ -5,22 +5,18 @@ import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.SQLException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import sprint1.business.clases.Programa;
-import sprint1.business.clases.Socio;
-import sprint1.business.clases.Tercero;
+import sprint1.business.Programa;
 import sprint1.ui.ventanas.administracion.AdminWindow;
-import sprint1.ui.ventanas.socio.CbSociosWindow;
-import sprint1.ui.ventanas.socio.SocioWindow;
+import sprint1.ui.ventanas.socio.util.SeleccionSocioWindow;
+import java.awt.Toolkit;
 
 public class MainWindow extends JFrame {
 	
@@ -29,7 +25,6 @@ public class MainWindow extends JFrame {
 	private JPanel contentPane;
 
 	private AdminWindow adminWindow = null;
-	private SocioWindow socioWindow = null;
 	
 
 	private static Programa programa;
@@ -56,6 +51,7 @@ public class MainWindow extends JFrame {
 	 * Create the frame.
 	 */
 	public MainWindow() {
+		setIconImage(Toolkit.getDefaultToolkit().getImage(MainWindow.class.getResource("/sprint1/ui/resources/titulo.png")));
 		setTitle("Centro de Deportes");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 577, 545);
@@ -77,6 +73,8 @@ public class MainWindow extends JFrame {
 		contentPane.add(pnBotones, BorderLayout.SOUTH);
 		
 		JButton btnAdmin = new JButton("Acceder como administrador");
+		btnAdmin.setBackground(new Color(25, 25, 112));
+		btnAdmin.setForeground(Color.WHITE);
 		btnAdmin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				openAdminWindow();
@@ -85,6 +83,8 @@ public class MainWindow extends JFrame {
 		pnBotones.add(btnAdmin);
 		
 		JButton btnSocio = new JButton("Acceder como socio");
+		btnSocio.setForeground(Color.WHITE);
+		btnSocio.setBackground(new Color(25, 25, 112));
 		btnSocio.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 //				String id_socio;
@@ -107,13 +107,6 @@ public class MainWindow extends JFrame {
 	public Programa getPrograma() {
 		return MainWindow.programa;
 	}
-
-	private void openSocioWindow(Socio socio) {
-		socioWindow = new SocioWindow(this, socio);
-		socioWindow.setModal(true);
-		socioWindow.setLocationRelativeTo(this);
-		socioWindow.setVisible(true);
-	}
 	
 	private void openAdminWindow() {
 		adminWindow = new AdminWindow(this);
@@ -125,7 +118,7 @@ public class MainWindow extends JFrame {
 	
 
 	private void abrirCbSociosWindowPrueba() {
-		CbSociosWindow cbSocios = new CbSociosWindow(this);
+		SeleccionSocioWindow cbSocios = new SeleccionSocioWindow(this);
 		cbSocios.setModal(true);
 		cbSocios.setLocationRelativeTo(this);
 		cbSocios.setVisible(true);
