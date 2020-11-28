@@ -21,6 +21,7 @@ import sprint1.business.Programa;
 import sprint1.business.dominio.centroDeportes.actividades.ActividadPlanificada;
 import sprint1.ui.ventanas.administracion.estado.mostrar.MostrarConflictosDeActividadDialog;
 import java.awt.Toolkit;
+import javax.swing.JScrollPane;
 
 public class VerConflictosDialog extends JDialog {
 
@@ -36,6 +37,7 @@ public class VerConflictosDialog extends JDialog {
 
 	private DefaultListModel<ActividadPlanificada> lm = new DefaultListModel<>();
 	private Programa p;
+	private JScrollPane scrollPane;
 
 	/**
 	 * Create the dialog.
@@ -48,8 +50,8 @@ public class VerConflictosDialog extends JDialog {
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
 		getContentPane().add(getLblActividadesConflictos(), BorderLayout.NORTH);
-		getContentPane().add(getList(), BorderLayout.CENTER);
 		getContentPane().add(getPnButtons(), BorderLayout.SOUTH);
+		getContentPane().add(getScrollPane(), BorderLayout.CENTER);
 		contentPanel.setLayout(new FlowLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 	}
@@ -115,5 +117,12 @@ public class VerConflictosDialog extends JDialog {
 				lm.addElement(ap);
 			}
 		}
+	}
+	private JScrollPane getScrollPane() {
+		if (scrollPane == null) {
+			scrollPane = new JScrollPane();
+			scrollPane.setViewportView(getList());
+		}
+		return scrollPane;
 	}
 }
