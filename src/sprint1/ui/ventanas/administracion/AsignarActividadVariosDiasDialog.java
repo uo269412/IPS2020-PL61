@@ -387,8 +387,9 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 					}
 					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio, horaFin,
 							diaUltimaReserva, mesUltimaReserva, añoUltimaReserva);
-					getPrograma().añadirActividadPlanificada(actividadACrear);
 					checkConflictos(actividadACrear);
+					getPrograma().añadirActividadPlanificada(actividadACrear);
+					
 				}
 			}
 			if (diaIterable.getDayOfWeek().getValue() == 2) {
@@ -402,8 +403,9 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 					}
 					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio, horaFin,
 							diaUltimaReserva, mesUltimaReserva, añoUltimaReserva);
-					getPrograma().añadirActividadPlanificada(actividadACrear);
 					checkConflictos(actividadACrear);
+					getPrograma().añadirActividadPlanificada(actividadACrear);
+					
 				}
 			}
 			if (diaIterable.getDayOfWeek().getValue() == 3) {
@@ -417,8 +419,9 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 					}
 					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio, horaFin,
 							diaUltimaReserva, mesUltimaReserva, añoUltimaReserva);
-					getPrograma().añadirActividadPlanificada(actividadACrear);
 					checkConflictos(actividadACrear);
+					getPrograma().añadirActividadPlanificada(actividadACrear);
+					
 				}
 			}
 			if (diaIterable.getDayOfWeek().getValue() == 4) {
@@ -432,8 +435,9 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 					}
 					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio, horaFin,
 							diaUltimaReserva, mesUltimaReserva, añoUltimaReserva);
-					getPrograma().añadirActividadPlanificada(actividadACrear);
 					checkConflictos(actividadACrear);
+					getPrograma().añadirActividadPlanificada(actividadACrear);
+					
 				}
 			}
 			if (diaIterable.getDayOfWeek().getValue() == 5) {
@@ -447,8 +451,9 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 					}
 					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio, horaFin,
 							diaUltimaReserva, mesUltimaReserva, añoUltimaReserva);
-					getPrograma().añadirActividadPlanificada(actividadACrear);
 					checkConflictos(actividadACrear);
+					getPrograma().añadirActividadPlanificada(actividadACrear);
+					
 				}
 			}
 			if (diaIterable.getDayOfWeek().getValue() == 6) {
@@ -462,8 +467,9 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 					}
 					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio, horaFin,
 							diaUltimaReserva, mesUltimaReserva, añoUltimaReserva);
-					getPrograma().añadirActividadPlanificada(actividadACrear);
 					checkConflictos(actividadACrear);
+					getPrograma().añadirActividadPlanificada(actividadACrear);
+					
 				}
 			}
 			if (diaIterable.getDayOfWeek().getValue() == 7) {
@@ -477,8 +483,9 @@ public class AsignarActividadVariosDiasDialog extends JDialog {
 					}
 					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio, horaFin,
 							diaUltimaReserva, mesUltimaReserva, añoUltimaReserva);
-					getPrograma().añadirActividadPlanificada(actividadACrear);
 					checkConflictos(actividadACrear);
+					getPrograma().añadirActividadPlanificada(actividadACrear);
+					
 				}
 			}
 			

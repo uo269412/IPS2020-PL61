@@ -1654,7 +1654,7 @@ public class Programa {
 		
 		Connection con = DriverManager.getConnection(URL);
 		
-		PreparedStatement pst = con.prepareStatement("INSERT INTO CONFLICTOS VALUES ?,?");
+		PreparedStatement pst = con.prepareStatement("INSERT INTO CONFLICTOS VALUES (?,?)");
 		pst.setString(1, a1.getCodigoPlanificada());
 		pst.setString(2, a2.getCodigoPlanificada());
 		
@@ -1666,8 +1666,10 @@ public class Programa {
 	
 	public void cargarConflictos() throws SQLException {
 		Connection con = DriverManager.getConnection(URL);
-		PreparedStatement pst = con.prepareStatement("SELECT codigoActividadConflictiva FROM CONFLICTOS WHERE codigoActividadAfectada = ?");
+		
 		for(ActividadPlanificada a: actividadesPlanificadas) {
+			
+			PreparedStatement pst = con.prepareStatement("SELECT codigoActividadConflictiva FROM CONFLICTOS WHERE codigoActividadAfectada = ?");
 			
 			pst.setString(1, a.getCodigoPlanificada());
 			ResultSet rs = pst.executeQuery();
@@ -1684,6 +1686,8 @@ public class Programa {
 				a.añadirConflicto(c);
 			}
 			
+			rs.close();
+			pst.close();
 		}
 	}
 }

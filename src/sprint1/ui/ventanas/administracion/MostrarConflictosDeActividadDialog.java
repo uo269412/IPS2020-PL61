@@ -30,7 +30,7 @@ public class MostrarConflictosDeActividadDialog extends JDialog {
 	private JScrollPane scrollPane;
 	private JList<Conflicto> list;
 	private JPanel pnButtons;
-	private JButton btnNewButton;
+	private JButton btnImprimir;
 
 	private DefaultListModel<Conflicto> lm;
 	private ActividadPlanificada ap;
@@ -67,29 +67,29 @@ public class MostrarConflictosDeActividadDialog extends JDialog {
 	}
 	private JList<Conflicto> getList() {
 		if (list == null) {
-			list = new JList<>();
+			list = new JList<>(this.lm);
 		}
 		return list;
 	}
 	private JPanel getPnButtons() {
 		if (pnButtons == null) {
 			pnButtons = new JPanel();
-			pnButtons.add(getBtnNewButton());
+			pnButtons.add(getBtnImprimir());
 		}
 		return pnButtons;
 	}
-	private JButton getBtnNewButton() {
-		if (btnNewButton == null) {
-			btnNewButton = new JButton("New button");
-			btnNewButton.addActionListener(new ActionListener() {
+	private JButton getBtnImprimir() {
+		if (btnImprimir == null) {
+			btnImprimir = new JButton("Imprimir");
+			btnImprimir.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					imprimirConflictos();
 				}
 			});
-			btnNewButton.setBackground(new Color(65, 105, 225));
-			btnNewButton.setForeground(new Color(255, 255, 255));
+			btnImprimir.setBackground(new Color(65, 105, 225));
+			btnImprimir.setForeground(new Color(255, 255, 255));
 		}
-		return btnNewButton;
+		return btnImprimir;
 	}
 	
 	private void rellenarModelo() {

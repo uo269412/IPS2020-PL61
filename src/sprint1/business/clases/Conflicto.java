@@ -61,14 +61,14 @@ public class Conflicto {
 		StringBuilder sb = new StringBuilder();
 		sb.append("CONFLICTO: Actividad ");
 		sb.append(getNombreActividadAfectada());
-		sb.append("desarrollada el ");
+		sb.append(" desarrollada el ");
 		sb.append(a1.getDia()+"/"+a1.getMes()+"/"+a1.getAño());
 		sb.append(" de " +  a1.getHoraInicio() + " a " + a1.getHoraFin());
 		sb.append(" en la instalación " + a1.getCodigoInstalacion() + "\n");
-		sb.append("\t\tentra en conflicto con\n");
-		sb.append("\t\tActividad ");
+		sb.append("\t\t entra en conflicto con\n");
+		sb.append("\t\t Actividad ");
 		sb.append(getNombreActividadAfectada());
-		sb.append("desarrollada el ");
+		sb.append(" desarrollada el ");
 		sb.append(a2.getDia()+"/"+a2.getMes()+"/"+a2.getAño());
 		sb.append(" de " +  a2.getHoraInicio() + " a " + a2.getHoraFin());
 		sb.append(" en la instalación " + a2.getCodigoInstalacion() + "\n");
