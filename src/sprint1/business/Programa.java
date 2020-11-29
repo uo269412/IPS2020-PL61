@@ -117,6 +117,55 @@ public class Programa {
 
 	}
 	
+	public Set<Cliente> clientesAfectadosPorCierreDia(Instalacion i, int dia, int mes, int año) throws SQLException {
+		Set<Cliente> clientesAfectados = new HashSet<>();
+
+		Connection con = DriverManager.getConnection(URL);
+		PreparedStatement pst1 = con.prepareStatement("SELECT id_cliente FROM alquiler WHERE id_instalacion = ? AND dia=? AND mes=? AND año=?");
+		PreparedStatement pst2 = con.prepareStatement("SELECT id_cliente FROM reserva JOIN actividad_planificada ON reserva.codigo_actividad = actividad_planificada.codigoPlanificada "
+				+ "WHERE codigoInstalacion = ? AND dia=? AND mes=? AND año=?");
+		pst1.setString(1, i.getCodigo());
+		pst1.setInt(2, dia);
+		pst1.setInt(3, mes);
+		pst1.setInt(4, año);
+		pst1.setString(1, i.getCodigo());
+		pst2.setInt(1, dia);
+		pst2.setInt(2, mes);
+		pst2.setInt(3, año);
+		
+		ResultSet rs1 = pst1.executeQuery();
+		ResultSet rs2 = pst2.executeQuery();
+		
+		while(rs1.next()) {
+			for(Socio s: socios) {
+				if(s.getId_cliente().equals(rs1.getString(1))) {
+					clientesAfectados.add(s);
+				}
+			}
+			for (Tercero s : terceros) {
+				if (s.getId_cliente().equals(rs1.getString(1))) {
+					clientesAfectados.add(s);
+				}
+			}
+		}
+		
+		while(rs2.next()) {
+			for(Socio s: socios) {
+				if(s.getId_cliente().equals(rs1.getString(1))) {
+					clientesAfectados.add(s);
+				}
+			}
+		}
+		
+		rs2.close();
+		rs1.close();
+		pst2.close();
+		pst1.close();
+		con.close();
+		
+		return clientesAfectados;
+	}
+	
 	public List<Alquiler> getAlquileresQueHaHechoClienteEnInstalacion(Cliente c, Instalacion i) {
 		List<Alquiler> alquileresCliente = new LinkedList<>();
 
@@ -1631,6 +1680,45 @@ public class Programa {
 			}
 		}
 		return null;
+	}
+	
+	public boolean instalacionDisponibleDia(Instalacion i, int dia, int mes, int año) throws SQLException {
+		Connection con = DriverManager.getConnection(URL);
+		PreparedStatement pst = con.prepareStatement("SELECT COUNT(*) FROM cierre_dia WHERE codigo_instalacion = ? AND dia = ? AND mes = ? AND año = ?");
+		pst.setString(1, i.getCodigoInstalacion());
+		pst.setInt(2, dia);
+		pst.setInt(3, mes);
+		pst.setInt(4, año);
+		ResultSet rs = pst.executeQuery();
+		rs.next();
+		if(rs.getInt(1) > 0) {
+			rs.close();
+			pst.close();
+			con.close();
+			return false;
+		}
+		rs.close();
+		pst.close();
+		con.close();
+		return true;
+	}
+	
+	public boolean cierreInstalacionDia(Instalacion i, int dia, int mes, int año) throws SQLException {
+		if(i.getEstado() == Instalacion.CERRADA) {
+			return false;
+		} else if(!instalacionDisponibleDia(i, dia, mes, año)) {
+			return false;
+		} else {
+			Connection con = DriverManager.getConnection(URL);
+			PreparedStatement pst = con.prepareStatement("INSERT INTO cierre_dia(codigo_instalacion, dia, mes, año)"
+					+ " VALUES(?,?,?,?)");
+			pst.setString(1, i.getCodigoInstalacion());
+			pst.setInt(2, dia);
+			pst.setInt(3, mes);
+			pst.setInt(4, año);
+			pst.executeUpdate();
+			return true;
+		}
 	}
 
 // UTIL

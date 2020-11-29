@@ -140,6 +140,8 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 
 	private ButtonGroup instalacionesGroup = new ButtonGroup();
 	private ButtonGroup horasGroup = new ButtonGroup();
+	private JPanel pnBtnDisponibilidad;
+	private JButton btnVerDisponibilidad;
 
 	/**
 	 * Create the dialog.
@@ -161,6 +163,7 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 		contentPanel.setLayout(new GridLayout(0, 1, 0, 0));
 		contentPanel.add(getPnProgramarActividad());
 		contentPanel.add(getPnDias_1());
+		contentPanel.add(getPnBtnDisponibilidad());
 		getContentPane().add(getPnBotones(), BorderLayout.SOUTH);
 		cargarActividades();
 		cargarInstalaciones();
@@ -214,8 +217,16 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 					try {
 						try {
 							checkCampos();
-							crearActividades();
-							JOptionPane.showMessageDialog(getMe(), "Se han añadido las actividades correctamente");
+							List<String> errores= crearActividades();
+							StringBuilder sb = new StringBuilder();
+							for(String error: errores) {
+								sb.append(error);
+							}
+							
+							if(errores.size() == 0)
+								JOptionPane.showMessageDialog(getMe(), "Se han añadido las actividades correctamente");
+							else
+								JOptionPane.showMessageDialog(getMe(), sb.toString());
 							getParent().generarPaneles();
 							dispose();
 						} catch (NumberFormatException ex) {
@@ -347,7 +358,10 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 		return this;
 	}
 
-	private void crearActividades() throws SQLException {
+	private List<String> crearActividades() throws SQLException {
+		
+		List<String> errores = new ArrayList<>();
+		
 		int añoUltimaReserva = año;
 		int mesUltimaReserva = mes;
 		int diaUltimaReserva = dia;
@@ -387,8 +401,15 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 					}
 					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio, horaFin,
 							diaUltimaReserva, mesUltimaReserva, añoUltimaReserva);
-					checkConflictos(actividadACrear);
-					getPrograma().añadirActividadPlanificada(actividadACrear);
+					if(programa.instalacionDisponibleDia(programa.encontrarInstalacion(codigoInstalacion),
+							diaUltimaReserva, mesUltimaReserva, añoUltimaReserva)) {
+						checkConflictos(actividadACrear);
+						getPrograma().añadirActividadPlanificada(actividadACrear);
+					} else {
+						errores.add("La actividad " + programa.encontrarNombrePlanificada(actividadACrear)
+						+ " no se pudo planificar. La instalación " + programa.encontrarInstalacion(codigoInstalacion).getNombre()
+						+ " está cerrada el día " + diaUltimaReserva + "/" + mesUltimaReserva + "/" + añoUltimaReserva + "\n" + "\n");
+					}
 					
 				}
 			}
@@ -403,8 +424,15 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 					}
 					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio, horaFin,
 							diaUltimaReserva, mesUltimaReserva, añoUltimaReserva);
-					checkConflictos(actividadACrear);
-					getPrograma().añadirActividadPlanificada(actividadACrear);
+					if(programa.instalacionDisponibleDia(programa.encontrarInstalacion(codigoInstalacion),
+							diaUltimaReserva, mesUltimaReserva, añoUltimaReserva)) {
+						checkConflictos(actividadACrear);
+						getPrograma().añadirActividadPlanificada(actividadACrear);
+					} else {
+						errores.add("La actividad " + programa.encontrarNombrePlanificada(actividadACrear)
+						+ " no se pudo planificar. La instalación " + programa.encontrarInstalacion(codigoInstalacion).getNombre()
+						+ " está cerrada el día " + diaUltimaReserva + "/" + mesUltimaReserva + "/" + añoUltimaReserva + "\n" + "\n");
+					}
 					
 				}
 			}
@@ -419,8 +447,15 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 					}
 					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio, horaFin,
 							diaUltimaReserva, mesUltimaReserva, añoUltimaReserva);
-					checkConflictos(actividadACrear);
-					getPrograma().añadirActividadPlanificada(actividadACrear);
+					if(programa.instalacionDisponibleDia(programa.encontrarInstalacion(codigoInstalacion),
+							diaUltimaReserva, mesUltimaReserva, añoUltimaReserva)) {
+						checkConflictos(actividadACrear);
+						getPrograma().añadirActividadPlanificada(actividadACrear);
+					} else {
+						errores.add("La actividad " + programa.encontrarNombrePlanificada(actividadACrear)
+						+ " no se pudo planificar. La instalación " + programa.encontrarInstalacion(codigoInstalacion).getNombre()
+						+ " está cerrada el día " + diaUltimaReserva + "/" + mesUltimaReserva + "/" + añoUltimaReserva + "\n" + "\n");
+					}
 					
 				}
 			}
@@ -435,8 +470,15 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 					}
 					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio, horaFin,
 							diaUltimaReserva, mesUltimaReserva, añoUltimaReserva);
-					checkConflictos(actividadACrear);
-					getPrograma().añadirActividadPlanificada(actividadACrear);
+					if(programa.instalacionDisponibleDia(programa.encontrarInstalacion(codigoInstalacion),
+							diaUltimaReserva, mesUltimaReserva, añoUltimaReserva)) {
+						checkConflictos(actividadACrear);
+						getPrograma().añadirActividadPlanificada(actividadACrear);
+					} else {
+						errores.add("La actividad " + programa.encontrarNombrePlanificada(actividadACrear)
+						+ " no se pudo planificar. La instalación " + programa.encontrarInstalacion(codigoInstalacion).getNombre()
+						+ " está cerrada el día " + diaUltimaReserva + "/" + mesUltimaReserva + "/" + añoUltimaReserva + "\n" + "\n");
+					}
 					
 				}
 			}
@@ -451,8 +493,15 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 					}
 					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio, horaFin,
 							diaUltimaReserva, mesUltimaReserva, añoUltimaReserva);
-					checkConflictos(actividadACrear);
-					getPrograma().añadirActividadPlanificada(actividadACrear);
+					if(programa.instalacionDisponibleDia(programa.encontrarInstalacion(codigoInstalacion),
+							diaUltimaReserva, mesUltimaReserva, añoUltimaReserva)) {
+						checkConflictos(actividadACrear);
+						getPrograma().añadirActividadPlanificada(actividadACrear);
+					} else {
+						errores.add("La actividad " + programa.encontrarNombrePlanificada(actividadACrear)
+						+ " no se pudo planificar. La instalación " + programa.encontrarInstalacion(codigoInstalacion).getNombre()
+						+ " está cerrada el día " + diaUltimaReserva + "/" + mesUltimaReserva + "/" + añoUltimaReserva + "\n" + "\n");
+					}
 					
 				}
 			}
@@ -467,8 +516,15 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 					}
 					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio, horaFin,
 							diaUltimaReserva, mesUltimaReserva, añoUltimaReserva);
-					checkConflictos(actividadACrear);
-					getPrograma().añadirActividadPlanificada(actividadACrear);
+					if(programa.instalacionDisponibleDia(programa.encontrarInstalacion(codigoInstalacion),
+							diaUltimaReserva, mesUltimaReserva, añoUltimaReserva)) {
+						checkConflictos(actividadACrear);
+						getPrograma().añadirActividadPlanificada(actividadACrear);
+					} else {
+						errores.add("La actividad " + programa.encontrarNombrePlanificada(actividadACrear)
+						+ " no se pudo planificar. La instalación " + programa.encontrarInstalacion(codigoInstalacion).getNombre()
+						+ " está cerrada el día " + diaUltimaReserva + "/" + mesUltimaReserva + "/" + añoUltimaReserva + "\n" + "\n");
+					}
 					
 				}
 			}
@@ -483,8 +539,15 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 					}
 					actividadACrear = new ActividadPlanificada(codigoActividad, codigoInstalacion, horaInicio, horaFin,
 							diaUltimaReserva, mesUltimaReserva, añoUltimaReserva);
-					checkConflictos(actividadACrear);
-					getPrograma().añadirActividadPlanificada(actividadACrear);
+					if(programa.instalacionDisponibleDia(programa.encontrarInstalacion(codigoInstalacion),
+							diaUltimaReserva, mesUltimaReserva, añoUltimaReserva)) {
+						checkConflictos(actividadACrear);
+						getPrograma().añadirActividadPlanificada(actividadACrear);
+					} else {
+						errores.add("La actividad " + programa.encontrarNombrePlanificada(actividadACrear)
+						+ " no se pudo planificar. La instalación " + programa.encontrarInstalacion(codigoInstalacion).getNombre()
+						+ " está cerrada el día " + diaUltimaReserva + "/" + mesUltimaReserva + "/" + añoUltimaReserva + "\n" + "\n");
+					}
 					
 				}
 			}
@@ -515,6 +578,8 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 				}
 			}
 		}
+		
+		return errores;
 	}
 
 	private JPanel getPnInfo() {
@@ -1507,5 +1572,28 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 				JOptionPane.showMessageDialog(this, "Ha ocurrido un error creando los conflictos");
 			}
 		}
+	}
+	private JPanel getPnBtnDisponibilidad() {
+		if (pnBtnDisponibilidad == null) {
+			pnBtnDisponibilidad = new JPanel();
+			pnBtnDisponibilidad.add(getBtnVerDisponibilidad());
+		}
+		return pnBtnDisponibilidad;
+	}
+	private JButton getBtnVerDisponibilidad() {
+		if (btnVerDisponibilidad == null) {
+			btnVerDisponibilidad = new JButton("Ver disponibilidad de instalaciones");
+			btnVerDisponibilidad.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					CalendarioDisponibilidadInstalacion cdi = new CalendarioDisponibilidadInstalacion(getPrograma());
+					cdi.setModal(true);
+					cdi.setVisible(true);
+					cdi.setLocationRelativeTo(getMe());
+				}
+			});
+			btnVerDisponibilidad.setForeground(Color.WHITE);
+			btnVerDisponibilidad.setBackground(new Color(0, 153, 255));
+		}
+		return btnVerDisponibilidad;
 	}
 }

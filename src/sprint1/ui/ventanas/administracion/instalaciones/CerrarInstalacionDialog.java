@@ -185,8 +185,7 @@ public class CerrarInstalacionDialog extends JDialog {
 			
 			System.out.println(sb.toString());
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			JOptionPane.showMessageDialog(this, "Ha ocurrido accediendo a los clientes de la Base de Datos");
+			JOptionPane.showMessageDialog(this, "Ha ocurrido un error accediendo a los clientes de la Base de Datos");
 		}
 	}
 }

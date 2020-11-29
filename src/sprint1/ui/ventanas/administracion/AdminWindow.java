@@ -29,6 +29,7 @@ import sprint1.ui.ventanas.administracion.estado.VerConflictosDialog;
 import sprint1.ui.ventanas.administracion.estado.VerOcupacionDialog;
 import sprint1.ui.ventanas.administracion.instalaciones.AsignarRecursosAInstalaciónDialog;
 import sprint1.ui.ventanas.administracion.instalaciones.CerrarInstalacionDialog;
+import sprint1.ui.ventanas.administracion.instalaciones.CerrarPorDiasDialog;
 import sprint1.ui.ventanas.administracion.monitores.AsignarMonitorDialog;
 import sprint1.ui.ventanas.administracion.reservas.AdminReservaSocioDialog;
 import sprint1.ui.ventanas.administracion.util.CalendarioAdmin;
@@ -81,6 +82,7 @@ public class AdminWindow extends JDialog {
 	private JPanel pnAlquileres;
 	private JPanel pnInstalaciones;
 	private JButton btnModificarPlanificacion;
+	private JButton btnCerrarFlexibilidadDia;
 
 	/**
 	 * Create the dialog.
@@ -286,7 +288,7 @@ public class AdminWindow extends JDialog {
 	
 	private JButton getBtnCerrarInstalación() {
 		if (btnCerrarInstalación == null) {
-			btnCerrarInstalación = new JButton("Cerrar instalaci\u00F3n");
+			btnCerrarInstalación = new JButton("Cerrar instalaci\u00F3n indefinidamente");
 			btnCerrarInstalación.setForeground(new Color(255, 255, 255));
 			btnCerrarInstalación.setBackground(new Color(25, 25, 112));
 			btnCerrarInstalación.setMnemonic('l');
@@ -600,6 +602,7 @@ public class AdminWindow extends JDialog {
 			pnInstalaciones.setBorder(new TitledBorder(null, "Administrar instalaciones", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			pnInstalaciones.add(getBtnAsignarRecursos());
 			pnInstalaciones.add(getBtnCerrarInstalación());
+			pnInstalaciones.add(getBtnCerrarFlexibilidadDia());
 			pnInstalaciones.add(getBtnInspeccionarConflictos());
 			pnInstalaciones.add(getBtnVerOcupacion());
 			pnInstalaciones.add(getBtnVerOcupacionBotones());
@@ -621,5 +624,21 @@ public class AdminWindow extends JDialog {
 			btnModificarPlanificacion.setForeground(new Color(255, 255, 255));
 		}
 		return btnModificarPlanificacion;
+	}
+	private JButton getBtnCerrarFlexibilidadDia() {
+		if (btnCerrarFlexibilidadDia == null) {
+			btnCerrarFlexibilidadDia = new JButton("Cerrar instalaci\u00F3n d\u00EDas espec\u00EDficos");
+			btnCerrarFlexibilidadDia.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					CerrarPorDiasDialog cpd = new CerrarPorDiasDialog(parent.getPrograma());
+					cpd.setModal(true);
+					cpd.setVisible(true);
+					cpd.setLocationRelativeTo(AdminWindow.this);
+				}
+			});
+			btnCerrarFlexibilidadDia.setBackground(new Color(25, 25, 112));
+			btnCerrarFlexibilidadDia.setForeground(new Color(255, 255, 255));
+		}
+		return btnCerrarFlexibilidadDia;
 	}
 }

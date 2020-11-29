@@ -3,6 +3,7 @@ package sprint1.ui.ventanas.administracion.alquileres;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
@@ -27,6 +28,7 @@ import sprint1.business.dominio.centroDeportes.actividades.ActividadPlanificada;
 import sprint1.business.dominio.centroDeportes.alquileres.Alquiler;
 import sprint1.business.dominio.centroDeportes.instalaciones.Instalacion;
 import sprint1.business.dominio.clientes.Tercero;
+import sprint1.ui.ventanas.administracion.actividades.CalendarioDisponibilidadInstalacion;
 import sprint1.ui.ventanas.administracion.util.CalendarioTercero;
 import javax.swing.SwingConstants;
 import java.awt.Toolkit;
@@ -65,6 +67,7 @@ public class AdminAlquilaTerceroDialog extends JDialog {
 	private JButton btnReservar;
 	private JLabel lblHorario;
 	private ButtonGroup bg = new ButtonGroup();
+	private JButton btnVerDisponibilidad;
 	/**
 	 * Create the dialog.
 	 */
@@ -83,6 +86,7 @@ public class AdminAlquilaTerceroDialog extends JDialog {
 		contentPanel.setLayout(new GridLayout(0, 1, 0, 0));
 		contentPanel.add(getLblInstalacion());
 		contentPanel.add(getCmbInstalaciones());
+		contentPanel.add(getBtnVerDisponibilidad());
 		contentPanel.add(getLblFechaInicio());
 		contentPanel.add(getTxtFechaInicio());
 		contentPanel.add(getRadioButtonPane());
@@ -254,43 +258,79 @@ public class AdminAlquilaTerceroDialog extends JDialog {
 						}
 						
 						if(incremento == 0) {
-							if(!isOcupado(diaUltimaReserva, mesUltimaReserva, añoUltimaReserva))
-								createAlquiler(diaUltimaReserva, mesUltimaReserva, añoUltimaReserva);
-							else
-								JOptionPane.showMessageDialog(AdminAlquilaTerceroDialog.this, "La instalación donde estás intentando reservar está ocupada a esa hora, prueba otra hora o otro día");
+							try {
+								if(p.instalacionDisponibleDia((Instalacion)cmbInstalaciones.getSelectedItem(), diaUltimaReserva, mesUltimaReserva, añoUltimaReserva)) {
+									if(!isOcupado(diaUltimaReserva, mesUltimaReserva, añoUltimaReserva))
+										createAlquiler(diaUltimaReserva, mesUltimaReserva, añoUltimaReserva);
+									else
+										JOptionPane.showMessageDialog(AdminAlquilaTerceroDialog.this, "La instalación donde estás intentando reservar está ocupada a esa hora, prueba otra hora o otro día");
+								}
+							} catch (SQLException e) {
+								JOptionPane.showMessageDialog(AdminAlquilaTerceroDialog.this, "Ha ocurrido un problema en la BD comprobando la disponibilidad de la instalacion");
+							}
+							
 						} else {
 							while(LocalDate.of(añoUltimaReserva, mesUltimaReserva, diaUltimaReserva).isBefore(
 									LocalDate.of(añoFin, mesFin, diaFin))) {
 								
-								if(mesUltimaReserva%2 == 1 || mesUltimaReserva == 12) {
-									if(diaUltimaReserva > 31) {
-										mesUltimaReserva++;
-										diaUltimaReserva -= 31;
-										if(mesUltimaReserva > 12) {
-											mesUltimaReserva -= 12;
-											añoUltimaReserva++;
+								if(mesUltimaReserva <= 7) {
+									if (mesUltimaReserva % 2 == 1) {
+										if (diaUltimaReserva > 30) {
+											mesUltimaReserva++;
+											diaUltimaReserva -= 30;
+											if (mesUltimaReserva > 12) {
+												mesUltimaReserva -= 12;
+												añoUltimaReserva++;
+											}
+										}
+									} else {
+										if (diaUltimaReserva > 29) {
+											mesUltimaReserva++;
+											diaUltimaReserva -= 29;
+											if (mesUltimaReserva > 12) {
+												mesUltimaReserva -= 12;
+												añoUltimaReserva++;
+											}
 										}
 									}
 								} else {
-									if(diaUltimaReserva > 30) {
-										mesUltimaReserva++;
-										diaUltimaReserva -= 30;
-										if(mesUltimaReserva > 12) {
-											mesUltimaReserva -= 12;
-											añoUltimaReserva++;
+									if (mesUltimaReserva % 2 == 1 || mesUltimaReserva == 12) {
+										if (diaUltimaReserva > 29) {
+											mesUltimaReserva++;
+											diaUltimaReserva -= 29;
+											if (mesUltimaReserva > 12) {
+												mesUltimaReserva -= 12;
+												añoUltimaReserva++;
+											}
+										}
+									} else {
+										if (diaUltimaReserva > 30) {
+											mesUltimaReserva++;
+											diaUltimaReserva -= 30;
+											if (mesUltimaReserva > 12) {
+												mesUltimaReserva -= 12;
+												añoUltimaReserva++;
+											}
 										}
 									}
 								}
-								if(!isOcupado(diaUltimaReserva, mesUltimaReserva, añoUltimaReserva))
-									createAlquiler(diaUltimaReserva, mesUltimaReserva, añoUltimaReserva);
-								else {
-									String msg = "La instalación que estás intentando reservar está ocupada para el día " + diaUltimaReserva + "/" + mesUltimaReserva + "/" + añoUltimaReserva + " a las " + txtHoraInicio.getText() + "\n";
-									msg += "¿Quieres continuar planificando el resto de reservas?";
-									int respuesta = JOptionPane.showConfirmDialog(AdminAlquilaTerceroDialog.this, msg, "Problema con la reserva", JOptionPane.YES_NO_OPTION);
-									if(respuesta != JOptionPane.YES_OPTION) {
-										break;
+								try {
+									if(p.instalacionDisponibleDia((Instalacion)cmbInstalaciones.getSelectedItem(), diaUltimaReserva, mesUltimaReserva, añoUltimaReserva)) {
+										if(!isOcupado(diaUltimaReserva, mesUltimaReserva, añoUltimaReserva))
+											createAlquiler(diaUltimaReserva, mesUltimaReserva, añoUltimaReserva);
+										else {
+											String msg = "La instalación que estás intentando reservar está ocupada para el día " + diaUltimaReserva + "/" + mesUltimaReserva + "/" + añoUltimaReserva + " a las " + txtHoraInicio.getText() + "\n";
+											msg += "¿Quieres continuar planificando el resto de reservas?";
+											int respuesta = JOptionPane.showConfirmDialog(AdminAlquilaTerceroDialog.this, msg, "Problema con la reserva", JOptionPane.YES_NO_OPTION);
+											if(respuesta != JOptionPane.YES_OPTION) {
+												break;
+											}
+										}
 									}
+								} catch (SQLException e) {
+									JOptionPane.showMessageDialog(AdminAlquilaTerceroDialog.this, "Ha ocurrido un problema en la BD comprobando la disponibilidad de la instalacion");
 								}
+								
 								
 								diaUltimaReserva += incremento;
 							}
@@ -404,4 +444,20 @@ public class AdminAlquilaTerceroDialog extends JDialog {
 		return true;
 	}
 	
+	private JButton getBtnVerDisponibilidad() {
+		if (btnVerDisponibilidad == null) {
+			btnVerDisponibilidad = new JButton("Ver disponibilidad de instalaciones");
+			btnVerDisponibilidad.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					CalendarioDisponibilidadInstalacion cdi = new CalendarioDisponibilidadInstalacion(p);
+					cdi.setModal(true);
+					cdi.setVisible(true);
+					cdi.setLocationRelativeTo(AdminAlquilaTerceroDialog.this);
+				}
+			});
+			btnVerDisponibilidad.setBackground(new Color(30, 144, 255));
+			btnVerDisponibilidad.setForeground(new Color(255, 255, 255));
+		}
+		return btnVerDisponibilidad;
+	}
 }
