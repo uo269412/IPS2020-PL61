@@ -160,10 +160,10 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
-		contentPanel.setLayout(new GridLayout(0, 1, 0, 0));
-		contentPanel.add(getPnProgramarActividad());
-		contentPanel.add(getPnDias_1());
-		contentPanel.add(getPnBtnDisponibilidad());
+		contentPanel.setLayout(new BorderLayout(0, 0));
+		contentPanel.add(getPnProgramarActividad(), BorderLayout.NORTH);
+		contentPanel.add(getPnDias_1(), BorderLayout.CENTER);
+		contentPanel.add(getPnBtnDisponibilidad(), BorderLayout.SOUTH);
 		getContentPane().add(getPnBotones(), BorderLayout.SOUTH);
 		cargarActividades();
 		cargarInstalaciones();
@@ -176,17 +176,21 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 	}
 
 	private void cargarInstalaciones() {
-		for (Instalacion instalacion : getPrograma().getInstalaciones()) {
-			if (instalacion.getEstado() == Instalacion.DISPONIBLE) {
-				modeloInstalaciones.addElement(instalacion);
-				modeloInstalacionesLunes.addElement(instalacion);
-				modeloInstalacionesMartes.addElement(instalacion);
-				modeloInstalacionesMiercoles.addElement(instalacion);
-				modeloInstalacionesJueves.addElement(instalacion);
-				modeloInstalacionesViernes.addElement(instalacion);
-				modeloInstalacionesSabado.addElement(instalacion);
-				modeloInstalacionesDomingo.addElement(instalacion);
+		try {
+			for (Instalacion instalacion : getPrograma().instalacionesDisponiblesParaActividad((Actividad)cmbActividades.getSelectedItem())) {
+				if (instalacion.getEstado() == Instalacion.DISPONIBLE) {
+					modeloInstalaciones.addElement(instalacion);
+					modeloInstalacionesLunes.addElement(instalacion);
+					modeloInstalacionesMartes.addElement(instalacion);
+					modeloInstalacionesMiercoles.addElement(instalacion);
+					modeloInstalacionesJueves.addElement(instalacion);
+					modeloInstalacionesViernes.addElement(instalacion);
+					modeloInstalacionesSabado.addElement(instalacion);
+					modeloInstalacionesDomingo.addElement(instalacion);
+				}
 			}
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(this, "Ha ocurrido un error determinando las instalaciones disponibles para la actividad seleccion");
 		}
 	}
 

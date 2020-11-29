@@ -687,6 +687,26 @@ public class Programa {
 		return sociosSinPagar;
 	}
 	
+	public Set<Socio> sociosAfectadosPorModificacionActividad(ActividadPlanificada a) throws SQLException {
+		Set<Socio> sociosAfectados = new HashSet<>();
+		
+		Connection con = DriverManager.getConnection(URL);
+		PreparedStatement pst = con.prepareStatement("SELECT id_cliente FROM reserva WHERE codigo_actividad=?");
+		pst.setString(1, a.getCodigoPlanificada());
+		ResultSet rs = pst.executeQuery();
+		
+		while(rs.next()) {
+			String id = rs.getString(1);
+			for(Socio s: getSocios()) {
+				if(s.getId_cliente().equals(id)) {
+					sociosAfectados.add(s);
+				}
+			}
+		}
+		
+		return sociosAfectados;
+	}
+	
 	public List<Alquiler> alquileresNoPagadosSocio(Socio s) throws SQLException {
 		Connection con = DriverManager.getConnection(URL);
 		List<Alquiler> alquileresNoPagados = new ArrayList<>();
@@ -1580,28 +1600,30 @@ public class Programa {
 	public Instalacion obtenerInstalacionPorId(String id) throws SQLException {
 		Connection con = DriverManager.getConnection(URL);
 		PreparedStatement pst = con.prepareStatement(
-				"SELECT codigo_instalacion, nombre_instalacion, preciohora, estado FROM instalacion WHERE codigo_instalacion = ?");
+				"SELECT codigo_instalacion, nombre_instalacion, preciohora, estado, permite_alquileres FROM instalacion WHERE codigo_instalacion = ?");
 		pst.setString(1, id);
 		ResultSet rs = pst.executeQuery();
 		String codigo_instalacion = rs.getString(1);
 		String nombre = rs.getString(2);
 		double precio = rs.getDouble(3);
 		int estado = rs.getInt(4);
+		boolean permite_alquileres = rs.getInt(5) == 1? true : false;
 		rs.close();
 		pst.close();
 		con.close();
 
-		return new Instalacion(codigo_instalacion, nombre, precio, estado);
+		return new Instalacion(codigo_instalacion, nombre, precio, estado, permite_alquileres);
 	}
 
 	public void updateInstalacion(Instalacion i) throws SQLException {
 		Connection con = DriverManager.getConnection(URL);
 		PreparedStatement pst = con.prepareStatement(
-				"UPDATE INSTALACION SET nombre_instalacion=?, preciohora=?, estado=? WHERE codigo_instalacion = ?");
+				"UPDATE INSTALACION SET nombre_instalacion=?, preciohora=?, estado=?, permite_alquileres=? WHERE codigo_instalacion = ?");
 		pst.setString(1, i.getNombre());
 		pst.setDouble(2, i.getPrecioHora());
 		pst.setInt(3, i.getEstado());
-		pst.setString(4, i.getCodigo());
+		pst.setBoolean(4, i.permiteAlquileres());
+		pst.setString(5, i.getCodigo());
 		pst.executeUpdate();
 		pst.close();
 		con.close();
@@ -1637,6 +1659,18 @@ public class Programa {
 		}
 
 		return instalacionesDisponibles;
+	}
+	
+	public List<Instalacion> getInstalacionesDisponiblesParaAlquiler() {
+		List<Instalacion> instalacionesDisponiblesAlq = new LinkedList<>();
+		
+		for(Instalacion i: getInstalacionesDisponibles()) {
+			if(i.permiteAlquileres()) {
+				instalacionesDisponiblesAlq.add(i);
+			}
+		}
+		
+		return instalacionesDisponiblesAlq;
 	}
 
 	
@@ -1717,8 +1751,65 @@ public class Programa {
 			pst.setInt(3, mes);
 			pst.setInt(4, año);
 			pst.executeUpdate();
+			
+			pst.close();
+			con.close();
 			return true;
 		}
+	}
+
+//TODO
+//	public void deleteAsociadosConCierre() throws SQLException {
+//		Connection con = DriverManager.getConnection(URL);
+//		PreparedStatement pst = con.prepareStatement("SELECT * FROM cierre_dia");
+//		ResultSet rs = pst.executeQuery();
+//		while(rs.next()) {
+//			PreparedStatement pst2 = con.prepareStatement("DELETE FROM RESERVA WHERE ");
+//		}
+//	}
+	
+	public void vetarActividadEnInstalacion(Instalacion i, Actividad a) throws SQLException {
+		Connection con = DriverManager.getConnection(URL);
+		PreparedStatement pst = con.prepareStatement("INSERT INTO cierre_actividad(codigo_instalacion, codigo_actividad)"
+				+ " VALUES(?,?)");
+		pst.setString(1, i.getCodigoInstalacion());
+		pst.setString(2, a.getCodigo());
+		pst.executeUpdate();
+		
+		pst.close();
+		con.close();
+	}
+	
+	public boolean isActividadVetadaEnInstalacion(Instalacion i, Actividad a) throws SQLException {
+		Connection con = DriverManager.getConnection(URL);
+		PreparedStatement pst = con.prepareStatement("SELECT COUNT(*) FROM cierre_actividad WHERE codigo_instalacion=? AND codigo_actividad=?");
+		pst.setString(1, i.getCodigo());
+		pst.setString(2, a.getCodigo());
+		ResultSet rs = pst.executeQuery();
+		rs.next();
+		if(rs.getInt(1) < 1) {
+			rs.close();
+			pst.close();
+			con.close();
+			return false;
+		}
+		rs.close();
+		pst.close();
+		con.close();
+		return true;
+	}
+	
+	public Set<Instalacion> instalacionesDisponiblesParaActividad(Actividad a) throws SQLException {
+		
+		Set<Instalacion> instalacionesDisponibles = new HashSet<>();
+		
+		for(Instalacion i: getInstalacionesDisponibles()) {
+			if(!isActividadVetadaEnInstalacion(i, a)) {
+				instalacionesDisponibles.add(i);
+			}
+		}
+		
+		return instalacionesDisponibles;
 	}
 
 // UTIL

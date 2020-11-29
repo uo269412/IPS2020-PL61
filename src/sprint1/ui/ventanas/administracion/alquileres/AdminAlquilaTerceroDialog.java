@@ -105,7 +105,7 @@ public class AdminAlquilaTerceroDialog extends JDialog {
 	private JComboBox<Instalacion> getCmbInstalaciones() {
 		if (cmbInstalaciones == null) {
 			cmbInstalaciones = new JComboBox<Instalacion>();
-			cmbInstalaciones.setModel(new DefaultComboBoxModel<Instalacion>(p.getInstalacionesDisponibles().toArray(new Instalacion[p.getInstalacionesDisponibles().size()])));
+			cmbInstalaciones.setModel(new DefaultComboBoxModel<Instalacion>(p.getInstalacionesDisponiblesParaAlquiler().toArray(new Instalacion[p.getInstalacionesDisponiblesParaAlquiler().size()])));
 		}
 		return cmbInstalaciones;
 	}

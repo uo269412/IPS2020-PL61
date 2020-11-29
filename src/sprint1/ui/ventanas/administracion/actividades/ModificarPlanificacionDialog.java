@@ -3,7 +3,12 @@ package sprint1.ui.ventanas.administracion.actividades;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -20,10 +25,8 @@ import sprint1.business.dominio.centroDeportes.actividades.Actividad;
 import sprint1.business.dominio.centroDeportes.actividades.ActividadPlanificada;
 import sprint1.business.dominio.centroDeportes.instalaciones.Instalacion;
 import sprint1.business.dominio.centroDeportes.instalaciones.Recurso;
+import sprint1.business.dominio.clientes.Socio;
 import sprint1.ui.ventanas.administracion.util.CalendarioSemanalModificar;
-
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 
 public class ModificarPlanificacionDialog extends JDialog {
 
@@ -173,7 +176,9 @@ public class ModificarPlanificacionDialog extends JDialog {
 						a.setHoraInicio(Integer.parseInt(txtHoraInicio.getText()));
 						a.setHoraFin(Integer.parseInt(txtHoraFin.getText()));
 						try {
+							
 							p.updateActividadPlanificada(a);
+							printSociosAfectados();
 							dispose();
 							getThisParent().generarPaneles();
 						} catch (SQLException e) {
@@ -181,6 +186,8 @@ public class ModificarPlanificacionDialog extends JDialog {
 									"Ha ocurrido un error actualizando la planificación de la actividad");
 						}
 					}
+					
+					
 				}
 			});
 			btnModificar.setBackground(new Color(60, 179, 113));
@@ -304,6 +311,18 @@ public class ModificarPlanificacionDialog extends JDialog {
 		txt.setForeground(Color.WHITE);
 	}
 	
+	private void printSociosAfectados()  {
+		StringBuilder sb = new StringBuilder();
+		sb.append("--------SOCIOS AFECTADOS POR MODIFICACIÓN------");
+		try {
+			for(Socio s: p.sociosAfectadosPorModificacionActividad(a)) {
+				sb.append("\tSocio: " + s.getNombre() + " " + s.getApellido() + ", con id " + s.getId_cliente() + "\n");
+			}
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(this, "Ha ocurrido un problema tratando de recuperar los socios afectados por la modificación");
+		}
+	}
+	
 	private void rellenarInstalacion() {
 		Actividad act = p.encontrarActividad(a.getCodigoActividad());
 		if(act.requiresRecursos()) {
@@ -333,7 +352,19 @@ public class ModificarPlanificacionDialog extends JDialog {
 				btnModificar.setEnabled(false);
 			}
 		} else {
-			cbInstalacion.setModel(new DefaultComboBoxModel<Instalacion>(p.getInstalacionesDisponibles().toArray(new Instalacion[p.getInstalacionesDisponibles().size()])));
+			try {
+
+				Set<Instalacion> set = p.instalacionesDisponiblesParaActividad(p.encontrarActividad(a.getCodigoActividad()));
+				List<Instalacion> lista = new LinkedList<>();
+				for(Instalacion i: set) {
+					lista.add(i);
+				}
+				cbInstalacion.setModel(new DefaultComboBoxModel<Instalacion>(lista.toArray(new Instalacion[lista.size()])));
+			} catch (SQLException e) {
+				JOptionPane.showMessageDialog(this, "Ha ocurrido un error encontrando las instalaciones disponibles para la actividad");
+				dispose();
+			}
+			
 		}
 	}
 }

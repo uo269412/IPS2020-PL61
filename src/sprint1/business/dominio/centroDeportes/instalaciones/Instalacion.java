@@ -7,6 +7,7 @@ public class Instalacion implements Comparable<Instalacion> {
 	private String nombre;
 	private double precioHora;
 	private int estado;
+	private boolean permite_alquiler;
 	
 	public static final int DISPONIBLE = 1;
 	public static final int CERRADA = 0;
@@ -21,6 +22,12 @@ public class Instalacion implements Comparable<Instalacion> {
 		this.nombre = nombre;
 		this.precioHora = precioHora;
 		this.estado = estado;
+		this.permite_alquiler = true;
+	}
+	
+	public Instalacion(String codigo_instalacion, String nombre, double precioHora, int estado, boolean permite_alquileres) {
+		this(codigo_instalacion, nombre, precioHora, estado);
+		this.permite_alquiler = permite_alquileres;
 	}
 
 	public Instalacion(String nombre, double precioHora, int estado) {
@@ -41,6 +48,14 @@ public class Instalacion implements Comparable<Instalacion> {
 
 	public String getCodigoInstalacion() {
 		return codigo_instalacion;
+	}
+	
+	public boolean permiteAlquileres() {
+		return this.permite_alquiler;
+	}
+	
+	public void setPermisionAlquileres(boolean nuevaCondicion) {
+		this.permite_alquiler = nuevaCondicion;
 	}
 
 	
@@ -69,6 +84,13 @@ public class Instalacion implements Comparable<Instalacion> {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Instalacion [codigo_instalacion=" + codigo_instalacion + ", nombre=" + nombre + ", precioHora="
 				+ precioHora);
+		
+		if(permiteAlquileres()) {
+			sb.append(", permite alquileres");
+		} else {
+			sb.append(", no permite alquileres");
+		}
+		
 		if(estado == DISPONIBLE) {
 			sb.append(", estado=DISPONIBLE]");
 		} else {
