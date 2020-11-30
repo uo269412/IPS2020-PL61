@@ -28,6 +28,7 @@ import sprint1.ui.ventanas.administracion.estado.ListaSociosConImpagos;
 import sprint1.ui.ventanas.administracion.estado.VerConflictosDialog;
 import sprint1.ui.ventanas.administracion.estado.VerOcupacionDialog;
 import sprint1.ui.ventanas.administracion.instalaciones.AsignarRecursosAInstalaciónDialog;
+import sprint1.ui.ventanas.administracion.instalaciones.CerrarEspecificando;
 import sprint1.ui.ventanas.administracion.instalaciones.CerrarInstalacionDialog;
 import sprint1.ui.ventanas.administracion.instalaciones.CerrarPorDiasDialog;
 import sprint1.ui.ventanas.administracion.monitores.AsignarMonitorDialog;
@@ -83,6 +84,7 @@ public class AdminWindow extends JDialog {
 	private JPanel pnInstalaciones;
 	private JButton btnModificarPlanificacion;
 	private JButton btnCerrarFlexibilidadDia;
+	private JButton btnCerrarEspecifico;
 
 	/**
 	 * Create the dialog.
@@ -603,6 +605,7 @@ public class AdminWindow extends JDialog {
 			pnInstalaciones.add(getBtnAsignarRecursos());
 			pnInstalaciones.add(getBtnCerrarInstalación());
 			pnInstalaciones.add(getBtnCerrarFlexibilidadDia());
+			pnInstalaciones.add(getBtnCerrarEspecifico());
 			pnInstalaciones.add(getBtnInspeccionarConflictos());
 			pnInstalaciones.add(getBtnVerOcupacion());
 			pnInstalaciones.add(getBtnVerOcupacionBotones());
@@ -640,5 +643,21 @@ public class AdminWindow extends JDialog {
 			btnCerrarFlexibilidadDia.setForeground(new Color(255, 255, 255));
 		}
 		return btnCerrarFlexibilidadDia;
+	}
+	private JButton getBtnCerrarEspecifico() {
+		if (btnCerrarEspecifico == null) {
+			btnCerrarEspecifico = new JButton("Cerrar instalaci\u00F3n para actividades o alquileres");
+			btnCerrarEspecifico.setBackground(new Color(25, 25, 112));
+			btnCerrarEspecifico.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					CerrarEspecificando ce = new CerrarEspecificando(parent.getPrograma());
+					ce.setLocationRelativeTo(getMe());
+					ce.setModal(true);
+					ce.setVisible(true);
+				}
+			});
+			btnCerrarEspecifico.setForeground(Color.WHITE);
+		}
+		return btnCerrarEspecifico;
 	}
 }

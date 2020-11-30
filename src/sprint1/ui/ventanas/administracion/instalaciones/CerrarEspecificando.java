@@ -7,6 +7,8 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -99,12 +101,37 @@ public class CerrarEspecificando extends JDialog {
 		}
 		return pnInstalacionACerrar;
 	}
+	
+	private void rellenarModeloParaInstalacion() {
+		Instalacion i = (Instalacion)cbInstalacion.getSelectedItem();
+		
+		try {
+			
+			List<Actividad> actividadesCombo = new LinkedList<>();
+			
+			for(Actividad a: p.getActividadesDisponiblesParaInstalacion(i))
+				actividadesCombo.add(a);
+			
+			cbActividades.setModel(new DefaultComboBoxModel<Actividad>(
+					actividadesCombo.toArray(new Actividad[actividadesCombo.size()])));
+			
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(this, "Ha ocurrido un error buscando las actividades disponibles para la instalacion seleccionada");
+		}
+	}
 
 	private JComboBox<Instalacion> getCbInstalacion() {
 		if (cbInstalacion == null) {
 			cbInstalacion = new JComboBox<>();
+			
 			cbInstalacion.setModel(new DefaultComboBoxModel<Instalacion>(
 					p.getInstalacionesDisponibles().toArray(new Instalacion[p.getInstalacionesDisponibles().size()])));
+		
+			cbInstalacion.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					rellenarModeloParaInstalacion();
+				}
+			});
 		}
 		return cbInstalacion;
 	}
@@ -166,6 +193,7 @@ public class CerrarEspecificando extends JDialog {
 			pnComboActividades = new JPanel();
 			pnComboActividades.setLayout(new GridLayout(0, 1, 0, 0));
 			pnComboActividades.add(getCbActividades());
+			rellenarModeloParaInstalacion();
 			pnComboActividades.add(getBtnAñadir());
 		}
 		return pnComboActividades;
@@ -174,8 +202,6 @@ public class CerrarEspecificando extends JDialog {
 	private JComboBox<Actividad> getCbActividades() {
 		if (cbActividades == null) {
 			cbActividades = new JComboBox<>();
-			cbActividades.setModel(new DefaultComboBoxModel<Actividad>(
-					p.getActividades().toArray(new Actividad[p.getActividades().size()])));
 		}
 		return cbActividades;
 	}
