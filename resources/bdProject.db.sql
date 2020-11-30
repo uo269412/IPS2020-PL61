@@ -1,4 +1,47 @@
 BEGIN TRANSACTION;
+DROP TABLE IF EXISTS "CLIENTE";
+CREATE TABLE IF NOT EXISTS "CLIENTE" (
+	"id_cliente"	varchar(26),
+	PRIMARY KEY("id_cliente")
+);
+DROP TABLE IF EXISTS "SOCIO";
+CREATE TABLE IF NOT EXISTS "SOCIO" (
+	"id_cliente"	varchar(26),
+	"nombre"	varchar(26),
+	"apellidos"	varchar(26),
+	FOREIGN KEY("id_cliente") REFERENCES "CLIENTE"("id_cliente"),
+	PRIMARY KEY("id_cliente")
+);
+DROP TABLE IF EXISTS "INSTALACION";
+CREATE TABLE IF NOT EXISTS "INSTALACION" (
+	"codigo_instalacion"	varchar(26),
+	"nombre_instalacion"	varchar(26),
+	"preciohora"	REAL,
+	"estado"	BIT,
+	"permite_alquiler"	BIT,
+	PRIMARY KEY("codigo_instalacion")
+);
+DROP TABLE IF EXISTS "ALQUILER";
+CREATE TABLE IF NOT EXISTS "ALQUILER" (
+	"id_alquiler"	varchar(26),
+	"id_instalacion"	varchar(26),
+	"id_cliente"	varchar(26),
+	"dia"	INTEGER,
+	"mes"	INTEGER,
+	"año"	INTEGER,
+	"horaInicio"	INTEGER,
+	"horaFin"	INTEGER,
+	FOREIGN KEY("id_cliente") REFERENCES "CLIENTE"("id_cliente"),
+	FOREIGN KEY("id_instalacion") REFERENCES "INSTALACION"("codigo_instalacion"),
+	PRIMARY KEY("id_alquiler")
+);
+DROP TABLE IF EXISTS "TERCEROS";
+CREATE TABLE IF NOT EXISTS "TERCEROS" (
+	"id_cliente"	varchar(26),
+	"nombre"	varchar(50) NOT NULL,
+	FOREIGN KEY("id_cliente") REFERENCES "CLIENTE"("id_cliente"),
+	PRIMARY KEY("id_cliente")
+);
 DROP TABLE IF EXISTS "MONITOR";
 CREATE TABLE IF NOT EXISTS "MONITOR" (
 	"codigoMonitor"	varchar(26),
@@ -38,68 +81,110 @@ CREATE TABLE IF NOT EXISTS "ACTIVIDAD_PLANIFICADA" (
 	FOREIGN KEY("codigoMonitor") REFERENCES "MONITOR"("codigoMonitor"),
 	PRIMARY KEY("codigoPlanificada")
 );
-DROP TABLE IF EXISTS "RECURSOS";
-CREATE TABLE IF NOT EXISTS "RECURSOS" (
-	"codigo_recurso"	varchar(26),
-	"nombre_recurso"	varchar(26),
-	"codigo_instalacion"	varchar(26) NOT NULL,
-	"codigo_actividad"	varchar(26),
-	FOREIGN KEY("codigo_instalacion") REFERENCES "INSTALACION"("codigo_instalacion"),
-	PRIMARY KEY("codigo_recurso")
-);
-DROP TABLE IF EXISTS "CLIENTE";
-CREATE TABLE IF NOT EXISTS "CLIENTE" (
-	"id_cliente"	varchar(26),
-	PRIMARY KEY("id_cliente")
-);
-DROP TABLE IF EXISTS "SOCIO";
-CREATE TABLE IF NOT EXISTS "SOCIO" (
-	"id_cliente"	varchar(26),
-	"nombre"	varchar(26),
-	"apellidos"	varchar(26),
-	FOREIGN KEY("id_cliente") REFERENCES "CLIENTE"("id_cliente"),
-	PRIMARY KEY("id_cliente")
-);
-DROP TABLE IF EXISTS "INSTALACION";
-CREATE TABLE IF NOT EXISTS "INSTALACION" (
-	"codigo_instalacion"	varchar(26),
-	"nombre_instalacion"	varchar(26),
-	"preciohora"	REAL,
-	PRIMARY KEY("codigo_instalacion")
-);
-DROP TABLE IF EXISTS "ALQUILER";
-CREATE TABLE IF NOT EXISTS "ALQUILER" (
-	"id_alquiler"	varchar(26),
-	"id_instalacion"	varchar(26),
-	"id_cliente"	varchar(26),
-	"dia"	INTEGER,
-	"mes"	INTEGER,
-	"año"	INTEGER,
-	"horaInicio"	INTEGER,
-	"horaFin"	INTEGER,
-	"estado"	varchar(26),
-	FOREIGN KEY("id_instalacion") REFERENCES "INSTALACION"("codigo_instalacion"),
-	FOREIGN KEY("id_cliente") REFERENCES "CLIENTE"("id_cliente"),
-	PRIMARY KEY("id_alquiler")
-);
 DROP TABLE IF EXISTS "REGISTRO";
 CREATE TABLE IF NOT EXISTS "REGISTRO" (
 	"id_registro"	varchar(26),
 	"id_alquiler"	varchar(26),
 	"hora_entrada"	INTEGER,
 	"hora_salida"	INTEGER,
-	"alquilerPagado"	BIT NOT NULL,
+	"alquilerPagado"	BIT,
 	"socioPresentado"	BIT NOT NULL,
 	FOREIGN KEY("id_alquiler") REFERENCES "ALQUILER"("id_alquiler"),
 	PRIMARY KEY("id_registro")
 );
-DROP TABLE IF EXISTS "TERCEROS";
-CREATE TABLE IF NOT EXISTS "TERCEROS" (
-	"id_cliente"	varchar(26),
-	"nombre"	varchar(50) NOT NULL,
-	FOREIGN KEY("id_cliente") REFERENCES "CLIENTE"("id_cliente"),
-	PRIMARY KEY("id_cliente")
+DROP TABLE IF EXISTS "RECURSOS";
+CREATE TABLE IF NOT EXISTS "RECURSOS" (
+	"codigo_recurso"	varchar(26),
+	"nombre_recurso"	varchar(26),
+	"codigo_instalacion"	varchar(26) NOT NULL,
+	"codigo_actividad"	varchar(26),
+	"unidades"	INTEGER,
+	FOREIGN KEY("codigo_instalacion") REFERENCES "INSTALACION"("codigo_instalacion"),
+	PRIMARY KEY("codigo_recurso")
 );
+DROP TABLE IF EXISTS "CONFLICTOS";
+CREATE TABLE IF NOT EXISTS "CONFLICTOS" (
+	"codigoActividadAfectada"	varchar(26),
+	"codigoActividadConflictiva"	varchar(26),
+	FOREIGN KEY("codigoActividadAfectada") REFERENCES "ACTIVIDAD_PLANIFICADA"("codigoPlanificada"),
+	FOREIGN KEY("codigoActividadConflictiva") REFERENCES "ACTIVIDAD_PLANIFICADA"("codigoPlanificada"),
+	PRIMARY KEY("codigoActividadAfectada","codigoActividadConflictiva")
+);
+DROP TABLE IF EXISTS "CIERRE_DIA";
+CREATE TABLE IF NOT EXISTS "CIERRE_DIA" (
+	"codigo_instalacion"	varchar(26),
+	"dia"	INTEGER,
+	"mes"	INTEGER,
+	"año"	INTEGER,
+	FOREIGN KEY("codigo_instalacion") REFERENCES "INSTALACION"("codigo_instalacion"),
+	PRIMARY KEY("codigo_instalacion","dia","mes","año")
+);
+DROP TABLE IF EXISTS "CIERRE_ACTIVIDAD";
+CREATE TABLE IF NOT EXISTS "CIERRE_ACTIVIDAD" (
+	"codigo_instalacion"	varchar(26),
+	"codigo_actividad"	varchar(26),
+	FOREIGN KEY("codigo_instalacion") REFERENCES "INSTALACION"("codigo_instalacion"),
+	FOREIGN KEY("codigo_actividad") REFERENCES "ACTIVIDAD"("codigo"),
+	PRIMARY KEY("codigo_instalacion","codigo_actividad")
+);
+INSERT INTO "CLIENTE" VALUES ('C-Pedro_López');
+INSERT INTO "CLIENTE" VALUES ('usuario');
+INSERT INTO "CLIENTE" VALUES ('C-Club_BCSTO');
+INSERT INTO "CLIENTE" VALUES ('C-Laura_Flórez');
+INSERT INTO "CLIENTE" VALUES ('C-Diego_Ríos');
+INSERT INTO "CLIENTE" VALUES ('C-Club_PAD');
+INSERT INTO "CLIENTE" VALUES ('C-Juan_Cuesta');
+INSERT INTO "CLIENTE" VALUES ('C-Emilio_Delgado');
+INSERT INTO "CLIENTE" VALUES ('C-Mauricio_Hidalgo');
+INSERT INTO "CLIENTE" VALUES ('C-Vicenta_Benito');
+INSERT INTO "CLIENTE" VALUES ('C-Mariano_Delgado');
+INSERT INTO "CLIENTE" VALUES ('C-Isabel_Hierba');
+INSERT INTO "CLIENTE" VALUES ('C-Valentin_Can');
+INSERT INTO "CLIENTE" VALUES ('C-Delito_Navarro');
+INSERT INTO "CLIENTE" VALUES ('C-Club_SALTO');
+INSERT INTO "CLIENTE" VALUES ('C-Club_TENMES');
+INSERT INTO "CLIENTE" VALUES ('C-Club_FUT');
+INSERT INTO "CLIENTE" VALUES ('C-Club_BLMANO');
+INSERT INTO "SOCIO" VALUES ('C-Pedro_López','Pedro','López');
+INSERT INTO "SOCIO" VALUES ('usuario','usuario','Prueba');
+INSERT INTO "SOCIO" VALUES ('C-Laura_Flórez','Laura','Flórez');
+INSERT INTO "SOCIO" VALUES ('C-Diego_Ríos','Diego','Ríos');
+INSERT INTO "SOCIO" VALUES ('C-Delito_Navarro','Delito','Navarro');
+INSERT INTO "SOCIO" VALUES ('C-Emilio_Delgado','Emilio','Delgado');
+INSERT INTO "SOCIO" VALUES ('C-Isabel_Hierba','Isabel','Hierba');
+INSERT INTO "SOCIO" VALUES ('C-Juan_Cuesta','Juan','Cuesta');
+INSERT INTO "SOCIO" VALUES ('C-Mariano_Delgado','Mariano','Delgado');
+INSERT INTO "SOCIO" VALUES ('C-Mauricio_Hidalgo','Mauricio','Hidalgo');
+INSERT INTO "SOCIO" VALUES ('C-Valentin_Can','Valentín','Can');
+INSERT INTO "SOCIO" VALUES ('C-Vicenta_Benito','Vicenta','Benito');
+INSERT INTO "INSTALACION" VALUES ('canchaTen','Cancha de tenis',20.5,1);
+INSERT INTO "INSTALACION" VALUES ('canchaBal','Cancha de baloncesto',10.0,1);
+INSERT INTO "INSTALACION" VALUES ('piscina','Piscina',35.5,1);
+INSERT INTO "INSTALACION" VALUES ('salaYog','Sala de yoga',8.0,0);
+INSERT INTO "INSTALACION" VALUES ('canchaPad','Cancha de padel',40.5,1);
+INSERT INTO "INSTALACION" VALUES ('salaZum','Sala de zumba',5.5,1);
+INSERT INTO "INSTALACION" VALUES ('canchaFutSal','Cancha de fútbol sala',50.0,1);
+INSERT INTO "INSTALACION" VALUES ('fosoSalto','Foso de salto de longitud',10.0,0);
+INSERT INTO "ALQUILER" VALUES ('2ddd3628-77d0-4b46-8fee-f75f85b6b41a','canchaPad','C-Juan_Cuesta',11,11,2020,12,14);
+INSERT INTO "ALQUILER" VALUES ('f68ced44-715b-4f95-8af7-2ba3673a40f0','canchaPad','C-Delito_Navarro',10,11,2020,18,20);
+INSERT INTO "ALQUILER" VALUES ('c2cc7903-fb2a-4af3-9b84-376771f055c3','salaZum','C-Vicenta_Benito',11,11,2020,12,14);
+INSERT INTO "ALQUILER" VALUES ('91f49dfd-da4a-47b0-ac2c-c261d585d293','salaZum','C-Mariano_Delgado',11,11,2020,14,16);
+INSERT INTO "ALQUILER" VALUES ('b7404c4e-70b4-4d5f-8665-814c2b1bcf29','canchaFutSal','C-Pedro_López',11,11,2020,9,11);
+INSERT INTO "ALQUILER" VALUES ('0a8fafdd-6996-4baa-b21f-7cd927ba108a','piscina','C-Laura_Flórez',9,11,2020,10,11);
+INSERT INTO "ALQUILER" VALUES ('d3b69d6f-818c-4be5-9cf7-f40cb3abd7fb','piscina','C-Laura_Flórez',8,11,2020,12,14);
+INSERT INTO "ALQUILER" VALUES ('1dcf0465-b935-4eaa-bf06-d8cf5c83eade','piscina','C-Laura_Flórez',14,11,2020,16,18);
+INSERT INTO "ALQUILER" VALUES ('a08050d1-aec8-4edf-81ff-baedb4a657c3','piscina','C-Valentin_Can',11,11,2020,11,13);
+INSERT INTO "ALQUILER" VALUES ('d3a5aa7e-a83b-4de5-969c-85f9e3cadad6','canchaPad','C-Isabel_Hierba',30,11,2020,21,22);
+INSERT INTO "ALQUILER" VALUES ('b85ecdb3-4da2-44e8-9bf6-b34900fe0b4f','canchaPad','6f3e02c6-ec2c-44bf-90e0-e9d0a8103f37',30,11,2020,9,10);
+INSERT INTO "TERCEROS" VALUES ('C-Club_BCSTO','Club de baloncesto');
+INSERT INTO "TERCEROS" VALUES ('C-Club_PAD','Club de padel');
+INSERT INTO "TERCEROS" VALUES ('C-Club_BLMANO','Club de balonmano');
+INSERT INTO "TERCEROS" VALUES ('C-Club_FUT','Club de fútbol sala');
+INSERT INTO "TERCEROS" VALUES ('C-Club_SALTO','Club de salto de longitud');
+INSERT INTO "TERCEROS" VALUES ('C-Club_TENMES','Club de tenis de mesa');
+INSERT INTO "TERCEROS" VALUES ('945eace0-e052-4e52-af72-fbf64049e50f','Equipo de Futbol Sala');
+INSERT INTO "TERCEROS" VALUES ('53c7c3fb-cf25-417c-950d-f9e2c6e7f425','Club de Baloncesto 2');
+INSERT INTO "TERCEROS" VALUES ('6f3e02c6-ec2c-44bf-90e0-e9d0a8103f37','Club de Padel');
 INSERT INTO "MONITOR" VALUES ('MonJuan','Juan','Ramírez');
 INSERT INTO "MONITOR" VALUES ('MonPepe','Pepe','Martínez');
 INSERT INTO "MONITOR" VALUES ('MonRoberto','Roberto','Pérez');
@@ -110,7 +195,7 @@ INSERT INTO "ACTIVIDAD" VALUES ('Zumba_1','Zumba',1);
 INSERT INTO "ACTIVIDAD" VALUES ('Tenis_1','Tenis',1);
 INSERT INTO "ACTIVIDAD" VALUES ('Tenis_2','Tenis',2);
 INSERT INTO "ACTIVIDAD" VALUES ('Actividad_Prueba','Actividad Prueba',1);
-INSERT INTO "ACTIVIDAD" VALUES ('Zumba_2','Zumba',1);
+INSERT INTO "ACTIVIDAD" VALUES ('Zumba_2','Zumba',2);
 INSERT INTO "ACTIVIDAD" VALUES ('Zumba_0','Zumba',0);
 INSERT INTO "ACTIVIDAD" VALUES ('Baloncesto_1','Baloncesto',1);
 INSERT INTO "ACTIVIDAD" VALUES ('Baloncesto_2','Baloncesto',2);
@@ -120,37 +205,32 @@ INSERT INTO "ACTIVIDAD" VALUES ('Natacion_0','Natacion',0);
 INSERT INTO "ACTIVIDAD" VALUES ('Yoga_1','Yoga',1);
 INSERT INTO "ACTIVIDAD" VALUES ('Padel_2','Padel',2);
 INSERT INTO "ACTIVIDAD" VALUES ('Padel_0','Padel',0);
-INSERT INTO "ACTIVIDAD" VALUES ('193abe97-1477-478b-bcb5-a150a2b9890a','Tenis con los pies',1);
-INSERT INTO "ACTIVIDAD_PLANIFICADA" VALUES ('Yoga_1',8,10,2020,15,15,17,NULL,'550c1532-6bd9-4987-9583-48fd65154f97','canchaBal');
-INSERT INTO "ACTIVIDAD_PLANIFICADA" VALUES ('Actividad_Prueba',8,10,2020,25,11,12,NULL,'0bd38b31-309b-466c-b07c-0b7cf356565f','canchaBal');
-INSERT INTO "CLIENTE" VALUES ('C-Pedro_López');
-INSERT INTO "CLIENTE" VALUES ('usuario');
-INSERT INTO "CLIENTE" VALUES ('C-Club_BCSTO');
-INSERT INTO "CLIENTE" VALUES ('C-Laura_Flórez');
-INSERT INTO "CLIENTE" VALUES ('C-Diego_Ríos');
-INSERT INTO "CLIENTE" VALUES ('C-Club_PAD');
-INSERT INTO "SOCIO" VALUES ('C-Pedro_López','Pedro','López');
-INSERT INTO "SOCIO" VALUES ('usuario','usuario','Prueba');
-INSERT INTO "SOCIO" VALUES ('C-Laura_Flórez','Laura','Flórez');
-INSERT INTO "SOCIO" VALUES ('C-Diego_Ríos','Diego','Ríos');
-INSERT INTO "INSTALACION" VALUES ('canchaTen','Cancha de tenis',20.5);
-INSERT INTO "INSTALACION" VALUES ('canchaBal','Cancha de baloncesto',10.0);
-INSERT INTO "INSTALACION" VALUES ('piscina','Piscina',35.5);
-INSERT INTO "INSTALACION" VALUES ('salaYog','Sala de yoga',8.0);
-INSERT INTO "INSTALACION" VALUES ('canchaPad','Cancha de padel',40.5);
-INSERT INTO "INSTALACION" VALUES ('salaZum','Sala de zumba',5.5);
-INSERT INTO "ALQUILER" VALUES ('Alquiler1','canchaTen','C-Club_BCSTO',29,10,20,20,22,'DISPONIBLE');
-INSERT INTO "ALQUILER" VALUES ('54c4af6c-1c39-495a-b5d5-74ef57f1240d','canchaBal','9ffd05ec-341c-4395-8759-0def47c46e19',5,11,2020,16,18,'DISPONIBLE');
-INSERT INTO "ALQUILER" VALUES ('95e5f137-8e88-4982-b6a6-0e7e34688a91','canchaBal','9ffd05ec-341c-4395-8759-0def47c46e19',12,11,2020,16,18,'DISPONIBLE');
-INSERT INTO "ALQUILER" VALUES ('018d6592-a7e5-422d-8342-ceceda251c7a','canchaBal','9ffd05ec-341c-4395-8759-0def47c46e19',19,11,2020,16,18,'DISPONIBLE');
-INSERT INTO "ALQUILER" VALUES ('96fdee70-f391-4eb6-b48e-24f8afd4d3d9','canchaBal','9ffd05ec-341c-4395-8759-0def47c46e19',26,11,2020,16,18,'DISPONIBLE');
-INSERT INTO "ALQUILER" VALUES ('aed8be42-380a-47f1-8a2e-08d62d7750f1','canchaBal','559e727b-89f5-4a06-99c2-1469d56fc078',5,11,2020,18,19,'DISPONIBLE');
-INSERT INTO "ALQUILER" VALUES ('cb7f5e13-9e2e-4c70-a74a-641de4a9b382','canchaBal','2109600e-ebfe-4c62-8521-0483220cf4a2',2,12,2020,16,18,'DISPONIBLE');
-INSERT INTO "ALQUILER" VALUES ('62190f25-8b00-4bcb-95b7-b63377bf6b7a','canchaBal','2109600e-ebfe-4c62-8521-0483220cf4a2',9,12,2020,16,18,'DISPONIBLE');
-INSERT INTO "ALQUILER" VALUES ('0143c33d-c3da-457b-915b-b3291b97c020','canchaBal','8eb2a74d-f988-4278-ac28-c1bb9941ba43',7,11,2020,12,13,'DISPONIBLE');
-INSERT INTO "ALQUILER" VALUES ('27f90cc7-146c-4aae-8047-63be8a34b9e4','canchaBal','8eb2a74d-f988-4278-ac28-c1bb9941ba43',14,11,2020,12,13,'DISPONIBLE');
-INSERT INTO "ALQUILER" VALUES ('aa44b452-4ee8-48c6-9d7c-419d07d0fb14','canchaBal','8eb2a74d-f988-4278-ac28-c1bb9941ba43',21,11,2020,12,13,'DISPONIBLE');
-INSERT INTO "REGISTRO" VALUES ('Registo1','Alquiler1',10,11,0,1);
-INSERT INTO "TERCEROS" VALUES ('C-Club_BCSTO','Club de baloncesto');
-INSERT INTO "TERCEROS" VALUES ('C-Club_PAD','Club de padel');
+INSERT INTO "ACTIVIDAD" VALUES ('TenisDeMesa_1','Tenis de mesa',1);
+INSERT INTO "ACTIVIDAD" VALUES ('TenisDeMesa_0','Tenis de mesa',0);
+INSERT INTO "ACTIVIDAD" VALUES ('FutbolSala_1','Fútbol sala',1);
+INSERT INTO "ACTIVIDAD" VALUES ('FutbolSala_2','Fútbol sala',2);
+INSERT INTO "ACTIVIDAD" VALUES ('Balonmano_1','Balonmano',1);
+INSERT INTO "ACTIVIDAD" VALUES ('Balonmano_0','Balonmano',0);
+INSERT INTO "ACTIVIDAD" VALUES ('SaltoDeLongitud_2','Salto de longitud',2);
+INSERT INTO "ACTIVIDAD" VALUES ('Tenis con los pies_2','Tenis con los pies',2);
+INSERT INTO "RESERVA" VALUES ('C-Laura_Flórez','ceed1d09-36b6-4f8d-9aea-03ee6d3707b2');
+INSERT INTO "RESERVA" VALUES ('C-Isabel_Hierba','c9b49040-56f2-4758-9c94-104eeeee74f4');
+INSERT INTO "RESERVA" VALUES ('C-Delito_Navarro','946df386-4f71-4139-93aa-9b3f4a607a51');
+INSERT INTO "ACTIVIDAD_PLANIFICADA" VALUES ('Actividad_Prueba',29,11,2020,10,13,14,'','ac292105-22d0-4a99-b129-d670a63d27c6','canchaFutSal');
+INSERT INTO "ACTIVIDAD_PLANIFICADA" VALUES ('Actividad_Prueba',29,11,2020,10,10,17,'','d328b32d-bf8b-4b1d-8e67-806efdd61b12','canchaPad');
+INSERT INTO "ACTIVIDAD_PLANIFICADA" VALUES ('Actividad_Prueba',10,12,2020,12,12,15,NULL,'0e409c6a-c6c5-4b17-aaea-b03149473c3e','canchaBal');
+INSERT INTO "ACTIVIDAD_PLANIFICADA" VALUES ('Actividad_Prueba',30,11,2020,10,12,15,NULL,'946df386-4f71-4139-93aa-9b3f4a607a51','canchaPad');
+INSERT INTO "REGISTRO" VALUES ('7872bf15-8d9e-4440-8735-ad037ce8e261','f68ced44-715b-4f95-8af7-2ba3673a40f0',18,18,0,1);
+INSERT INTO "REGISTRO" VALUES ('2e07778a-d0cc-4c18-98a5-32ac622f6b80','b7404c4e-70b4-4d5f-8665-814c2b1bcf29',9,NULL,0,1);
+INSERT INTO "RECURSOS" VALUES ('RAQ_TENIS','raqueta de tenis','canchaTen','ffc0bfd6-9da9-4f00-b3b8-7aef25a7a40d',18);
+INSERT INTO "RECURSOS" VALUES ('PEL_TENIS','pelota de tenis','canchaTen',NULL,9);
+INSERT INTO "RECURSOS" VALUES ('PEL_BALONC','pelota de baloncesto','canchaBal',NULL,12);
+INSERT INTO "RECURSOS" VALUES ('PEL_FUT','pelota de fútbol','canchaFutSal','Tenis con los pies_2',15);
+INSERT INTO "RECURSOS" VALUES ('PEL_PADEL','pelota de padel','canchaPad',NULL,9);
+INSERT INTO "RECURSOS" VALUES ('RAQ_PADEL','raqueta de padel','canchaPad',NULL,18);
+INSERT INTO "RECURSOS" VALUES ('ARO_ZUM','aro de zumba','salaZum','ffc0bfd6-9da9-4f00-b3b8-7aef25a7a40d',20);
+INSERT INTO "RECURSOS" VALUES ('CHU_PIS','churro para nadar','piscina',NULL,100);
+INSERT INTO "RECURSOS" VALUES ('COR_PIS','corcheras piscina','piscina','aefb21f9-7b43-454a-924b-085b1549231c',6);
+INSERT INTO "CONFLICTOS" VALUES ('d328b32d-bf8b-4b1d-8e67-806efdd61b12','ac292105-22d0-4a99-b129-d670a63d27c6');
+INSERT INTO "CIERRE_DIA" VALUES ('canchaPad',30,11,2020);
 COMMIT;
