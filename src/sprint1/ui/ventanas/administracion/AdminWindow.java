@@ -59,6 +59,7 @@ public class AdminWindow extends JDialog {
 	private JButton btnAlquilerTercero;
 	private JButton btnVerOcupacionBotones;
 	private JButton btnPlanificarActividades;
+	private JButton btnCancelarActividad;
 
 	/**
 	 * Create the dialog.
@@ -142,6 +143,7 @@ public class AdminWindow extends JDialog {
 			pnAcciones.add(getBtnAlquilerTercero());
 			pnAcciones.add(getBtnVerOcupacionBotones());
 			pnAcciones.add(getBtnPlanificarActividades());
+			pnAcciones.add(getBtnCancelarActividad());
 		}
 		return pnAcciones;
 	}
@@ -463,5 +465,19 @@ public class AdminWindow extends JDialog {
 			});
 		}
 		return btnPlanificarActividades;
+	}
+	private JButton getBtnCancelarActividad() {
+		if (btnCancelarActividad == null) {
+			btnCancelarActividad = new JButton("Cancelar Actividad");
+			btnCancelarActividad.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					AdminCancelaActividad aca = new AdminCancelaActividad(AdminWindow.this);
+					aca.setVisible(true);
+					aca.setModal(true);
+					aca.setLocationRelativeTo(AdminWindow.this);
+				}
+			});
+		}
+		return btnCancelarActividad;
 	}
 }

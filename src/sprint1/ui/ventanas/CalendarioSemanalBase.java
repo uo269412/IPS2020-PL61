@@ -53,9 +53,9 @@ public class CalendarioSemanalBase extends JDialog {
 	private JPanel pnCentralDias;
 	private JButton btnPreviousWeek;
 	private JButton btnNextWeek;
-	
+
 	private Date date;
-	
+
 	private static final int DIA_EN_MILLIS = 1000 * 24 * 60 * 60;
 	private JLabel lblNombreMes;
 
@@ -77,11 +77,11 @@ public class CalendarioSemanalBase extends JDialog {
 		date = new Date();
 		generarPaneles();
 	}
-	
+
 	public Programa getPrograma() {
 		return this.programa;
 	}
-	
+
 	public Date getDate() {
 		return this.date;
 	}
@@ -98,6 +98,7 @@ public class CalendarioSemanalBase extends JDialog {
 		}
 		return pnNorth;
 	}
+
 	private JComboBox<Instalacion> getCbInstalacionSeleccionada() {
 		if (cbInstalacionSeleccionada == null) {
 			cbInstalacionSeleccionada = new JComboBox<Instalacion>();
@@ -109,6 +110,7 @@ public class CalendarioSemanalBase extends JDialog {
 		}
 		return cbInstalacionSeleccionada;
 	}
+
 	private JButton getBtnMostrarOcupacion() {
 		if (btnMostrarOcupacion == null) {
 			btnMostrarOcupacion = new JButton("Mostrar");
@@ -121,7 +123,7 @@ public class CalendarioSemanalBase extends JDialog {
 		}
 		return btnMostrarOcupacion;
 	}
-	
+
 	public void generarPaneles() {
 		pnCentralDias.removeAll();
 		for (int i = 0; i <= 7; i++) {
@@ -152,45 +154,51 @@ public class CalendarioSemanalBase extends JDialog {
 	protected void addHorarios(JPanel panel, int col) {
 		Instalacion instalacion = (Instalacion) cbInstalacionSeleccionada.getSelectedItem();
 		if (col == 0) {
-			for(int i = 8; i < 23; i++) {//i = hora
+			for (int i = 8; i < 23; i++) {// i = hora
 				JLabel label = new JLabel();
 				label.setFont(new Font("Tahoma", Font.BOLD, 15));
-				label.setText(String.valueOf(i) + ":00 - " + String.valueOf(i+1) + ":00");
+				label.setText(String.valueOf(i) + ":00 - " + String.valueOf(i + 1) + ":00");
 				panel.add(label);
 //				if (i < 22)
 //					panel.add(crearSeparador());
 			}
-		}
-		else {
+		} else {
 			for (int hora = 8; hora < 23; hora++) {
 				JButton button = new JButton();
 				ActividadPlanificada ap = hayInstalacionAEsaHoraYEseDia(hora, instalacion);
-				if ( ap != null) {
+				Alquiler al = hayInstalacionAEsaHoraYEseDiaAlquiler(hora, instalacion);
+				if ((ap != null && al != null) || hayInstalacionAEsaHoraYEseDiaVarias(hora, instalacion) > 1
+						|| hayInstalacionAEsaHoraYEseDiaAlquilerVarias(hora, instalacion) > 1) {
+					button.setText("Conflicto");
+					button.setFont(new Font("Tahoma", Font.PLAIN, 15));
+					button.setOpaque(true);
+					button.setHorizontalAlignment(SwingConstants.CENTER);
+					button.setBackground(Color.CYAN);
+				} else if (ap != null) {
 					button.setText(nombreInstalacion(instalacion, ap));
 					button.setFont(new Font("Tahoma", Font.PLAIN, 15));
 					button.setOpaque(true);
 					button.setHorizontalAlignment(SwingConstants.CENTER);
-					if (ap.getLimitePlazas() == 0)
+					if (ap.getLimitePlazas() == 0) {
 						button.setBackground(Color.red);
-					else
+					} else {
 						button.setBackground(Color.green);
-				}
-				Alquiler al = hayInstalacionAEsaHoraYEseDiaAlquiler(hora, instalacion);
-				if ( al != null) {
+					}
+				} else if (al != null) {
 					button.setText("Alquiler - " + nombreInstalacionAlquiler(instalacion, al));
 					button.setFont(new Font("Tahoma", Font.PLAIN, 15));
 					button.setOpaque(true);
 					button.setHorizontalAlignment(SwingConstants.CENTER);
 					button.setBackground(Color.LIGHT_GRAY);
 				}
+
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(date);
-				String info = String.valueOf(cal.get(Calendar.DAY_OF_MONTH))
-						+ "/" + String.valueOf(cal.get(Calendar.MONTH))
-						+ "/" + String.valueOf(cal.get(Calendar.YEAR))
-						+ "/" + hora;
+				String info = String.valueOf(cal.get(Calendar.DAY_OF_MONTH)) + "/"
+						+ String.valueOf(cal.get(Calendar.MONTH)) + "/" + String.valueOf(cal.get(Calendar.YEAR)) + "/"
+						+ hora;
 				button.setToolTipText(info);
-				//TODO añadir funciones a los botones aqui
+				// TODO añadir funciones a los botones aqui
 				button.setToolTipText(button.getText());
 				panel.add(button);
 			}
@@ -205,12 +213,48 @@ public class CalendarioSemanalBase extends JDialog {
 			int dia = cal.get(Calendar.DAY_OF_MONTH);
 			int mes = cal.get(Calendar.MONTH) + 1;
 			int año = cal.get(Calendar.YEAR);
-			if (ap.getHoraInicio() <= hora && ap.getHoraFin() > hora && ap.getCodigoInstalacion().equals(instalacion.getCodigo()) && dia == ap.getDia() && mes == ap.getMes() && año == ap.getAño())
+			if (ap.getHoraInicio() <= hora && ap.getHoraFin() > hora
+					&& ap.getCodigoInstalacion().equals(instalacion.getCodigo()) && dia == ap.getDia()
+					&& mes == ap.getMes() && año == ap.getAño())
 				return ap;
 		}
 		return null;
 	}
-	
+
+	protected int hayInstalacionAEsaHoraYEseDiaVarias(int hora, Instalacion instalacion) {
+		List<ActividadPlanificada> actividadesADevolver = new ArrayList<>();
+		List<ActividadPlanificada> actividades = programa.getActividadesPlanificadas();
+		for (ActividadPlanificada ap : actividades) {
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(date);
+			int dia = cal.get(Calendar.DAY_OF_MONTH);
+			int mes = cal.get(Calendar.MONTH) + 1;
+			int año = cal.get(Calendar.YEAR);
+			if (ap.getHoraInicio() <= hora && ap.getHoraFin() > hora
+					&& ap.getCodigoInstalacion().equals(instalacion.getCodigo()) && dia == ap.getDia()
+					&& mes == ap.getMes() && año == ap.getAño())
+				actividadesADevolver.add(ap);
+		}
+		return actividadesADevolver.size();
+	}
+
+	protected int hayInstalacionAEsaHoraYEseDiaAlquilerVarias(int hora, Instalacion instalacion) {
+		List<Alquiler> alquileresADevolver = new ArrayList<>();
+		List<Alquiler> alquileres = programa.getAlquileres();
+		for (Alquiler al : alquileres) {
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(date);
+			int dia = cal.get(Calendar.DAY_OF_MONTH);
+			int mes = cal.get(Calendar.MONTH) + 1;
+			int año = cal.get(Calendar.YEAR);
+			if (al.getHoraInicio() <= hora && al.getHoraFin() > hora
+					&& al.getId_instalacion().equals(instalacion.getCodigo()) && dia == al.getDia()
+					&& mes == al.getMes() && año == al.getAño())
+				alquileresADevolver.add(al);
+		}
+		return alquileresADevolver.size();
+	}
+
 	protected Alquiler hayInstalacionAEsaHoraYEseDiaAlquiler(int hora, Instalacion instalacion) {
 		List<Alquiler> alquileres = programa.getAlquileres();
 		for (Alquiler al : alquileres) {
@@ -219,12 +263,14 @@ public class CalendarioSemanalBase extends JDialog {
 			int dia = cal.get(Calendar.DAY_OF_MONTH);
 			int mes = cal.get(Calendar.MONTH) + 1;
 			int año = cal.get(Calendar.YEAR);
-			if (al.getHoraInicio() <= hora && al.getHoraFin() > hora && al.getId_instalacion().equals(instalacion.getCodigo()) && dia == al.getDia() && mes == al.getMes() && año == al.getAño())
+			if (al.getHoraInicio() <= hora && al.getHoraFin() > hora
+					&& al.getId_instalacion().equals(instalacion.getCodigo()) && dia == al.getDia()
+					&& mes == al.getMes() && año == al.getAño())
 				return al;
 		}
 		return null;
 	}
-	
+
 	protected String nombreInstalacionAlquiler(Instalacion instalacion, Alquiler al) {
 		if (al.getId_instalacion().equals(instalacion.getCodigo()))
 			return getNombreCliente(al);
@@ -249,7 +295,7 @@ public class CalendarioSemanalBase extends JDialog {
 
 	private String nombreActividad(ActividadPlanificada ap) {
 		for (Actividad a : programa.getActividades()) {
-			if(a.getCodigo().equals(ap.getCodigoActividad()))
+			if (a.getCodigo().equals(ap.getCodigoActividad()))
 				return a.getNombre() + " - " + a.getIntensidad() + " (P.L.:" + ap.getLimitePlazas() + ")";
 		}
 		return "-";
@@ -260,7 +306,7 @@ public class CalendarioSemanalBase extends JDialog {
 		separador.setForeground(Color.BLACK);
 		return separador;
 	}
-	
+
 //	private String generarTitulo(int i) {
 //		if (i == 0) {
 //			dias.add("Horarios");
@@ -299,14 +345,14 @@ public class CalendarioSemanalBase extends JDialog {
 //		dias.add(toRet);
 //		return toRet;
 //	}
-	
+
 	private String generarTitulo(int i) {
 		String[] dateToArray = date.toString().split(" ");
 		String diaDeLaSemana = dateToArray[0];
 		long primerDiaDeLaSemanaMillis = 0;
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
-		
+
 		switch (diaDeLaSemana) {
 		case "Mon":
 			primerDiaDeLaSemanaMillis = date.getTime();
@@ -330,7 +376,7 @@ public class CalendarioSemanalBase extends JDialog {
 			primerDiaDeLaSemanaMillis = date.getTime() - 6 * DIA_EN_MILLIS;
 			break;
 		}
-		
+
 		String toRet = "";
 		switch (i) {
 		case 0:
@@ -367,11 +413,12 @@ public class CalendarioSemanalBase extends JDialog {
 		}
 		cal.setTime(date);
 		if (i != 0)
-			toRet +=  String.valueOf(cal.get(Calendar.DAY_OF_MONTH));
+			toRet += String.valueOf(cal.get(Calendar.DAY_OF_MONTH));
 		dias.add(toRet);
-		
+
 		return toRet;
 	}
+
 	private JPanel getPnTopCenter() {
 		if (pnTopCenter == null) {
 			pnTopCenter = new JPanel();
@@ -381,6 +428,7 @@ public class CalendarioSemanalBase extends JDialog {
 		}
 		return pnTopCenter;
 	}
+
 	private JPanel getPnTopEast() {
 		if (pnTopEast == null) {
 			pnTopEast = new JPanel();
@@ -390,14 +438,16 @@ public class CalendarioSemanalBase extends JDialog {
 		}
 		return pnTopEast;
 	}
+
 	private JTextPane getTxtLeyenda() {
 		if (txtLeyenda == null) {
 			txtLeyenda = new JTextPane();
 			txtLeyenda.setEditable(false);
-			txtLeyenda.setText("Verde: Reserva disponible\r\nRojo: Reserva completa\r\nGris: Alquiler\r\n");
+			txtLeyenda.setText("Verde: Reserva disponible\r\nRojo: Reserva completa\r\nGris: Alquiler\r\nCian: Conflicto");
 		}
 		return txtLeyenda;
 	}
+
 	private JPanel getPnCentro() {
 		if (pnCentro == null) {
 			pnCentro = new JPanel();
@@ -408,6 +458,7 @@ public class CalendarioSemanalBase extends JDialog {
 		}
 		return pnCentro;
 	}
+
 	private JPanel getPnCentralDias_1() {
 		if (pnCentralDias == null) {
 			pnCentralDias = new JPanel();
@@ -416,6 +467,7 @@ public class CalendarioSemanalBase extends JDialog {
 		}
 		return pnCentralDias;
 	}
+
 	private JButton getBtnPreviousWeek() {
 		if (btnPreviousWeek == null) {
 			btnPreviousWeek = new JButton("\u25C4");
@@ -430,6 +482,7 @@ public class CalendarioSemanalBase extends JDialog {
 		}
 		return btnPreviousWeek;
 	}
+
 	private JButton getBtnNextWeek() {
 		if (btnNextWeek == null) {
 			btnNextWeek = new JButton("\u25BA");
@@ -443,6 +496,7 @@ public class CalendarioSemanalBase extends JDialog {
 		}
 		return btnNextWeek;
 	}
+
 	private JLabel getLblNombreMes() {
 		if (lblNombreMes == null) {
 			lblNombreMes = new JLabel("");
@@ -451,12 +505,12 @@ public class CalendarioSemanalBase extends JDialog {
 		}
 		return lblNombreMes;
 	}
-	
+
 	private String getNombreMes() {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
 		String toRet = "";
-		switch(cal.get(Calendar.MONTH)) {
+		switch (cal.get(Calendar.MONTH)) {
 		case Calendar.JANUARY:
 			toRet = "Enero ";
 			break;

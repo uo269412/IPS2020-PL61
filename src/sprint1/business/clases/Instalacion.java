@@ -44,16 +44,24 @@ public class Instalacion implements Comparable<Instalacion> {
 	}
 
 	
+//	@Override
+//	public String toString() {
+//		StringBuilder sb = new StringBuilder();
+//		sb.append(getNombre() + " (" + getPrecioHora() + "€ la hora). ");
+//		if(estado == DISPONIBLE) {
+//			sb.append("DISPONIBLE");
+//		} else {
+//			sb.append("CERRADA");
+//		}
+//		
+//		return sb.toString();
+//	}
+	
+	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(getNombre() + " (" + getPrecioHora() + "€ la hora). ");
-		if(estado == DISPONIBLE) {
-			sb.append("DISPONIBLE");
-		} else {
-			sb.append("CERRADA");
-		}
-		
+		sb.append(getNombre());
 		return sb.toString();
 	}
 	
