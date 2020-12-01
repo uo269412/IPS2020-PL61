@@ -1616,7 +1616,7 @@ public class Programa {
 		String nombre = rs.getString(2);
 		double precio = rs.getDouble(3);
 		int estado = rs.getInt(4);
-		boolean permite_alquileres = rs.getInt(5) == 1;
+		boolean permite_alquileres = rs.getInt(5) == 1? true : false;
 		rs.close();
 		pst.close();
 		con.close();
@@ -1631,12 +1631,7 @@ public class Programa {
 		pst.setString(1, i.getNombre());
 		pst.setDouble(2, i.getPrecioHora());
 		pst.setInt(3, i.getEstado());
-		
-		if(i.permiteAlquileres()) {
-			pst.setInt(4, 1);
-		} else {
-			pst.setInt(4,0);
-		}
+		pst.setBoolean(4, i.permiteAlquileres());
 		pst.setString(5, i.getCodigo());
 		pst.executeUpdate();
 		pst.close();
@@ -1650,8 +1645,7 @@ public class Programa {
 			String nombre = rs.getString(2);
 			Double precio = rs.getDouble(3);
 			int estado = rs.getInt(4);
-			boolean permite_alquileres = rs.getInt(5) == 1;
-			instalaciones.add(new Instalacion(codigo, nombre, precio, estado, permite_alquileres));
+			instalaciones.add(new Instalacion(codigo, nombre, precio, estado));
 		}
 		return instalaciones;
 	}
@@ -1773,7 +1767,7 @@ public class Programa {
 		}
 	}
 
-	
+//TODO
 //	public void deleteAsociadosConCierre() throws SQLException {
 //		Connection con = DriverManager.getConnection(URL);
 //		PreparedStatement pst = con.prepareStatement("SELECT * FROM cierre_dia");
@@ -1825,19 +1819,6 @@ public class Programa {
 		}
 		
 		return instalacionesDisponibles;
-	}
-	
-	public Set<Actividad> getActividadesDisponiblesParaInstalacion(Instalacion i) throws SQLException {
-		
-		Set<Actividad> actividadesDisponibles = new HashSet<>();
-		
-		for(Actividad a: getActividades()) {
-			if(!isActividadVetadaEnInstalacion(i, a)) {
-				actividadesDisponibles.add(a);
-			}
-		}
-		
-		return actividadesDisponibles;
 	}
 
 // UTIL
