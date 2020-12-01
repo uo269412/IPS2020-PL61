@@ -20,7 +20,6 @@ import javax.swing.border.EmptyBorder;
 
 import sprint1.business.dominio.centroDeportes.actividades.Actividad;
 import sprint1.business.dominio.centroDeportes.actividades.ActividadPlanificada;
-import sprint1.business.dominio.centroDeportes.reservas.Reserva;
 import sprint1.ui.ventanas.administracion.util.CalendarioSemanalCancelar;
 
 public class CancelarActividadDialog extends JDialog {
