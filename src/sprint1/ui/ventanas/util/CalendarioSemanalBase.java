@@ -132,7 +132,7 @@ public class CalendarioSemanalBase extends JDialog {
 		pnCentralDias.validate();
 	}
 
-	private JPanel newDay(int i) {
+	public JPanel newDay(int i) {
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridLayout(17, 1));
 		panel.setBackground(Color.WHITE);
@@ -299,52 +299,13 @@ public class CalendarioSemanalBase extends JDialog {
 		return "-";
 	}
 
-	private JSeparator crearSeparador() {
+	protected JSeparator crearSeparador() {
 		JSeparator separador = new JSeparator();
 		separador.setForeground(Color.BLACK);
 		return separador;
 	}
 
-//	private String generarTitulo(int i) {
-//		if (i == 0) {
-//			dias.add("Horarios");
-//			return "Horarios";
-//		}
-//		Calendar cal = Calendar.getInstance();
-//		int diaDeLaSemana = (cal.get(Calendar.DAY_OF_WEEK) + i - 2) % 7;
-//		int diaDelMes = cal.get(Calendar.DAY_OF_MONTH);
-//		String dia = "";
-//		switch(diaDeLaSemana) {
-//		case 0:
-//			dia = "Domingo";
-//			break;
-//		case 1:
-//			dia = "Lunes";
-//			break;
-//		case 2:
-//			dia = "Martes";
-//			break;
-//		case 3:
-//			dia = "Miércoles";
-//			break;
-//		case 4:
-//			dia = "Jueves";
-//			break;
-//		case 5:
-//			dia = "Viernes";
-//			break;
-//		case 6:
-//			dia = "Sábado";
-//			break;
-//		}
-//		YearMonth yearMonthObject = YearMonth.of(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1);
-//		int daysInMonth = yearMonthObject.lengthOfMonth();
-//		String toRet = dia + " " + ((diaDelMes + i - 2) %daysInMonth+1);
-//		dias.add(toRet);
-//		return toRet;
-//	}
-
-	private String generarTitulo(int i) {
+	protected String generarTitulo(int i) {
 		String[] dateToArray = date.toString().split(" ");
 		String diaDeLaSemana = dateToArray[0];
 		long primerDiaDeLaSemanaMillis = 0;
@@ -495,7 +456,7 @@ public class CalendarioSemanalBase extends JDialog {
 		return btnNextWeek;
 	}
 
-	private JLabel getLblNombreMes() {
+	public JLabel getLblNombreMes() {
 		if (lblNombreMes == null) {
 			lblNombreMes = new JLabel("");
 			lblNombreMes.setFont(new Font("Tahoma", Font.BOLD, 20));

@@ -2,6 +2,7 @@ package sprint1.ui.ventanas.administracion.util;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Calendar;
@@ -12,12 +13,14 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.border.LineBorder;
 
 import sprint1.business.dominio.centroDeportes.actividades.ActividadPlanificada;
 import sprint1.business.dominio.centroDeportes.alquileres.Alquiler;
 import sprint1.business.dominio.centroDeportes.instalaciones.Instalacion;
 import sprint1.ui.ventanas.administracion.AdminWindow;
 import sprint1.ui.ventanas.administracion.actividades.CancelarActividadDialog;
+import sprint1.ui.ventanas.administracion.actividades.CancelarFranjaWindow;
 import sprint1.ui.ventanas.administracion.actividades.EscogerActividadACancelar;
 
 public class CalendarioSemanalCancelar extends CalendarioSemanalModificar{
@@ -121,16 +124,46 @@ public class CalendarioSemanalCancelar extends CalendarioSemanalModificar{
 	private CalendarioSemanalCancelar getMe() {
 		return this;
 	}
+	
+	@Override
+	public JPanel newDay(int i) {
+		JPanel panel = new JPanel();
+		panel.setLayout(new GridLayout(17, 1));
+		panel.setBackground(Color.WHITE);
+		panel.setBorder(new LineBorder(new Color(0, 0, 0)));
+		String titulo = generarTitulo(i);
+		JButton btnTitulo = new JButton();
+		btnTitulo.setOpaque(true);
+		btnTitulo.setBackground(Color.LIGHT_GRAY);
+		btnTitulo.setFont(new Font("Tahoma", Font.BOLD, 15));
+		btnTitulo.setText(titulo);
+		if (titulo.equals("Horarios"))
+			btnTitulo.setEnabled(false);
+		else {
+			btnTitulo.addActionListener(new CancelarFranja(titulo));
+		}
+		panel.add(btnTitulo);
+		panel.add(crearSeparador());
+		addHorarios(panel, i);
+		return panel;
+	}
+	
+private class CancelarFranja implements ActionListener {
+		
+		private String titulo;
+		
+		public CancelarFranja(String titulo) {
+			this.titulo = titulo;
+		}
 
-	private int[] parseFecha(JButton b) {
-		String[] dateInfo = b.getToolTipText().split("/");
-		int[] fecha = new int[4];
-		fecha[0] = Integer.parseInt(dateInfo[0]); //dia
-		fecha[1] = Integer.parseInt(dateInfo[1]); //mes
-		fecha[2] = Integer.parseInt(dateInfo[2]); //año
-		fecha[3] = Integer.parseInt(dateInfo[3]); //horaInicio
-
-		return fecha;
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			CancelarFranjaWindow cfw = new CancelarFranjaWindow(CalendarioSemanalCancelar.this, titulo, getLblNombreMes().getText());
+			cfw.setModal(true);
+			cfw.setLocationRelativeTo(CalendarioSemanalCancelar.this);
+			cfw.setVisible(true);
+			generarPaneles();
+		}
 	}
 
 }
