@@ -79,6 +79,7 @@ public class AsignarRecursosAInstalaciónDialog extends JDialog {
 	private JComboBox<Instalacion> getComboBox() {
 		if (comboBox == null) {
 			comboBox = new JComboBox<>();
+			comboBox.setModel(new DefaultComboBoxModel<Instalacion>(p.getInstalacionesDisponibles().toArray(new Instalacion[p.getInstalacionesDisponibles().size()])));
 		}
 		return comboBox;
 	}

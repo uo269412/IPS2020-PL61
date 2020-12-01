@@ -18,7 +18,6 @@ CREATE TABLE IF NOT EXISTS "INSTALACION" (
 	"nombre_instalacion"	varchar(26),
 	"preciohora"	REAL,
 	"estado"	BIT,
-	"permite_alquiler"	BIT,
 	PRIMARY KEY("codigo_instalacion")
 );
 DROP TABLE IF EXISTS "ALQUILER";
@@ -76,9 +75,9 @@ CREATE TABLE IF NOT EXISTS "ACTIVIDAD_PLANIFICADA" (
 	"codigoMonitor"	varchar(26),
 	"codigoPlanificada"	varchar(26),
 	"codigoInstalacion"	varchar(26),
+	FOREIGN KEY("codigoMonitor") REFERENCES "MONITOR"("codigoMonitor"),
 	FOREIGN KEY("codigoActividad") REFERENCES "ACTIVIDAD"("codigo"),
 	FOREIGN KEY("codigoInstalacion") REFERENCES "INSTALACION"("codigo_instalacion"),
-	FOREIGN KEY("codigoMonitor") REFERENCES "MONITOR"("codigoMonitor"),
 	PRIMARY KEY("codigoPlanificada")
 );
 DROP TABLE IF EXISTS "REGISTRO";
@@ -106,8 +105,8 @@ DROP TABLE IF EXISTS "CONFLICTOS";
 CREATE TABLE IF NOT EXISTS "CONFLICTOS" (
 	"codigoActividadAfectada"	varchar(26),
 	"codigoActividadConflictiva"	varchar(26),
-	FOREIGN KEY("codigoActividadAfectada") REFERENCES "ACTIVIDAD_PLANIFICADA"("codigoPlanificada"),
 	FOREIGN KEY("codigoActividadConflictiva") REFERENCES "ACTIVIDAD_PLANIFICADA"("codigoPlanificada"),
+	FOREIGN KEY("codigoActividadAfectada") REFERENCES "ACTIVIDAD_PLANIFICADA"("codigoPlanificada"),
 	PRIMARY KEY("codigoActividadAfectada","codigoActividadConflictiva")
 );
 DROP TABLE IF EXISTS "CIERRE_DIA";
