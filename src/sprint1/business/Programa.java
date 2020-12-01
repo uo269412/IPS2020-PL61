@@ -838,11 +838,20 @@ public class Programa {
 	}
 
 	public void eliminarReserva(String codigoActividad) {
+		ArrayList<Reserva> toRemove = new ArrayList<>();
 		for (Reserva reserva : reservas) {
 			if (reserva.getCodigo_actividad().equals(codigoActividad)) {
-				reservas.remove(reserva);
+				toRemove.add(reserva);
 			}
 		}
+		for (Reserva reserva : toRemove) {
+			remove(reserva);
+		}
+	}
+
+	private void remove(Reserva reserva) {
+		reservas.remove(reserva);
+		cancelarPlazaReserva(reserva.getId_cliente(), reserva.getCodigo_actividad());
 	}
 
 	public void addReserva(String id_cliente, String codigoPlanificada) {
