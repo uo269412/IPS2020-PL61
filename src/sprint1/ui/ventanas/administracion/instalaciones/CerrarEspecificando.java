@@ -344,6 +344,7 @@ public class CerrarEspecificando extends JDialog {
 						try {
 							selected.setPermisionAlquileres(false);
 							p.updateInstalacion(selected);
+							p.deleteAsociadosConCierre();
 						} catch (SQLException e) {
 							JOptionPane.showMessageDialog(CerrarEspecificando.this, "Ha ocurrido un error modificando la información de la instalación a cerrar");
 						}
