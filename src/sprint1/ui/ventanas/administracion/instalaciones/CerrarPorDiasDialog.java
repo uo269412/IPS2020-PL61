@@ -85,7 +85,7 @@ public class CerrarPorDiasDialog extends JDialog {
 		setIconImage(Toolkit.getDefaultToolkit()
 				.getImage(CerrarPorDiasDialog.class.getResource("/sprint1/ui/resources/titulo.png")));
 		setTitle("Cerrar una instalaci\u00F3n temporalmente");
-		setBounds(100, 100, 469, 270);
+		setBounds(100, 100, 469, 326);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);

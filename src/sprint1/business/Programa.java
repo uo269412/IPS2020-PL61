@@ -48,10 +48,10 @@ public class Programa {
 	// "jdbc:sqlite:C:\\Users\\javie\\git\\IPS2020-PL61\\resources\\bdProject.db";
 
 	// Conexión Dani
-	public static String URL = "jdbc:sqlite:C:\\Users\\Dani\\git\\IPS2020-PL61_sprint3\\resources\\bdProject.db";
+//	public static String URL = "jdbc:sqlite:C:\\Users\\Dani\\git\\IPS2020-PL61_sprint3\\resources\\bdProject.db";
 
 	// Conexión Juan.elo
-	//public static String URL = "jdbc:sqlite:C:\\Users\\Usuario\\git\\IPS2020-PL61\\resources\\bdProject.db";
+	public static String URL = "jdbc:sqlite:C:\\Users\\Usuario\\git\\IPS2020-PL61\\resources\\bdProject.db";
 
 	public Programa() throws SQLException {
 		cargarBaseDatos();
@@ -118,7 +118,7 @@ public class Programa {
 
 	}
 
-	public Set<Cliente> clientesAfectadosPorCierreDia(Instalacion i, int dia, int mes, int año) throws SQLException {
+	public Set<Cliente> clientesAfectadosPorCierreDia(Instalacion i, int dia, int mes, int año) {
 		Set<Cliente> clientesAfectados = new HashSet<>();
 		
 		
@@ -445,7 +445,7 @@ public class Programa {
 			pst.setString(2, actividad.getCodigoPlanificada());
 			pst.execute();
 			pst.close();
-			con.close();
+			
 		} catch (SQLException e) {
 			System.out.println("Error borrando la reserva");
 		}
@@ -1091,6 +1091,7 @@ public class Programa {
 			con.close();
 		} catch (SQLException e) {
 			System.out.println("Error borrando el alquiler");
+			System.out.println(e.getMessage());
 		}
 	}
 
@@ -1754,7 +1755,7 @@ public class Programa {
 		} else {
 			Connection con = DriverManager.getConnection(URL);
 			PreparedStatement pst = con
-					.prepareStatement("INSERT INTO cierre_dia(codigo_instalacion, dia, mes, año)" + " VALUES(?,?,?,?)");
+					.prepareStatement("INSERT INTO cierre_dia(codigo_instalacion, dia, mes, año) VALUES(?,?,?,?)");
 			pst.setString(1, i.getCodigoInstalacion());
 			pst.setInt(2, dia);
 			pst.setInt(3, mes);
@@ -1847,26 +1848,21 @@ public class Programa {
 		PreparedStatement pst = con.prepareStatement("SELECT * FROM cierre_dia");
 		ResultSet rs = pst.executeQuery();
 		
+		Set<Alquiler> alquileresABorrar = new HashSet<>();
 		while(rs.next()) {
 			String id_instalacion = rs.getString(1);
 			int dia = rs.getInt(2);
 			int mes = rs.getInt(3);
 			int año = rs.getInt(4);
-			
-			for(Alquiler a: getAlquileres(id_instalacion, dia, mes, año)) {
-				anularAlquiler(a);
-			}
-		}
-		
-		Set<Alquiler> alquileresABorrar = new HashSet<>();
-		
-		for(Alquiler a: getAlquileres()) {
-			if(!encontrarInstalacion(a.getId_instalacion()).permiteAlquileres()) {
+			for (Alquiler a : getAlquileres(id_instalacion,dia,mes,año)) {
 				alquileresABorrar.add(a);
 			}
 		}
 		
-		for(Alquiler a: alquileresABorrar) {
+		rs.close();
+		pst.close();
+		con.close();
+		for (Alquiler a : alquileresABorrar) {
 			anularAlquiler(a);
 		}
 	}
@@ -1888,7 +1884,7 @@ public class Programa {
 	
 	
 	public void deleteAsociadosConCierreParaDias() throws SQLException {
-		deleteActividadesAsociadasConCierre();
+//		deleteActividadesAsociadasConCierre();
 		deleteAlquileresAsociadosConCierreDias();
 	}
 	

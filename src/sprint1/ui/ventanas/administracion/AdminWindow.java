@@ -95,7 +95,7 @@ public class AdminWindow extends JDialog {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(AdminWindow.class.getResource("/sprint1/ui/resources/titulo.png")));
 		setTitle("Centro de Deportes: Administrador");
 		this.parent = mainWindow;
-		setBounds(100, 100, 552, 572);
+		setBounds(100, 100, 600, 600);
 		getContentPane().setLayout(new BorderLayout(0, 0));
 		getContentPane().add(getPnTextos(), BorderLayout.NORTH);
 		getContentPane().add(getPnFuncionalidad(), BorderLayout.CENTER);
@@ -638,8 +638,8 @@ public class AdminWindow extends JDialog {
 				public void actionPerformed(ActionEvent arg0) {
 					CerrarPorDiasDialog cpd = new CerrarPorDiasDialog(parent.getPrograma());
 					cpd.setModal(true);
-					cpd.setVisible(true);
 					cpd.setLocationRelativeTo(AdminWindow.this);
+					cpd.setVisible(true);
 				}
 			});
 			btnCerrarFlexibilidadDia.setBackground(new Color(25, 25, 112));
