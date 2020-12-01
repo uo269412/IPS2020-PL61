@@ -35,6 +35,7 @@ import sprint1.ui.ventanas.administracion.monitores.AsignarMonitorDialog;
 import sprint1.ui.ventanas.administracion.reservas.AdminReservaSocioDialog;
 import sprint1.ui.ventanas.administracion.util.CalendarioAdmin;
 import sprint1.ui.ventanas.administracion.util.CalendarioAdminAlquilar;
+import sprint1.ui.ventanas.administracion.util.CalendarioSemanalCancelar;
 import sprint1.ui.ventanas.administracion.util.CalendarioSemanalModificar;
 import sprint1.ui.ventanas.administracion.util.CalendarioSemanalPlanificar;
 import sprint1.ui.ventanas.administracion.util.CalendarioTercero;
@@ -84,6 +85,7 @@ public class AdminWindow extends JDialog {
 	private JPanel pnInstalaciones;
 	private JButton btnModificarPlanificacion;
 	private JButton btnCerrarFlexibilidadDia;
+	private JButton btnCancelaPlanificada;
 	private JButton btnCerrarEspecifico;
 
 	/**
@@ -579,6 +581,7 @@ public class AdminWindow extends JDialog {
 			pnMonitores.setBorder(new TitledBorder(null, "Administrar planificaciones y reservas", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			pnMonitores.add(getBtnAsignarMonitor_1());
 			pnMonitores.add(getBtnReservaSocio());
+			pnMonitores.add(getBtnCancelaPlanificada());
 		}
 		return pnMonitores;
 	}
@@ -643,6 +646,23 @@ public class AdminWindow extends JDialog {
 			btnCerrarFlexibilidadDia.setForeground(new Color(255, 255, 255));
 		}
 		return btnCerrarFlexibilidadDia;
+	}
+	private JButton getBtnCancelaPlanificada() {
+		if (btnCancelaPlanificada == null) {
+			btnCancelaPlanificada = new JButton("Cancelar actividad planificada");
+			btnCancelaPlanificada.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					CalendarioSemanalCancelar csm = new CalendarioSemanalCancelar(AdminWindow.this);
+					csm.setModal(true);
+					csm.setLocationRelativeTo(AdminWindow.this);
+					csm.setVisible(true);
+				}
+			});
+			btnCancelaPlanificada.setMnemonic('R');
+			btnCancelaPlanificada.setForeground(Color.WHITE);
+			btnCancelaPlanificada.setBackground(new Color(25, 25, 112));
+		}
+		return btnCancelaPlanificada;
 	}
 	private JButton getBtnCerrarEspecifico() {
 		if (btnCerrarEspecifico == null) {

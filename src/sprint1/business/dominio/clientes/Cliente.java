@@ -4,7 +4,7 @@ import java.util.UUID;
 
 public abstract class Cliente {
 
-	String id_cliente;
+	public String id_cliente;
 
 	public Cliente(String id_cliente) {
 		this.id_cliente = id_cliente;

@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -18,18 +17,18 @@ import sprint1.business.dominio.centroDeportes.actividades.ActividadPlanificada;
 import sprint1.business.dominio.centroDeportes.alquileres.Alquiler;
 import sprint1.business.dominio.centroDeportes.instalaciones.Instalacion;
 import sprint1.ui.ventanas.administracion.AdminWindow;
-import sprint1.ui.ventanas.administracion.actividades.EscogerConflictoAResolver;
-import sprint1.ui.ventanas.administracion.actividades.ModificarPlanificacionDialog;
-import sprint1.ui.ventanas.util.CalendarioSemanalBase;
+import sprint1.ui.ventanas.administracion.actividades.CancelarActividadDialog;
+import sprint1.ui.ventanas.administracion.actividades.EscogerActividadACancelar;
 
-public class CalendarioSemanalModificar extends CalendarioSemanalBase {
-	
+public class CalendarioSemanalCancelar extends CalendarioSemanalModificar{
+
+	/**
+	 * 
+	 */
 	private static final long serialVersionUID = 1L;
 
-	public CalendarioSemanalModificar(AdminWindow parent) {
-		super(parent.getParent().getPrograma());
-		setTitle("Calendario Semanal");
-		setLocationRelativeTo(parent);
+	public CalendarioSemanalCancelar(AdminWindow parent) {
+		super(parent);
 	}
 	
 	@Override
@@ -95,23 +94,6 @@ public class CalendarioSemanalModificar extends CalendarioSemanalBase {
 			}
 		}
 	}
-
-	public List<ActividadPlanificada> hayInstalacionAEsaHoraYEseDiaVariasLista(int hora, Instalacion instalacion) {
-		List<ActividadPlanificada> actividadesADevolver = new ArrayList<>();
-		List<ActividadPlanificada> actividades = programa.getActividadesPlanificadas();
-		for (ActividadPlanificada ap : actividades) {
-			Calendar cal = Calendar.getInstance();
-			cal.setTime(date);
-			int dia = cal.get(Calendar.DAY_OF_MONTH);
-			int mes = cal.get(Calendar.MONTH) + 1;
-			int año = cal.get(Calendar.YEAR);
-			if (ap.getHoraInicio() <= hora && ap.getHoraFin() > hora
-					&& ap.getCodigoInstalacion().equals(instalacion.getCodigo()) && dia == ap.getDia()
-					&& mes == ap.getMes() && año == ap.getAño())
-				actividadesADevolver.add(ap);
-		}
-		return actividadesADevolver;
-	}
 	
 	private class ModificarActividades implements ActionListener {
 		
@@ -125,18 +107,30 @@ public class CalendarioSemanalModificar extends CalendarioSemanalBase {
 		public void actionPerformed(ActionEvent arg0) {
 			JDialog window;
 			if(actividades.size() > 1) {
-				window = new EscogerConflictoAResolver(getMe(), actividades);
+				window = new EscogerActividadACancelar(getMe(), actividades);
 			} else {
-				window = new ModificarPlanificacionDialog(getMe(), actividades.get(0));
+				window = new CancelarActividadDialog(getMe(), actividades.get(0));
 			}
 			window.setLocationRelativeTo(getMe());
 			window.setModal(true);
-			window.setVisible(true);			
+			window.setVisible(true);
+			generarPaneles();
 		}
 	}
 	
-	private CalendarioSemanalModificar getMe() {
+	private CalendarioSemanalCancelar getMe() {
 		return this;
+	}
+
+	private int[] parseFecha(JButton b) {
+		String[] dateInfo = b.getToolTipText().split("/");
+		int[] fecha = new int[4];
+		fecha[0] = Integer.parseInt(dateInfo[0]); //dia
+		fecha[1] = Integer.parseInt(dateInfo[1]); //mes
+		fecha[2] = Integer.parseInt(dateInfo[2]); //año
+		fecha[3] = Integer.parseInt(dateInfo[3]); //horaInicio
+
+		return fecha;
 	}
 
 }

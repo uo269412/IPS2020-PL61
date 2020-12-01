@@ -47,11 +47,11 @@ public class Programa {
 	//public static String URL = "jdbc:sqlite:C:\\Users\\javie\\git\\IPS2020-PL61\\resources\\bdProject.db";
 
 	// Conexión Dani
-	public static String URL = "jdbc:sqlite:C:\\Users\\Dani\\git\\IPS2020-PL61_sprint3\\resources\\bdProject.db";
+//	public static String URL = "jdbc:sqlite:C:\\Users\\Dani\\git\\IPS2020-PL61_sprint3\\resources\\bdProject.db";
 
 	// Conexión Juan.elo
-	 //public static String URL =
-	 //"jdbc:sqlite:C:\\Users\\Usuario\\git\\IPS2020-PL61\\resources\\bdProject.db";
+	 public static String URL =
+	 "jdbc:sqlite:C:\\Users\\Usuario\\git\\IPS2020-PL61\\resources\\bdProject.db";
 
 	public Programa() throws SQLException {
 		cargarBaseDatos();
@@ -838,11 +838,20 @@ public class Programa {
 	}
 
 	public void eliminarReserva(String codigoActividad) {
+		ArrayList<Reserva> toRemove = new ArrayList<>();
 		for (Reserva reserva : reservas) {
 			if (reserva.getCodigo_actividad().equals(codigoActividad)) {
-				reservas.remove(reserva);
+				toRemove.add(reserva);
 			}
 		}
+		for (Reserva reserva : toRemove) {
+			remove(reserva);
+		}
+	}
+
+	private void remove(Reserva reserva) {
+		reservas.remove(reserva);
+		cancelarPlazaReserva(reserva.getId_cliente(), reserva.getCodigo_actividad());
 	}
 
 	public void addReserva(String id_cliente, String codigoPlanificada) {
@@ -1607,7 +1616,7 @@ public class Programa {
 		String nombre = rs.getString(2);
 		double precio = rs.getDouble(3);
 		int estado = rs.getInt(4);
-		boolean permite_alquileres = rs.getInt(5) == 1;
+		boolean permite_alquileres = rs.getInt(5) == 1? true : false;
 		rs.close();
 		pst.close();
 		con.close();
@@ -1622,12 +1631,7 @@ public class Programa {
 		pst.setString(1, i.getNombre());
 		pst.setDouble(2, i.getPrecioHora());
 		pst.setInt(3, i.getEstado());
-		
-		if(i.permiteAlquileres()) {
-			pst.setInt(4, 1);
-		} else {
-			pst.setInt(4,0);
-		}
+		pst.setBoolean(4, i.permiteAlquileres());
 		pst.setString(5, i.getCodigo());
 		pst.executeUpdate();
 		pst.close();
@@ -1641,8 +1645,7 @@ public class Programa {
 			String nombre = rs.getString(2);
 			Double precio = rs.getDouble(3);
 			int estado = rs.getInt(4);
-			boolean permite_alquileres = rs.getInt(5) == 1;
-			instalaciones.add(new Instalacion(codigo, nombre, precio, estado, permite_alquileres));
+			instalaciones.add(new Instalacion(codigo, nombre, precio, estado));
 		}
 		return instalaciones;
 	}
@@ -1763,8 +1766,32 @@ public class Programa {
 			return true;
 		}
 	}
-
 	
+	public Set<Actividad> getActividadesDisponiblesParaInstalacion(Instalacion i) throws SQLException {
+		List<String> idActividadesNoDisponibles = new LinkedList<>();
+		
+		Set<Actividad> toRet = new HashSet<>();
+		
+		Connection con = DriverManager.getConnection(URL);
+		PreparedStatement pst = con.prepareStatement("SELECT codigo_actividad FROM CIERRE_DIA WHERE codigo_instalacion=?");
+		pst.setString(1, i.getCodigoInstalacion());
+		
+		ResultSet rs = pst.executeQuery();
+		
+		while(rs.next()) {
+			idActividadesNoDisponibles.add(rs.getString(1));
+		}
+		
+		for(Actividad a: getActividades()) {
+			if(!idActividadesNoDisponibles.contains(a.getCodigo())) {
+				toRet.add(a);
+			}
+		}
+		
+		return toRet;
+	}
+
+//TODO
 //	public void deleteAsociadosConCierre() throws SQLException {
 //		Connection con = DriverManager.getConnection(URL);
 //		PreparedStatement pst = con.prepareStatement("SELECT * FROM cierre_dia");
@@ -1816,19 +1843,6 @@ public class Programa {
 		}
 		
 		return instalacionesDisponibles;
-	}
-	
-	public Set<Actividad> getActividadesDisponiblesParaInstalacion(Instalacion i) throws SQLException {
-		
-		Set<Actividad> actividadesDisponibles = new HashSet<>();
-		
-		for(Actividad a: getActividades()) {
-			if(!isActividadVetadaEnInstalacion(i, a)) {
-				actividadesDisponibles.add(a);
-			}
-		}
-		
-		return actividadesDisponibles;
 	}
 
 // UTIL
@@ -1909,4 +1923,6 @@ public class Programa {
 				pst.close();
 			}
 		}
+
+		
 }
