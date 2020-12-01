@@ -342,6 +342,7 @@ public class CerrarEspecificando extends JDialog {
 					
 					if(rdbtnNo.isSelected()) {
 						try {
+							selected.setPermisionAlquileres(false);
 							p.updateInstalacion(selected);
 						} catch (SQLException e) {
 							JOptionPane.showMessageDialog(CerrarEspecificando.this, "Ha ocurrido un error modificando la información de la instalación a cerrar");
@@ -353,6 +354,7 @@ public class CerrarEspecificando extends JDialog {
 						
 						try {
 							p.vetarActividadEnInstalacion(selected, aVetar);
+							p.deleteAsociadosConCierre();
 						} catch (SQLException e) {
 							JOptionPane.showMessageDialog(CerrarEspecificando.this, "Ha ocurrido un error vetando la actividad de la instalación");
 						}

@@ -11,6 +11,8 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.ButtonGroup;
@@ -166,7 +168,6 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 		contentPanel.add(getPnBtnDisponibilidad(), BorderLayout.SOUTH);
 		getContentPane().add(getPnBotones(), BorderLayout.SOUTH);
 		cargarActividades();
-		cargarInstalaciones();
 	}
 
 	private void cargarActividades() {
@@ -177,17 +178,32 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 
 	private void cargarInstalaciones() {
 		try {
+			
+			cmbInstalaciones.removeAllItems();
+			cmbInstalacionesLunes.removeAllItems();
+			cmbInstalacionesMartes.removeAllItems();
+			cmbInstalacionesMiercoles.removeAllItems();
+			cmbInstalacionesJueves.removeAllItems();
+			cmbInstalacionesViernes.removeAllItems();
+			cmbInstalacionesSabado.removeAllItems();
+			cmbInstalacionesDomingo.removeAllItems();
+			
+			
+			List<Instalacion> instalacionesLista = new LinkedList<>();
 			for (Instalacion instalacion : getPrograma().instalacionesDisponiblesParaActividad((Actividad)cmbActividades.getSelectedItem())) {
-				if (instalacion.getEstado() == Instalacion.DISPONIBLE) {
-					modeloInstalaciones.addElement(instalacion);
-					modeloInstalacionesLunes.addElement(instalacion);
-					modeloInstalacionesMartes.addElement(instalacion);
-					modeloInstalacionesMiercoles.addElement(instalacion);
-					modeloInstalacionesJueves.addElement(instalacion);
-					modeloInstalacionesViernes.addElement(instalacion);
-					modeloInstalacionesSabado.addElement(instalacion);
-					modeloInstalacionesDomingo.addElement(instalacion);
-				}
+				instalacionesLista.add(instalacion);
+			}
+			
+			Collections.sort(instalacionesLista);
+			for(Instalacion instalacion: instalacionesLista) {
+				modeloInstalaciones.addElement(instalacion);
+				modeloInstalacionesLunes.addElement(instalacion);
+				modeloInstalacionesMartes.addElement(instalacion);
+				modeloInstalacionesMiercoles.addElement(instalacion);
+				modeloInstalacionesJueves.addElement(instalacion);
+				modeloInstalacionesViernes.addElement(instalacion);
+				modeloInstalacionesSabado.addElement(instalacion);
+				modeloInstalacionesDomingo.addElement(instalacion);
 			}
 		} catch (SQLException e) {
 			JOptionPane.showMessageDialog(this, "Ha ocurrido un error determinando las instalaciones disponibles para la actividad seleccion");
@@ -1139,6 +1155,11 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 	private JComboBox<Actividad> getCmbActividades_1() {
 		if (cmbActividades == null) {
 			cmbActividades = new JComboBox<Actividad>(modeloActividades);
+			cmbActividades.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					cargarInstalaciones();
+				}
+			});
 		}
 		return cmbActividades;
 	}

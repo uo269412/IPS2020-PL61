@@ -44,14 +44,15 @@ public class Programa {
 	private List<Alquiler> alquileres;
 	private List<Registro> registros;
 	// Conexión Javi
-	//public static String URL = "jdbc:sqlite:C:\\Users\\javie\\git\\IPS2020-PL61\\resources\\bdProject.db";
+	// public static String URL =
+	// "jdbc:sqlite:C:\\Users\\javie\\git\\IPS2020-PL61\\resources\\bdProject.db";
 
 	// Conexión Dani
-//	public static String URL = "jdbc:sqlite:C:\\Users\\Dani\\git\\IPS2020-PL61_sprint3\\resources\\bdProject.db";
+	public static String URL = "jdbc:sqlite:C:\\Users\\Dani\\git\\IPS2020-PL61_sprint3\\resources\\bdProject.db";
 
 	// Conexión Juan.elo
-	 public static String URL =
-	 "jdbc:sqlite:C:\\Users\\Usuario\\git\\IPS2020-PL61\\resources\\bdProject.db";
+	// public static String URL =
+	// "jdbc:sqlite:C:\\Users\\Usuario\\git\\IPS2020-PL61\\resources\\bdProject.db";
 
 	public Programa() throws SQLException {
 		cargarBaseDatos();
@@ -95,19 +96,20 @@ public class Programa {
 
 		LocalDateTime horacierre = LocalDateTime.now();
 		Connection con = DriverManager.getConnection(URL);
-		PreparedStatement pst1 = con.prepareStatement("SELECT id_cliente, dia, mes, año, horaInicio, horaFin FROM alquiler WHERE id_instalacion = ?");
+		PreparedStatement pst1 = con.prepareStatement(
+				"SELECT id_cliente, dia, mes, año, horaInicio, horaFin FROM alquiler WHERE id_instalacion = ?");
 		pst1.setString(1, i.getCodigo());
 		ResultSet rs1 = pst1.executeQuery();
-		while(rs1.next()) {
-			for(Socio s: socios) {
-				if(s.getId_cliente().equals(rs1.getString(1))
-						&& horacierre.isBefore(LocalDateTime.of(rs1.getInt(4), rs1.getInt(3), rs1.getInt(2), rs1.getInt(5), 0))) {
+		while (rs1.next()) {
+			for (Socio s : socios) {
+				if (s.getId_cliente().equals(rs1.getString(1)) && horacierre
+						.isBefore(LocalDateTime.of(rs1.getInt(4), rs1.getInt(3), rs1.getInt(2), rs1.getInt(5), 0))) {
 					clientesAfectados.add(s);
 				}
 			}
 			for (Tercero s : terceros) {
-				if (s.getId_cliente().equals(rs1.getString(1))
-						&& horacierre.isBefore(LocalDateTime.of(rs1.getInt(4), rs1.getInt(3), rs1.getInt(2), rs1.getInt(5), 0))) {
+				if (s.getId_cliente().equals(rs1.getString(1)) && horacierre
+						.isBefore(LocalDateTime.of(rs1.getInt(4), rs1.getInt(3), rs1.getInt(2), rs1.getInt(5), 0))) {
 					clientesAfectados.add(s);
 				}
 			}
@@ -116,56 +118,37 @@ public class Programa {
 		return clientesAfectados;
 
 	}
-	
+
 	public Set<Cliente> clientesAfectadosPorCierreDia(Instalacion i, int dia, int mes, int año) throws SQLException {
 		Set<Cliente> clientesAfectados = new HashSet<>();
-
-		Connection con = DriverManager.getConnection(URL);
-		PreparedStatement pst1 = con.prepareStatement("SELECT id_cliente FROM alquiler WHERE id_instalacion = ? AND dia=? AND mes=? AND año=?");
-		PreparedStatement pst2 = con.prepareStatement("SELECT id_cliente FROM reserva JOIN actividad_planificada ON reserva.codigo_actividad = actividad_planificada.codigoPlanificada "
-				+ "WHERE codigoInstalacion = ? AND dia=? AND mes=? AND año=?");
-		pst1.setString(1, i.getCodigo());
-		pst1.setInt(2, dia);
-		pst1.setInt(3, mes);
-		pst1.setInt(4, año);
-		pst1.setString(1, i.getCodigo());
-		pst2.setInt(1, dia);
-		pst2.setInt(2, mes);
-		pst2.setInt(3, año);
 		
-		ResultSet rs1 = pst1.executeQuery();
-		ResultSet rs2 = pst2.executeQuery();
 		
-		while(rs1.next()) {
-			for(Socio s: socios) {
-				if(s.getId_cliente().equals(rs1.getString(1))) {
+		
+		for(ActividadPlanificada ap: getActividadesPlanificadasInstalacionDia(i.getCodigoInstalacion(), dia, mes, año)) {
+			for(Reserva r: getReservas()) {
+				if(r.getCodigo_actividad().equals(ap.getCodigoPlanificada())) {
+					clientesAfectados.add(encontrarSocio(r.getId_cliente()));
+				}
+			}
+				
+		}
+		
+		for(Alquiler a: getAlquileres(i.getCodigoInstalacion(), dia, mes, año)) {
+			for (Socio s : socios) {
+				if (s.getId_cliente().equals(a.getId_cliente())) {
 					clientesAfectados.add(s);
 				}
 			}
 			for (Tercero s : terceros) {
-				if (s.getId_cliente().equals(rs1.getString(1))) {
+				if (s.getId_cliente().equals(a.getId_cliente())) {
 					clientesAfectados.add(s);
 				}
 			}
 		}
-		
-		while(rs2.next()) {
-			for(Socio s: socios) {
-				if(s.getId_cliente().equals(rs1.getString(1))) {
-					clientesAfectados.add(s);
-				}
-			}
-		}
-		
-		rs2.close();
-		rs1.close();
-		pst2.close();
-		pst1.close();
-		con.close();
-		
+
 		return clientesAfectados;
 	}
-	
+
 	public List<Alquiler> getAlquileresQueHaHechoClienteEnInstalacion(Cliente c, Instalacion i) {
 		List<Alquiler> alquileresCliente = new LinkedList<>();
 
@@ -183,9 +166,11 @@ public class Programa {
 		List<Alquiler> alquileresCliente = new LinkedList<>();
 
 		for (Alquiler a : getAlquileresQueHaHechoClienteEnInstalacion(c, i)) {
-			if (LocalDateTime.of(año, mes, dia, hora, 0).isBefore(LocalDateTime.of(a.getAño(), a.getMes(), a.getDia(), a.getHoraInicio(), 0))) {
+			if (LocalDateTime.of(año, mes, dia, hora, 0)
+					.isBefore(LocalDateTime.of(a.getAño(), a.getMes(), a.getDia(), a.getHoraInicio(), 0))) {
 				alquileresCliente.add(a);
-			} else if (LocalDateTime.of(año, mes, dia, hora, 0).isEqual(LocalDateTime.of(a.getAño(), a.getMes(), a.getDia(), a.getHoraInicio(), 0))) {
+			} else if (LocalDateTime.of(año, mes, dia, hora, 0)
+					.isEqual(LocalDateTime.of(a.getAño(), a.getMes(), a.getDia(), a.getHoraInicio(), 0))) {
 				if (hora <= a.getHoraInicio()) {
 					alquileresCliente.add(a);
 				}
@@ -350,14 +335,14 @@ public class Programa {
 			System.out.println(actividad.toString());
 		}
 	}
-	
-	public String encontrarNombrePlanificada(ActividadPlanificada planificada)  {
-		for(Actividad a: getActividades()) {
-			if(a.getCodigo().equals(planificada.getCodigoActividad())) {
+
+	public String encontrarNombrePlanificada(ActividadPlanificada planificada) {
+		for (Actividad a : getActividades()) {
+			if (a.getCodigo().equals(planificada.getCodigoActividad())) {
 				return a.getNombre();
 			}
 		}
-		
+
 		return null;
 	}
 
@@ -412,7 +397,7 @@ public class Programa {
 						&& (actividadSeleccionada.getHoraFin() > actividad.getHoraFin()))
 				|| ((actividadSeleccionada.getHoraInicio() > actividad.getHoraInicio())
 						&& (actividadSeleccionada.getHoraFin() < actividad.getHoraFin())));
-		
+
 //		
 //		for (int hora = actividadSeleccionada.getHoraInicio(); hora < actividadSeleccionada.getHoraFin(); hora++) {
 //			if (hora >= actividad.getHoraInicio() && hora < actividad.getHoraFin())
@@ -648,11 +633,11 @@ public class Programa {
 
 	public Set<Socio> sociosQueNoHanPagadoAlquilerMes(int mes, int año) {
 		Set<Socio> sociosSinPagar = new HashSet<>();
-		for(Alquiler a: getAlquileres(mes, año)) {
-			for(Registro r: registros) {
-				if(r.getId_alquiler().equals(a.getId_alquiler())) {
-					if(!r.isAlquilerPagado()) {
-						if(encontrarSocio(a.getId_cliente()) != null) {
+		for (Alquiler a : getAlquileres(mes, año)) {
+			for (Registro r : registros) {
+				if (r.getId_alquiler().equals(a.getId_alquiler())) {
+					if (!r.isAlquilerPagado()) {
+						if (encontrarSocio(a.getId_cliente()) != null) {
 							sociosSinPagar.add(encontrarSocio(a.getId_cliente()));
 						}
 					}
@@ -662,7 +647,7 @@ public class Programa {
 
 		return sociosSinPagar;
 	}
-	
+
 	public Set<Socio> sociosQueNoHanPagadoAlquilerMesSocio(int mes, int año) {
 		Set<Socio> sociosSinPagar = new HashSet<>();
 		for (Alquiler a : getAlquileres(mes, año)) {
@@ -686,56 +671,55 @@ public class Programa {
 
 		return sociosSinPagar;
 	}
-	
+
 	public Set<Socio> sociosAfectadosPorModificacionActividad(ActividadPlanificada a) throws SQLException {
 		Set<Socio> sociosAfectados = new HashSet<>();
-		
+
 		Connection con = DriverManager.getConnection(URL);
 		PreparedStatement pst = con.prepareStatement("SELECT id_cliente FROM reserva WHERE codigo_actividad=?");
 		pst.setString(1, a.getCodigoPlanificada());
 		ResultSet rs = pst.executeQuery();
-		
-		while(rs.next()) {
+
+		while (rs.next()) {
 			String id = rs.getString(1);
-			for(Socio s: getSocios()) {
-				if(s.getId_cliente().equals(id)) {
+			for (Socio s : getSocios()) {
+				if (s.getId_cliente().equals(id)) {
 					sociosAfectados.add(s);
 				}
 			}
 		}
-		
+
 		return sociosAfectados;
 	}
-	
+
 	public List<Alquiler> alquileresNoPagadosSocio(Socio s) throws SQLException {
 		Connection con = DriverManager.getConnection(URL);
 		List<Alquiler> alquileresNoPagados = new ArrayList<>();
-		PreparedStatement pst = con.prepareStatement("SELECT * FROM registro "
-				+ "JOIN alquiler ON registro.id_alquiler = alquiler.id_alquiler "
-				+ "WHERE alquilerPagado = 0 AND id_cliente = ?");
+		PreparedStatement pst = con.prepareStatement(
+				"SELECT * FROM registro " + "JOIN alquiler ON registro.id_alquiler = alquiler.id_alquiler "
+						+ "WHERE alquilerPagado = 0 AND id_cliente = ?");
 		pst.setString(1, s.getId_cliente());
 		ResultSet rs = pst.executeQuery();
-		while(rs.next()) {
+		while (rs.next()) {
 			alquileresNoPagados.add(encontrarAlquileres(rs.getString(2)));
 		}
 		rs.close();
 		pst.close();
 		con.close();
-		
+
 		return alquileresNoPagados;
 	}
-	
+
 	public double getCuotaSocio(Socio s) throws SQLException {
 		List<Alquiler> alquileresNoPagados = alquileresNoPagadosSocio(s);
 		double precioTotal = 0;
-		for(Alquiler a: alquileresNoPagados) {
-			precioTotal += (a.getHoraFin() - a.getHoraInicio()) * encontrarInstalacion(a.getId_instalacion()).getPrecioHora();
+		for (Alquiler a : alquileresNoPagados) {
+			precioTotal += (a.getHoraFin() - a.getHoraInicio())
+					* encontrarInstalacion(a.getId_instalacion()).getPrecioHora();
 		}
-		
+
 		return precioTotal;
 	}
-	
-	
 
 //TERCEROS
 
@@ -1259,6 +1243,18 @@ public class Programa {
 		return listaSort;
 	}
 
+	public List<Alquiler> getAlquileres(String codigo_instalacion, int dia, int mes, int año) {
+		List<Alquiler> listaSort = new ArrayList<Alquiler>();
+		for (Alquiler ap : getAlquileres()) {
+			if (ap.getDia() == dia && ap.getMes() == mes && ap.getAño() == año) {
+				if (codigo_instalacion.equals(ap.getId_instalacion())) {
+					listaSort.add(ap);
+				}
+			}
+		}
+		return listaSort;
+	}
+
 	public boolean hayAlquileresAhoraSocioNoHaEntrado() {
 		for (Socio socio : getSocios()) {
 			Alquiler alquiler = getAlquilerSocioAhora(socio);
@@ -1517,16 +1513,17 @@ public class Programa {
 
 	public void insertarRecurso(Recurso r) throws SQLException {
 		Connection con = DriverManager.getConnection(URL);
-		PreparedStatement pst = con.prepareStatement("INSERT INTO RECURSOS(codigo_recurso, nombre_recurso, codigo_instalacion, unidades)"
-				+ "VALUES (?,?,?,?)");
+		PreparedStatement pst = con
+				.prepareStatement("INSERT INTO RECURSOS(codigo_recurso, nombre_recurso, codigo_instalacion, unidades)"
+						+ "VALUES (?,?,?,?)");
 		pst.setString(1, r.getIdRecurso());
 		pst.setString(2, r.getNombre());
 		pst.setString(3, r.getInstalacion());
 		pst.setInt(4, r.getUnidades());
-		
+
 		pst.executeUpdate();
 	}
-	
+
 	public void updateRecursosFromLista(List<Recurso> listaRecursos) throws SQLException {
 		Connection con = DriverManager.getConnection(URL);
 		for (Recurso r : listaRecursos) {
@@ -1616,7 +1613,7 @@ public class Programa {
 		String nombre = rs.getString(2);
 		double precio = rs.getDouble(3);
 		int estado = rs.getInt(4);
-		boolean permite_alquileres = rs.getInt(5) == 1? true : false;
+		boolean permite_alquileres = rs.getInt(5) == 1 ? true : false;
 		rs.close();
 		pst.close();
 		con.close();
@@ -1631,7 +1628,11 @@ public class Programa {
 		pst.setString(1, i.getNombre());
 		pst.setDouble(2, i.getPrecioHora());
 		pst.setInt(3, i.getEstado());
-		pst.setBoolean(4, i.permiteAlquileres());
+		if (i.permiteAlquileres()) {
+			pst.setInt(4, 1);
+		} else {
+			pst.setInt(4, 0);
+		}
 		pst.setString(5, i.getCodigo());
 		pst.executeUpdate();
 		pst.close();
@@ -1669,20 +1670,19 @@ public class Programa {
 
 		return instalacionesDisponibles;
 	}
-	
+
 	public List<Instalacion> getInstalacionesDisponiblesParaAlquiler() {
 		List<Instalacion> instalacionesDisponiblesAlq = new LinkedList<>();
-		
-		for(Instalacion i: getInstalacionesDisponibles()) {
-			if(i.permiteAlquileres()) {
+
+		for (Instalacion i : getInstalacionesDisponibles()) {
+			if (i.permiteAlquileres()) {
 				instalacionesDisponiblesAlq.add(i);
 			}
 		}
-		
+
 		return instalacionesDisponiblesAlq;
 	}
 
-	
 	public void printInstalaciones() {
 		System.out.println("Lista de instalaciones");
 		for (Instalacion instalacion : instalaciones) {
@@ -1724,17 +1724,18 @@ public class Programa {
 		}
 		return null;
 	}
-	
+
 	public boolean instalacionDisponibleDia(Instalacion i, int dia, int mes, int año) throws SQLException {
 		Connection con = DriverManager.getConnection(URL);
-		PreparedStatement pst = con.prepareStatement("SELECT COUNT(*) FROM cierre_dia WHERE codigo_instalacion = ? AND dia = ? AND mes = ? AND año = ?");
+		PreparedStatement pst = con.prepareStatement(
+				"SELECT COUNT(*) FROM cierre_dia WHERE codigo_instalacion = ? AND dia = ? AND mes = ? AND año = ?");
 		pst.setString(1, i.getCodigoInstalacion());
 		pst.setInt(2, dia);
 		pst.setInt(3, mes);
 		pst.setInt(4, año);
 		ResultSet rs = pst.executeQuery();
 		rs.next();
-		if(rs.getInt(1) > 0) {
+		if (rs.getInt(1) > 0) {
 			rs.close();
 			pst.close();
 			con.close();
@@ -1745,82 +1746,143 @@ public class Programa {
 		con.close();
 		return true;
 	}
-	
+
 	public boolean cierreInstalacionDia(Instalacion i, int dia, int mes, int año) throws SQLException {
-		if(i.getEstado() == Instalacion.CERRADA) {
+		if (i.getEstado() == Instalacion.CERRADA) {
 			return false;
-		} else if(!instalacionDisponibleDia(i, dia, mes, año)) {
+		} else if (!instalacionDisponibleDia(i, dia, mes, año)) {
 			return false;
 		} else {
 			Connection con = DriverManager.getConnection(URL);
-			PreparedStatement pst = con.prepareStatement("INSERT INTO cierre_dia(codigo_instalacion, dia, mes, año)"
-					+ " VALUES(?,?,?,?)");
+			PreparedStatement pst = con
+					.prepareStatement("INSERT INTO cierre_dia(codigo_instalacion, dia, mes, año)" + " VALUES(?,?,?,?)");
 			pst.setString(1, i.getCodigoInstalacion());
 			pst.setInt(2, dia);
 			pst.setInt(3, mes);
 			pst.setInt(4, año);
 			pst.executeUpdate();
-			
+
 			pst.close();
 			con.close();
 			return true;
 		}
 	}
-	
+
 	public Set<Actividad> getActividadesDisponiblesParaInstalacion(Instalacion i) throws SQLException {
 		List<String> idActividadesNoDisponibles = new LinkedList<>();
-		
+
 		Set<Actividad> toRet = new HashSet<>();
-		
+
 		Connection con = DriverManager.getConnection(URL);
-		PreparedStatement pst = con.prepareStatement("SELECT codigo_actividad FROM CIERRE_DIA WHERE codigo_instalacion=?");
+		PreparedStatement pst = con
+				.prepareStatement("SELECT codigo_actividad FROM CIERRE_ACTIVIDAD WHERE codigo_instalacion=?");
 		pst.setString(1, i.getCodigoInstalacion());
-		
+
 		ResultSet rs = pst.executeQuery();
-		
-		while(rs.next()) {
+
+		while (rs.next()) {
 			idActividadesNoDisponibles.add(rs.getString(1));
 		}
-		
-		for(Actividad a: getActividades()) {
-			if(!idActividadesNoDisponibles.contains(a.getCodigo())) {
+
+		for (Actividad a : getActividades()) {
+			if (!idActividadesNoDisponibles.contains(a.getCodigo())) {
 				toRet.add(a);
 			}
 		}
-		
+
 		return toRet;
 	}
 
-//TODO
-//	public void deleteAsociadosConCierre() throws SQLException {
-//		Connection con = DriverManager.getConnection(URL);
-//		PreparedStatement pst = con.prepareStatement("SELECT * FROM cierre_dia");
-//		ResultSet rs = pst.executeQuery();
-//		while(rs.next()) {
-//			PreparedStatement pst2 = con.prepareStatement("DELETE FROM RESERVA WHERE ");
-//		}
-//	}
+	public void deleteActividadesAsociadasConCierre() throws SQLException {
+		Set<ActividadPlanificada> aBorrar = new HashSet<>();
+
+		Connection con = DriverManager.getConnection(URL);
+		PreparedStatement pstDia = con.prepareStatement("SELECT * FROM cierre_dia");
+		ResultSet rsDia = pstDia.executeQuery();
+
+		while (rsDia.next()) {
+			String codigoinstalacion = rsDia.getString("codigo_instalacion");
+			int dia = rsDia.getInt("dia");
+			int mes = rsDia.getInt("mes");
+			int año = rsDia.getInt("año");
+
+			for (ActividadPlanificada ap : getActividadesPlanificadas()) {
+				if (ap.getCodigoInstalacion().equals(codigoinstalacion) && ap.getDia() == dia && ap.getMes() == mes
+						&& ap.getAño() == año) {
+					aBorrar.add(ap);
+				}
+			}
+		}
+
+		rsDia.close();
+		pstDia.close();
+
+		PreparedStatement pstActividad = con.prepareStatement("SELECT * FROM cierre_actividad");
+		ResultSet rsActividad = pstActividad.executeQuery();
+
+		while (rsActividad.next()) {
+			String codigoinstalacion = rsActividad.getString("codigo_instalacion");
+			String codigoactividad = rsActividad.getString("codigo_actividad");
+
+			for (ActividadPlanificada ap : getActividadesPlanificadas()) {
+				if (ap.getCodigoInstalacion().equals(codigoinstalacion)
+						&& ap.getCodigoActividad().equals(codigoactividad)) {
+					aBorrar.add(ap);
+				}
+			}
+		}
+		rsActividad.close();
+		pstActividad.close();
+
+		con.close();
+
+		for (ActividadPlanificada planificadaParaBorrar : aBorrar) {
+			eliminarReserva(planificadaParaBorrar.getCodigoPlanificada());
+			eliminarActividadPlanificada(planificadaParaBorrar);
+		}
+	}
+
+	public void deleteAlquileresAsociadosConCierre() {
+		
+		Set<Alquiler> alquileresABorrar = new HashSet<>();
+		
+		for(Alquiler a: getAlquileres()) {
+			if(!encontrarInstalacion(a.getId_instalacion()).permiteAlquileres()) {
+				alquileresABorrar.add(a);
+			}
+		}
+		
+		for(Alquiler a: alquileresABorrar) {
+			anularAlquiler(a);
+		}
+	}
+	
+	public void deleteAsociadosConCierre() throws SQLException {
+		deleteActividadesAsociadasConCierre();
+		deleteAlquileresAsociadosConCierre();
+	}
 	
 	public void vetarActividadEnInstalacion(Instalacion i, Actividad a) throws SQLException {
 		Connection con = DriverManager.getConnection(URL);
-		PreparedStatement pst = con.prepareStatement("INSERT INTO cierre_actividad(codigo_instalacion, codigo_actividad)"
-				+ " VALUES(?,?)");
+		PreparedStatement pst = con.prepareStatement(
+				"INSERT INTO cierre_actividad(codigo_instalacion, codigo_actividad)" + " VALUES(?,?)");
 		pst.setString(1, i.getCodigoInstalacion());
 		pst.setString(2, a.getCodigo());
 		pst.executeUpdate();
-		
+
 		pst.close();
 		con.close();
 	}
-	
+
 	public boolean isActividadVetadaEnInstalacion(Instalacion i, Actividad a) throws SQLException {
 		Connection con = DriverManager.getConnection(URL);
-		PreparedStatement pst = con.prepareStatement("SELECT COUNT(*) FROM cierre_actividad WHERE codigo_instalacion=? AND codigo_actividad=?");
+		PreparedStatement pst = con.prepareStatement(
+				"SELECT COUNT(*) FROM cierre_actividad WHERE codigo_instalacion=? AND codigo_actividad=?");
 		pst.setString(1, i.getCodigo());
 		pst.setString(2, a.getCodigo());
 		ResultSet rs = pst.executeQuery();
 		rs.next();
-		if(rs.getInt(1) < 1) {
+		if (rs.getInt(1) < 1) {
 			rs.close();
 			pst.close();
 			con.close();
@@ -1831,17 +1893,17 @@ public class Programa {
 		con.close();
 		return true;
 	}
-	
+
 	public Set<Instalacion> instalacionesDisponiblesParaActividad(Actividad a) throws SQLException {
-		
+
 		Set<Instalacion> instalacionesDisponibles = new HashSet<>();
-		
-		for(Instalacion i: getInstalacionesDisponibles()) {
-			if(!isActividadVetadaEnInstalacion(i, a)) {
+
+		for (Instalacion i : getInstalacionesDisponibles()) {
+			if (!isActividadVetadaEnInstalacion(i, a)) {
 				instalacionesDisponibles.add(i);
 			}
 		}
-		
+
 		return instalacionesDisponibles;
 	}
 
@@ -1878,51 +1940,50 @@ public class Programa {
 		return false;
 	}
 
-	
-	//CONFLICTOS
-		public void crearConflicto(ActividadPlanificada a1, ActividadPlanificada a2) throws SQLException {
-			Conflicto c = new Conflicto(a1, a2);
-			c.conseguirNombreActividades(this);
-			a1.añadirConflicto(c);
-			
-			Connection con = DriverManager.getConnection(URL);
-			
-			PreparedStatement pst = con.prepareStatement("INSERT INTO CONFLICTOS VALUES (?,?)");
-			pst.setString(1, a1.getCodigoPlanificada());
-			pst.setString(2, a2.getCodigoPlanificada());
-			
-			pst.executeUpdate();
-			
-			pst.close();
-			con.close();
-		}
-		
-		public void cargarConflictos() throws SQLException {
-			Connection con = DriverManager.getConnection(URL);
-			
-			for(ActividadPlanificada a: actividadesPlanificadas) {
-				
-				PreparedStatement pst = con.prepareStatement("SELECT codigoActividadConflictiva FROM CONFLICTOS WHERE codigoActividadAfectada = ?");
-				
-				pst.setString(1, a.getCodigoPlanificada());
-				ResultSet rs = pst.executeQuery();
-				
-				while(rs.next()) {
-					ActividadPlanificada actividadConflictiva = null;
-					for(ActividadPlanificada a2: actividadesPlanificadas) {
-						if(a2.getCodigoPlanificada().equals(rs.getString(1))) {
-							actividadConflictiva = a2;
-						}
-					}
-					Conflicto c = new Conflicto(a, actividadConflictiva);
-					c.conseguirNombreActividades(this);
-					a.añadirConflicto(c);
-				}
-				
-				rs.close();
-				pst.close();
-			}
-		}
+	// CONFLICTOS
+	public void crearConflicto(ActividadPlanificada a1, ActividadPlanificada a2) throws SQLException {
+		Conflicto c = new Conflicto(a1, a2);
+		c.conseguirNombreActividades(this);
+		a1.añadirConflicto(c);
 
-		
+		Connection con = DriverManager.getConnection(URL);
+
+		PreparedStatement pst = con.prepareStatement("INSERT INTO CONFLICTOS VALUES (?,?)");
+		pst.setString(1, a1.getCodigoPlanificada());
+		pst.setString(2, a2.getCodigoPlanificada());
+
+		pst.executeUpdate();
+
+		pst.close();
+		con.close();
+	}
+
+	public void cargarConflictos() throws SQLException {
+		Connection con = DriverManager.getConnection(URL);
+
+		for (ActividadPlanificada a : actividadesPlanificadas) {
+
+			PreparedStatement pst = con.prepareStatement(
+					"SELECT codigoActividadConflictiva FROM CONFLICTOS WHERE codigoActividadAfectada = ?");
+
+			pst.setString(1, a.getCodigoPlanificada());
+			ResultSet rs = pst.executeQuery();
+
+			while (rs.next()) {
+				ActividadPlanificada actividadConflictiva = null;
+				for (ActividadPlanificada a2 : actividadesPlanificadas) {
+					if (a2.getCodigoPlanificada().equals(rs.getString(1))) {
+						actividadConflictiva = a2;
+					}
+				}
+				Conflicto c = new Conflicto(a, actividadConflictiva);
+				c.conseguirNombreActividades(this);
+				a.añadirConflicto(c);
+			}
+
+			rs.close();
+			pst.close();
+		}
+	}
+
 }
