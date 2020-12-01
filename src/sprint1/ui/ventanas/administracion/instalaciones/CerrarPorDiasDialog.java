@@ -321,7 +321,7 @@ public class CerrarPorDiasDialog extends JDialog {
 				} else {
 					clientesAfectados.addAll(p.clientesAfectadosPorCierreDia((Instalacion) cbInstalacion.getSelectedItem(), diaUltimaReserva,
 						mesUltimaReserva, añoUltimaReserva));
-					p.deleteAsociadosConCierre();
+					p.deleteAsociadosConCierreParaDias();
 				}
 			} catch (SQLException e) {
 				JOptionPane.showMessageDialog(this, "Ha ocurrido un error con la base de datos tratando de cerrar la instalación");

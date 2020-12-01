@@ -313,7 +313,7 @@ public class ModificarPlanificacionDialog extends JDialog {
 	
 	private void printSociosAfectados()  {
 		StringBuilder sb = new StringBuilder();
-		sb.append("--------SOCIOS AFECTADOS POR MODIFICACIÓN------");
+		sb.append("--------SOCIOS AFECTADOS POR MODIFICACIÓN------\n");
 		try {
 			for(Socio s: p.sociosAfectadosPorModificacionActividad(a)) {
 				sb.append("\tSocio: " + s.getNombre() + " " + s.getApellido() + ", con id " + s.getId_cliente() + "\n");
@@ -321,6 +321,8 @@ public class ModificarPlanificacionDialog extends JDialog {
 		} catch (SQLException e) {
 			JOptionPane.showMessageDialog(this, "Ha ocurrido un problema tratando de recuperar los socios afectados por la modificación");
 		}
+		
+		System.out.println(sb.toString());
 	}
 	
 	private void rellenarInstalacion() {

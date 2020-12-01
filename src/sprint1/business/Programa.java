@@ -48,11 +48,10 @@ public class Programa {
 	// "jdbc:sqlite:C:\\Users\\javie\\git\\IPS2020-PL61\\resources\\bdProject.db";
 
 	// Conexión Dani
-//	public static String URL = "jdbc:sqlite:C:\\Users\\Dani\\git\\IPS2020-PL61_sprint3\\resources\\bdProject.db";
+	public static String URL = "jdbc:sqlite:C:\\Users\\Dani\\git\\IPS2020-PL61_sprint3\\resources\\bdProject.db";
 
 	// Conexión Juan.elo
-	 public static String URL =
-	 "jdbc:sqlite:C:\\Users\\Usuario\\git\\IPS2020-PL61\\resources\\bdProject.db";
+	//public static String URL = "jdbc:sqlite:C:\\Users\\Usuario\\git\\IPS2020-PL61\\resources\\bdProject.db";
 
 	public Programa() throws SQLException {
 		cargarBaseDatos();
@@ -1084,7 +1083,7 @@ public class Programa {
 
 	private void cancelarAlquiler(String id_alquiler) {
 		try {
-			Connection con = DriverManager.getConnection(Programa.URL);
+			Connection con = DriverManager.getConnection(URL);
 			PreparedStatement pst = con.prepareStatement("DELETE FROM ALQUILER WHERE id_alquiler = ?");
 			pst.setString(1, id_alquiler);
 			pst.execute();
@@ -1842,7 +1841,22 @@ public class Programa {
 		}
 	}
 
-	public void deleteAlquileresAsociadosConCierre() {
+	public void deleteAlquileresAsociadosConCierreDias() throws SQLException {
+		
+		Connection con = DriverManager.getConnection(URL);
+		PreparedStatement pst = con.prepareStatement("SELECT * FROM cierre_dia");
+		ResultSet rs = pst.executeQuery();
+		
+		while(rs.next()) {
+			String id_instalacion = rs.getString(1);
+			int dia = rs.getInt(2);
+			int mes = rs.getInt(3);
+			int año = rs.getInt(4);
+			
+			for(Alquiler a: getAlquileres(id_instalacion, dia, mes, año)) {
+				anularAlquiler(a);
+			}
+		}
 		
 		Set<Alquiler> alquileresABorrar = new HashSet<>();
 		
@@ -1857,9 +1871,30 @@ public class Programa {
 		}
 	}
 	
-	public void deleteAsociadosConCierre() throws SQLException {
+	public void deleteAlquileresAsociadosConCierreEspecifico() {
+		
+		Set<Alquiler> alquileresABorrar = new HashSet<>();
+		
+		for(Alquiler a: getAlquileres()) {
+			if(!encontrarInstalacion(a.getId_instalacion()).permiteAlquileres()) {
+				alquileresABorrar.add(a);
+			}
+		}
+		
+		for(Alquiler a: alquileresABorrar) {
+			anularAlquiler(a);
+		}
+	}
+	
+	
+	public void deleteAsociadosConCierreParaDias() throws SQLException {
 		deleteActividadesAsociadasConCierre();
-		deleteAlquileresAsociadosConCierre();
+		deleteAlquileresAsociadosConCierreDias();
+	}
+	
+	public void deleteAsociadosConCierreParaEspecifico() throws SQLException {
+		deleteActividadesAsociadasConCierre();
+		deleteAlquileresAsociadosConCierreEspecifico();
 	}
 	
 	public void vetarActividadEnInstalacion(Instalacion i, Actividad a) throws SQLException {

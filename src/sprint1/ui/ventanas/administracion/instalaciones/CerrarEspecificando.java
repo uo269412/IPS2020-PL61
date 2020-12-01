@@ -101,32 +101,33 @@ public class CerrarEspecificando extends JDialog {
 		}
 		return pnInstalacionACerrar;
 	}
-	
+
 	private void rellenarModeloParaInstalacion() {
-		Instalacion i = (Instalacion)cbInstalacion.getSelectedItem();
-		
+		Instalacion i = (Instalacion) cbInstalacion.getSelectedItem();
+
 		try {
-			
+
 			List<Actividad> actividadesCombo = new LinkedList<>();
-			
-			for(Actividad a: p.getActividadesDisponiblesParaInstalacion(i))
+
+			for (Actividad a : p.getActividadesDisponiblesParaInstalacion(i))
 				actividadesCombo.add(a);
-			
+
 			cbActividades.setModel(new DefaultComboBoxModel<Actividad>(
 					actividadesCombo.toArray(new Actividad[actividadesCombo.size()])));
-			
+
 		} catch (SQLException e) {
-			JOptionPane.showMessageDialog(this, "Ha ocurrido un error buscando las actividades disponibles para la instalacion seleccionada");
+			JOptionPane.showMessageDialog(this,
+					"Ha ocurrido un error buscando las actividades disponibles para la instalacion seleccionada");
 		}
 	}
 
 	private JComboBox<Instalacion> getCbInstalacion() {
 		if (cbInstalacion == null) {
 			cbInstalacion = new JComboBox<>();
-			
+
 			cbInstalacion.setModel(new DefaultComboBoxModel<Instalacion>(
 					p.getInstalacionesDisponibles().toArray(new Instalacion[p.getInstalacionesDisponibles().size()])));
-		
+
 			cbInstalacion.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					rellenarModeloParaInstalacion();
@@ -337,34 +338,38 @@ public class CerrarEspecificando extends JDialog {
 			btnCerrar = new JButton("Cerrar Instalaci\u00F3n");
 			btnCerrar.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					
-					Instalacion selected = (Instalacion)cbInstalacion.getSelectedItem();
-					
-					if(rdbtnNo.isSelected()) {
+
+					Instalacion selected = (Instalacion) cbInstalacion.getSelectedItem();
+
+					if (rdbtnNo.isSelected()) {
 						try {
 							selected.setPermisionAlquileres(false);
 							p.updateInstalacion(selected);
-							p.deleteAsociadosConCierre();
+							p.deleteAsociadosConCierreParaEspecifico();
 						} catch (SQLException e) {
-							JOptionPane.showMessageDialog(CerrarEspecificando.this, "Ha ocurrido un error modificando la información de la instalación a cerrar");
+							JOptionPane.showMessageDialog(CerrarEspecificando.this,
+									"Ha ocurrido un error modificando la información de la instalación a cerrar");
 						}
 					}
-					
-					for(int i = 0; i < lm.size(); i++) {
+
+					for (int i = 0; i < lm.size(); i++) {
 						Actividad aVetar = lm.get(i);
-						
+
 						try {
 							p.vetarActividadEnInstalacion(selected, aVetar);
-							p.deleteAsociadosConCierre();
+							p.deleteAsociadosConCierreParaEspecifico();
 						} catch (SQLException e) {
-							JOptionPane.showMessageDialog(CerrarEspecificando.this, "Ha ocurrido un error vetando la actividad de la instalación");
+							JOptionPane.showMessageDialog(CerrarEspecificando.this,
+									"Ha ocurrido un error vetando la actividad de la instalación");
 						}
 					}
-					
+
 					dispose();
 				}
 			});
 			btnCerrar.setBackground(new Color(60, 179, 113));
 			btnCerrar.setForeground(new Color(255, 255, 255));
-		}return btnCerrar;
-}}
+		}
+		return btnCerrar;
+	}
+}
