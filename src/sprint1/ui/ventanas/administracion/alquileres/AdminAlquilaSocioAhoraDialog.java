@@ -185,13 +185,22 @@ public class AdminAlquilaSocioAhoraDialog extends JDialog {
 							Instalacion instalacion = listInstalaciones.getSelectedValue();
 							int fecha[] = getPrograma().obtenerHoraDiaMesAño();
 							if (checkSePuedeReservar2Horas(instalacion)) {
+								if (instalacion.permiteAlquileres()) {
 								getPrograma().añadirAlquiler(socio, instalacion, fecha[0], fecha[0] + 2);
 								JOptionPane.showMessageDialog(null,
 										"Se ha realizado el alquiler de dos horas correctamente");
+								}else {
+									JOptionPane.showMessageDialog(null, "La instalación no permite alquileres");
+								}
 							} else {
+								if (instalacion.permiteAlquileres()) {
 								getPrograma().añadirAlquiler(socio, instalacion, fecha[0], fecha[0] + 1);
 								JOptionPane.showMessageDialog(null,
 										"Se ha realizado el alquiler de una hora correctamente");
+								}
+								else {
+									JOptionPane.showMessageDialog(null, "La instalación no permite alquileres");
+								}
 							}
 							dispose();
 

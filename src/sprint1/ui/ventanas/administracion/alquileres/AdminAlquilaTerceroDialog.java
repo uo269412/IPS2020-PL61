@@ -3,7 +3,7 @@ package sprint1.ui.ventanas.administracion.alquileres;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
-import java.awt.HeadlessException;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
@@ -21,6 +21,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import sprint1.business.Programa;
@@ -30,8 +31,6 @@ import sprint1.business.dominio.centroDeportes.instalaciones.Instalacion;
 import sprint1.business.dominio.clientes.Tercero;
 import sprint1.ui.ventanas.administracion.actividades.CalendarioDisponibilidadInstalacion;
 import sprint1.ui.ventanas.administracion.util.CalendarioTercero;
-import javax.swing.SwingConstants;
-import java.awt.Toolkit;
 
 public class AdminAlquilaTerceroDialog extends JDialog {
 
@@ -372,8 +371,13 @@ public class AdminAlquilaTerceroDialog extends JDialog {
 	
 	private void createAlquiler(int dia, int mes, int año) {
 		try {
-			p.añadirAlquilerDia(t, p.obtenerInstalacionPorId(((Instalacion)cmbInstalaciones.getSelectedItem()).getCodigo()),
-					dia, mes, año, Integer.parseInt(txtHoraInicio.getText()), Integer.parseInt(txtHoraFin.getText()));
+			if (p.obtenerInstalacionPorId(((Instalacion)cmbInstalaciones.getSelectedItem()).getCodigo()).permiteAlquileres()) {
+				p.añadirAlquilerDia(t, p.obtenerInstalacionPorId(((Instalacion)cmbInstalaciones.getSelectedItem()).getCodigo()),
+						dia, mes, año, Integer.parseInt(txtHoraInicio.getText()), Integer.parseInt(txtHoraFin.getText()));
+			}
+			else {
+				JOptionPane.showMessageDialog(this, "La instalación no permite alquileres");
+			}
 		} catch (NumberFormatException | SQLException e) {
 			JOptionPane.showMessageDialog(this, "Ha ocurrido un error con la base de datos");
 		}

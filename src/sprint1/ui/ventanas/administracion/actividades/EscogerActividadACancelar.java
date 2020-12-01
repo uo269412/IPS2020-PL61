@@ -51,7 +51,7 @@ public class EscogerActividadACancelar extends JDialog {
 
 	private JLabel getLblNewLabel() {
 		if (lblNewLabel == null) {
-			lblNewLabel = new JLabel("Modificar planificaci\u00F3n en actividad:");
+			lblNewLabel = new JLabel("Cancelar planificaci\u00F3n en actividad:");
 			lblNewLabel.setFont(new Font("Arial Black", Font.PLAIN, 16));
 		}
 		return lblNewLabel;

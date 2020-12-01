@@ -248,7 +248,12 @@ public class AdminAlquilaSocioDialog extends JDialog {
 		Instalacion instalacion = (Instalacion) cmbInstalaciones.getSelectedItem();
 		int horaInicio = Integer.parseInt(txtHoraInicio.getText());
 		int horaFin = Integer.parseInt(txtHoraFin.getText());
-		getPrograma().añadirAlquiler(socio, instalacion, horaInicio, horaFin, dia, mes, año);
+		if (instalacion.permiteAlquileres()) {
+			getPrograma().añadirAlquiler(socio, instalacion, horaInicio, horaFin, dia, mes, año);
+		}
+		else {
+			JOptionPane.showMessageDialog(this, "La instalación no permite alquileres");
+		}
 	}
 
 	private JPanel getPnProgramarActividad() {

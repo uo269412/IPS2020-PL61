@@ -1594,7 +1594,7 @@ public class PlanificarActividadFlexibilidadDialog extends JDialog {
 			try {
 				getPrograma().crearConflicto(f, a);
 			} catch (SQLException e) {
-				JOptionPane.showMessageDialog(this, "Ha ocurrido un error creando los conflictos");
+				JOptionPane.showMessageDialog(this, "La instalacion esta cerrada el dia " + f.getDia() + "/" + f.getMes() + "/" + f.getAño());
 			}
 		}
 	}
