@@ -176,11 +176,20 @@ public class ModificarPlanificacionDialog extends JDialog {
 						a.setHoraInicio(Integer.parseInt(txtHoraInicio.getText()));
 						a.setHoraFin(Integer.parseInt(txtHoraFin.getText()));
 						try {
+							if(p.instalacionDisponibleDia((Instalacion)cbInstalacion.getSelectedItem(), a.getDia(), a.getMes(), a.getAño())) {
+								if(p.instalacionDisponibleActividad((Instalacion)cbInstalacion.getSelectedItem(), a.getCodigoActividad())) {
+									p.updateActividadPlanificada(a);
+									printSociosAfectados();
+									dispose();
+									getThisParent().generarPaneles();
+								} else {
+									JOptionPane.showMessageDialog(ModificarPlanificacionDialog.this, "La instalación está cerrada para la actividad que intentas mover");
+								}
+								
+							} else {
+								JOptionPane.showMessageDialog(ModificarPlanificacionDialog.this, "La instalación está cerrada el día al que intentas mover la actividad");
+							}
 							
-							p.updateActividadPlanificada(a);
-							printSociosAfectados();
-							dispose();
-							getThisParent().generarPaneles();
 						} catch (SQLException e) {
 							JOptionPane.showMessageDialog(ModificarPlanificacionDialog.this, 
 									"Ha ocurrido un error actualizando la planificación de la actividad");

@@ -1785,6 +1785,26 @@ public class Programa {
 		con.close();
 		return true;
 	}
+	
+	public boolean instalacionDisponibleActividad(Instalacion i, String codigo_actividad) throws SQLException {
+		Connection con = DriverManager.getConnection(URL);
+		PreparedStatement pst = con.prepareStatement(
+				"SELECT COUNT(*) FROM cierre_actividad WHERE codigo_instalacion = ? AND codigo_actividad = ?");
+		pst.setString(1, i.getCodigoInstalacion());
+		pst.setString(2, codigo_actividad);
+		ResultSet rs = pst.executeQuery();
+		rs.next();
+		if (rs.getInt(1) > 0) {
+			rs.close();
+			pst.close();
+			con.close();
+			return false;
+		}
+		rs.close();
+		pst.close();
+		con.close();
+		return true;
+	}
 
 	public boolean cierreInstalacionDia(Instalacion i, int dia, int mes, int año) throws SQLException {
 		if (i.getEstado() == Instalacion.CERRADA) {
