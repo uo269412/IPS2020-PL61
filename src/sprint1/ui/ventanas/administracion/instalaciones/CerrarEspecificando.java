@@ -7,8 +7,13 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -29,6 +34,9 @@ import javax.swing.border.EmptyBorder;
 import sprint1.business.Programa;
 import sprint1.business.dominio.centroDeportes.actividades.Actividad;
 import sprint1.business.dominio.centroDeportes.instalaciones.Instalacion;
+import sprint1.business.dominio.clientes.Cliente;
+import sprint1.business.dominio.clientes.Socio;
+import sprint1.business.dominio.clientes.Tercero;
 import sprint1.ui.ventanas.administracion.actividades.CalendarioDisponibilidadInstalacion;
 
 public class CerrarEspecificando extends JDialog {
@@ -338,12 +346,14 @@ public class CerrarEspecificando extends JDialog {
 			btnCerrar = new JButton("Cerrar Instalaci\u00F3n");
 			btnCerrar.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-
+					Set<Cliente> clientesAfectados = new HashSet<>();
+					
 					Instalacion selected = (Instalacion) cbInstalacion.getSelectedItem();
 
 					if (rdbtnNo.isSelected()) {
 						try {
 							selected.setPermisionAlquileres(false);
+							clientesAfectados.addAll(p.clientesAfectadosPorCierreAlquiler(selected));
 							p.updateInstalacion(selected);
 							p.deleteAsociadosConCierreParaEspecifico();
 						} catch (SQLException e) {
@@ -356,6 +366,7 @@ public class CerrarEspecificando extends JDialog {
 						Actividad aVetar = lm.get(i);
 
 						try {
+							clientesAfectados.addAll(p.clientesAfectadosPorCierreActividad(selected, aVetar));
 							p.vetarActividadEnInstalacion(selected, aVetar);
 							p.deleteAsociadosConCierreParaEspecifico();
 						} catch (SQLException e) {
@@ -363,7 +374,7 @@ public class CerrarEspecificando extends JDialog {
 									"Ha ocurrido un error vetando la actividad de la instalación");
 						}
 					}
-
+					printClientesAfectadosPorCierre(clientesAfectados);
 					dispose();
 				}
 			});
@@ -371,5 +382,26 @@ public class CerrarEspecificando extends JDialog {
 			btnCerrar.setForeground(new Color(255, 255, 255));
 		}
 		return btnCerrar;
+	}
+	
+	private void printClientesAfectadosPorCierre(Set<Cliente> clientesAfectados) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("-------CLIENTES AFECTADOS POR EL CIERRE DE LA INSTALACIÓN "
+				+ ((Instalacion) cbInstalacion.getSelectedItem()).getNombre() + "-------\n");
+		for (Cliente c : clientesAfectados) {
+			Date date = new Date();
+			Calendar calendar = GregorianCalendar.getInstance();
+			calendar.setTime(date);
+			if (c instanceof Tercero) {
+				sb.append("Tercero: " + c.getId_cliente() + " Nombre: ");
+				sb.append(((Tercero) c).getNombre() + "\n");
+			} else if (c instanceof Socio) {
+				sb.append("Socio: " + c.getId_cliente() + " Nombre: ");
+				sb.append(((Socio) c).getNombre() + "\n");
+			}
+
+		}
+
+		System.out.println(sb.toString());
 	}
 }
