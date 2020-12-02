@@ -12,6 +12,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultListModel;
@@ -27,6 +28,7 @@ import javax.swing.border.EmptyBorder;
 
 import sprint1.business.dominio.centroDeportes.actividades.Actividad;
 import sprint1.business.dominio.centroDeportes.actividades.ActividadPlanificada;
+import sprint1.business.dominio.clientes.Socio;
 import sprint1.ui.ventanas.administracion.util.CalendarioSemanalCancelar;
 
 public class CancelarActividadDialog extends JDialog {
@@ -120,8 +122,9 @@ public class CancelarActividadDialog extends JDialog {
 	protected void cancelarActividad() {
 		if (JOptionPane.showConfirmDialog(this, "¿Seguro que quiere eliminar esta actividad y las reservas relacionadas?") == JOptionPane.YES_OPTION) {
 			try {
+				List<Socio> afectados = parent.getPrograma().eliminarReserva(actividad.getCodigoPlanificada());
 				parent.getPrograma().eliminarActividadPlanificada(actividad);
-				parent.getPrograma().eliminarReserva(actividad.getCodigoPlanificada());
+				printAfectados(afectados);
 			} catch (SQLException e) {
 				JOptionPane.showMessageDialog(this, "Ha habido un error eliminando la actividad planificada. Por favor, póngase en contacto con el administrador");
 			}
@@ -133,8 +136,9 @@ public class CancelarActividadDialog extends JDialog {
 		if (JOptionPane.showConfirmDialog(this, "¿Seguro que quiere eliminar esta actividad y las actividades y reservas relacionadas?") == JOptionPane.YES_OPTION) {
 			for(int i = 0; i < listaModelo.getSize(); i++) {
 				try {
+					List<Socio> afectados = parent.getPrograma().eliminarReserva(listaModelo.get(i).getCodigoPlanificada());
 					parent.getPrograma().eliminarActividadPlanificada(listaModelo.get(i));
-					parent.getPrograma().eliminarReserva(listaModelo.get(i).getCodigoActividad());
+					printAfectados(afectados);
 				} catch (SQLException e) {
 					JOptionPane.showMessageDialog(this, "Ha habido un error eliminando la actividad planificada. Por favor, póngase en contacto con el administrador");
 				}
@@ -143,6 +147,14 @@ public class CancelarActividadDialog extends JDialog {
 			dispose();
 		}
 		
+	}
+	private void printAfectados(List<Socio> afectados) {
+		if (!afectados.isEmpty()) {
+			System.out.println("------------SOCIOS AFECTADOS------------");
+			for (Socio s : afectados) {
+				System.out.println("\t" + s.getNombre() + " " + s.getApellido());
+			}
+		}
 	}
 	private JPanel getPnActividad() {
 		if (pnActividad == null) {

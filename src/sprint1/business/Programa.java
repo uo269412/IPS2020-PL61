@@ -48,10 +48,10 @@ public class Programa {
 	// "jdbc:sqlite:C:\\Users\\javie\\git\\IPS2020-PL61\\resources\\bdProject.db";
 
 	// Conexión Dani
-	public static String URL = "jdbc:sqlite:C:\\Users\\Dani\\git\\IPS2020-PL61_sprint3\\resources\\bdProject.db";
+//	public static String URL = "jdbc:sqlite:C:\\Users\\Dani\\git\\IPS2020-PL61_sprint3\\resources\\bdProject.db";
 
 	// Conexión Juan.elo
-//	public static String URL = "jdbc:sqlite:C:\\Users\\Usuario\\git\\IPS2020-PL61\\resources\\bdProject.db";
+	public static String URL = "jdbc:sqlite:C:\\Users\\Usuario\\git\\IPS2020-PL61\\resources\\bdProject.db";
 
 	public Programa() throws SQLException {
 		cargarBaseDatos();
@@ -820,16 +820,19 @@ public class Programa {
 		}
 	}
 
-	public void eliminarReserva(String codigoActividad) {
+	public List<Socio> eliminarReserva(String codigoActividad) {
 		ArrayList<Reserva> toRemove = new ArrayList<>();
 		for (Reserva reserva : reservas) {
 			if (reserva.getCodigo_actividad().equals(codigoActividad)) {
 				toRemove.add(reserva);
 			}
 		}
+		ArrayList<Socio> toRet = new ArrayList<Socio>();
 		for (Reserva reserva : toRemove) {
 			remove(reserva);
+			toRet.add(encontrarSocio(reserva.getId_cliente()));
 		}
+		return toRet;
 	}
 
 	private void remove(Reserva reserva) {

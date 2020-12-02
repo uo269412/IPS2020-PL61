@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ import sprint1.business.dominio.centroDeportes.actividades.ActividadPlanificada;
 import sprint1.business.dominio.centroDeportes.alquileres.Alquiler;
 import sprint1.business.dominio.centroDeportes.instalaciones.Instalacion;
 import sprint1.business.dominio.clientes.Socio;
-import java.awt.Toolkit;
+import sprint1.business.dominio.clientes.Tercero;
 
 public class CalendarioSemanalBase extends JDialog {
 
@@ -280,6 +281,11 @@ public class CalendarioSemanalBase extends JDialog {
 		for (Socio s : socios) {
 			if (al.getId_cliente().equals(s.getId_cliente())) {
 				return s.getNombre() + " " + s.getApellido();
+			}
+		}
+		for (Tercero t : programa.getTerceros()) {
+			if (al.getId_cliente().equals(t.getId_cliente())) {
+				return t.getNombre();
 			}
 		}
 		return null;

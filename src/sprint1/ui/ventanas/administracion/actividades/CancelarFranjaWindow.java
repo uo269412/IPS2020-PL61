@@ -12,6 +12,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
@@ -26,6 +27,7 @@ import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 
 import sprint1.business.dominio.centroDeportes.actividades.ActividadPlanificada;
+import sprint1.business.dominio.clientes.Socio;
 import sprint1.ui.ventanas.administracion.util.CalendarioSemanalCancelar;
 
 public class CancelarFranjaWindow extends JDialog {
@@ -117,14 +119,24 @@ public class CancelarFranjaWindow extends JDialog {
 		if (JOptionPane.showConfirmDialog(this, "¿Seguro que quiere eliminar esta actividad y las actividades y reservas relacionadas?") == JOptionPane.YES_OPTION) {
 			for(int i = 0; i < listaModelo.getSize(); i++) {
 				try {
+					List<Socio> afectados = parent.getPrograma().eliminarReserva(listaModelo.get(i).getCodigoPlanificada());
 					parent.getPrograma().eliminarActividadPlanificada(listaModelo.get(i));
-					parent.getPrograma().eliminarReserva(listaModelo.get(i).getCodigoActividad());
+					printAfectados(afectados);
 				} catch (SQLException e) {
 					JOptionPane.showMessageDialog(this, "Ha habido un error eliminando la actividad planificada. Por favor, póngase en contacto con el administrador");
 				}
 			}
 			JOptionPane.showMessageDialog(this, "Actividades y reservas eliminadas correctamente.");
 			dispose();
+		}
+	}
+	
+	private void printAfectados(List<Socio> afectados) {
+		if (!afectados.isEmpty()) {
+			System.out.println("------------SOCIOS AFECTADOS------------");
+			for (Socio s : afectados) {
+				System.out.println("\t" + s.getNombre() + " " + s.getApellido());
+			}
 		}
 	}
 
