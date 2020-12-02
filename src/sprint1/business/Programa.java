@@ -117,6 +117,44 @@ public class Programa {
 		return clientesAfectados;
 
 	}
+	
+	public Set<Cliente> clientesAfectadosPorCierreAlquiler(Instalacion i) {
+		
+		Set<Cliente> clientesAfectados = new HashSet<>();
+		
+		for(Alquiler a: getAlquileres()) {
+			if(a.getId_instalacion().equals(i.getCodigoInstalacion())) {
+				for (Socio s : socios) {
+					if (s.getId_cliente().equals(a.getId_cliente())) {
+						clientesAfectados.add(s);
+					}
+				}
+				for (Tercero s : terceros) {
+					if (s.getId_cliente().equals(a.getId_cliente())) {
+						clientesAfectados.add(s);
+					}
+				}
+			}
+		}
+		
+		return clientesAfectados;
+	}
+	
+	public Set<Cliente> clientesAfectadosPorCierreActividad(Instalacion i, Actividad a) {
+		Set<Cliente> clientesAfectados = new HashSet<>();
+		
+		for(ActividadPlanificada ap: getActividadesPlanificadas()) {
+			if(ap.getCodigoActividad().equals(a.getCodigo()) && ap.getCodigoInstalacion().equals(i.getCodigoInstalacion())) {
+				for(Reserva r: getReservas()) {
+					if(r.getCodigo_actividad().equals(ap.getCodigoPlanificada())) {
+						clientesAfectados.add(encontrarSocio(r.getId_cliente()));
+					}
+				}
+			}
+		}
+		
+		return clientesAfectados;
+	}
 
 	public Set<Cliente> clientesAfectadosPorCierreDia(Instalacion i, int dia, int mes, int año) {
 		Set<Cliente> clientesAfectados = new HashSet<>();
@@ -1737,6 +1775,26 @@ public class Programa {
 		pst.setInt(2, dia);
 		pst.setInt(3, mes);
 		pst.setInt(4, año);
+		ResultSet rs = pst.executeQuery();
+		rs.next();
+		if (rs.getInt(1) > 0) {
+			rs.close();
+			pst.close();
+			con.close();
+			return false;
+		}
+		rs.close();
+		pst.close();
+		con.close();
+		return true;
+	}
+	
+	public boolean instalacionDisponibleActividad(Instalacion i, String codigo_actividad) throws SQLException {
+		Connection con = DriverManager.getConnection(URL);
+		PreparedStatement pst = con.prepareStatement(
+				"SELECT COUNT(*) FROM cierre_actividad WHERE codigo_instalacion = ? AND codigo_actividad = ?");
+		pst.setString(1, i.getCodigoInstalacion());
+		pst.setString(2, codigo_actividad);
 		ResultSet rs = pst.executeQuery();
 		rs.next();
 		if (rs.getInt(1) > 0) {
