@@ -263,6 +263,8 @@ public class AdminAlquilaTerceroDialog extends JDialog {
 										createAlquiler(diaUltimaReserva, mesUltimaReserva, añoUltimaReserva);
 									else
 										JOptionPane.showMessageDialog(AdminAlquilaTerceroDialog.this, "La instalación donde estás intentando reservar está ocupada a esa hora, prueba otra hora o otro día");
+								} else {
+									JOptionPane.showMessageDialog(AdminAlquilaTerceroDialog.this, "La instalación que estás intentando reservar está cerrada el día " + diaUltimaReserva + "/" + mesUltimaReserva + "/" + añoUltimaReserva);
 								}
 							} catch (SQLException e) {
 								JOptionPane.showMessageDialog(AdminAlquilaTerceroDialog.this, "Ha ocurrido un problema en la BD comprobando la disponibilidad de la instalacion");

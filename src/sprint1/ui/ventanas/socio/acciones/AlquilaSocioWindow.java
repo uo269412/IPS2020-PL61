@@ -7,6 +7,7 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
@@ -118,6 +119,20 @@ public class AlquilaSocioWindow extends JDialog {
 		} else if (!checkMenosDeUnaHoraAntes()) {
 			JOptionPane.showMessageDialog(this, "Solo se puede reservar hasta una hora antes del comienzo del alquiler");
 			return false;
+		} else if(checkInstalacionCerrada()) {
+			JOptionPane.showMessageDialog(this, "La instalacion esta cerrada el dia que se quiere alquilar");
+			return false;
+		}
+		return true;
+	}
+
+	private boolean checkInstalacionCerrada() {
+		try {
+			if (((Instalacion)cmbInstalaciones.getSelectedItem()).permiteAlquileres() && getPrograma().cierreInstalacionDia((Instalacion)cmbInstalaciones.getSelectedItem(), dia, mes, año)) {
+				return false;
+			}
+		} catch (SQLException e) {
+			
 		}
 		return true;
 	}
