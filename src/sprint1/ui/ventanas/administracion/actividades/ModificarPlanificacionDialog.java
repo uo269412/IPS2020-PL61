@@ -56,6 +56,7 @@ public class ModificarPlanificacionDialog extends JDialog {
 	private CalendarioSemanalModificar parent;
 	private Programa p;
 	private ActividadPlanificada a;
+	private JButton btnVerDisponibilidad;
 	/**
 	 * Create the dialog.
 	 */
@@ -77,6 +78,7 @@ public class ModificarPlanificacionDialog extends JDialog {
 		contentPanel.add(getTextFieldNombre());
 		contentPanel.add(getLblInstalacion());
 		contentPanel.add(getCbInstalacion());
+		contentPanel.add(getBtnVerDisponibilidad());
 		contentPanel.add(getLblFechaHora());
 		contentPanel.add(getPnFechaDesarrollo());
 		contentPanel.add(getPnBotones());
@@ -377,5 +379,21 @@ public class ModificarPlanificacionDialog extends JDialog {
 			}
 			
 		}
+	}
+	private JButton getBtnVerDisponibilidad() {
+		if (btnVerDisponibilidad == null) {
+			btnVerDisponibilidad = new JButton("Ver disponibilidad instalaciones");
+			btnVerDisponibilidad.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					CalendarioDisponibilidadInstalacion cdi = new CalendarioDisponibilidadInstalacion(p);
+					cdi.setLocationRelativeTo(ModificarPlanificacionDialog.this);
+					cdi.setModal(true);
+					cdi.setVisible(true);
+				}
+			});
+			btnVerDisponibilidad.setBackground(new Color(30, 144, 255));
+			btnVerDisponibilidad.setForeground(Color.WHITE);
+		}
+		return btnVerDisponibilidad;
 	}
 }
