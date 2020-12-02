@@ -48,10 +48,10 @@ public class Programa {
 	// "jdbc:sqlite:C:\\Users\\javie\\git\\IPS2020-PL61\\resources\\bdProject.db";
 
 	// Conexión Dani
-//	public static String URL = "jdbc:sqlite:C:\\Users\\Dani\\git\\IPS2020-PL61_sprint3\\resources\\bdProject.db";
+	public static String URL = "jdbc:sqlite:C:\\Users\\Dani\\git\\IPS2020-PL61_sprint3\\resources\\bdProject.db";
 
 	// Conexión Juan.elo
-	public static String URL = "jdbc:sqlite:C:\\Users\\Usuario\\git\\IPS2020-PL61\\resources\\bdProject.db";
+//	public static String URL = "jdbc:sqlite:C:\\Users\\Usuario\\git\\IPS2020-PL61\\resources\\bdProject.db";
 
 	public Programa() throws SQLException {
 		cargarBaseDatos();
@@ -1646,7 +1646,8 @@ public class Programa {
 			String nombre = rs.getString(2);
 			Double precio = rs.getDouble(3);
 			int estado = rs.getInt(4);
-			instalaciones.add(new Instalacion(codigo, nombre, precio, estado));
+			boolean permiteAlquileres = rs.getInt(5) == 1;
+			instalaciones.add(new Instalacion(codigo, nombre, precio, estado, permiteAlquileres));
 		}
 		return instalaciones;
 	}
@@ -1884,7 +1885,7 @@ public class Programa {
 	
 	
 	public void deleteAsociadosConCierreParaDias() throws SQLException {
-//		deleteActividadesAsociadasConCierre();
+		deleteActividadesAsociadasConCierre();
 		deleteAlquileresAsociadosConCierreDias();
 	}
 	

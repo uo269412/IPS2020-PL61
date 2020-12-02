@@ -227,6 +227,7 @@ public class CerrarPorDiasDialog extends JDialog {
 		try {
 			if (p.cierreInstalacionDia((Instalacion) cbInstalacion.getSelectedItem(), dia, mes, año)) {
 				printClientesAfectadosPorCierre(p.clientesAfectadosPorCierreDia((Instalacion) cbInstalacion.getSelectedItem(), dia, mes, año));
+				p.deleteAsociadosConCierreParaDias();
 			} else {
 				JOptionPane.showMessageDialog(this, "La instalación ya estaba cerrada ese día");
 			}
